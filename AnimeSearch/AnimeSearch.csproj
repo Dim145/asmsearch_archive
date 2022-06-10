@@ -13,6 +13,9 @@
     <Content Remove="wwwroot\js\Home.min.js" />
     <Content Remove="wwwroot\js\Pokemon\animation.min.js" />
     <Content Remove="wwwroot\js\site.min.js" />
+    <Content Include="..\Readme.md">
+      <Link>Readme.md</Link>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
@@ -20,17 +23,6 @@
     <_ContentIncludedByDefault Remove="wwwroot\js\Home.min.js" />
     <_ContentIncludedByDefault Remove="wwwroot\js\Pokemon\animation.min.js" />
     <_ContentIncludedByDefault Remove="wwwroot\js\site.min.js" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="wwwroot\.well-known\brave-rewards-verification.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="bundleconfig.json" />
-    <None Include="wwwroot\js\Home.min.js" />
-    <None Include="wwwroot\js\Pokemon\animation.min.js" />
-    <None Include="wwwroot\js\site.min.js" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +44,10 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="images" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
