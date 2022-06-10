@@ -1,12 +1,13 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@using AnimeSearch.Database;
+﻿@using AnimeSearch.Database
+@using AnimeSearch.Models.Search
+
 @{
     ViewData["Title"] = "Données";}
 
-<link rel="stylesheet" href="~/css/Historique.min.css" asp-append-version="true" />
-<script type="text/javascript" src="~/js/Historique.min.js" asp-append-version="true"></script>
+<header>
+    <link rel="stylesheet" href="~/css/Historique.min.css" asp-append-version="true" />
+    <a style="display: none;" class="d-none" href="~/" id="baseurl"></a>
+</header>
 
 <div class="row">
     <div class="col" style="margin-right: 5px;">
@@ -15,13 +16,9 @@
         </div>
 
         <div class="row text-white max-height border rounded">
-            @if (ViewData["allSearch"] is not null and Dictionary<string, int> allSearch && allSearch.Count > 0)
-                @ReactComponent(Html, "~/js/react/Table.jsx", new { cols = Tab("Recherche", "Nombre de saisies"), rows = allSearch.Select(r => new { datas = Tab(r.Key, r.Value), className = "tr-search" }) })
-            
+            <component type="typeof(RecherchesTable)" render-mode="ServerPrerendered" param-UrlSearch="@Url.Action("Search", "Home")" param-UrlGetDatas="@Url.Action("GetRecherchesDatas", "API")" />
         </div>
     </div>
-
-    <a style="display: none;" class="d-none" href="~/" id="baseurl"></a>
 
     <div class="col" style="margin-left: 5px;">
         <div class="row text-center text-white" style="margin: 5px;">

@@ -1,10 +1,24 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@using Microsoft.AspNetCore.Identity;
+@using AnimeSearch.Database;
 
-@{ 
+@inject UserManager<Users> userManager
+
+@{
     ViewData["Title"] = "API";
+
+    Users current = User?.Identity?.Name != null ? await userManager.FindByNameAsync(User.Identity.Name) : null;
+
+    ViewData["user"] = current;
+
+    bool isAdmin = current != null && await userManager.IsInRoleAsync(current, Utilities.ADMIN_ROLE.Name);
+    bool isSuperAdmin = current != null && await userManager.IsInRoleAsync(current, Utilities.SUPER_ADMIN_ROLE.Name);
 }
+
+<style>
+    th,td {
+        vertical-align: middle!important;
+    }
+</style>
 
 <div class="text-center text-white">
     <h1 class="display-4">@ViewData["Title"]</h1>
@@ -15,49 +29,299 @@
             C'est plus rapide et surtout plus simple pour eux afin de récupérer les résultats de la recherche et de les utiliser dans un autre site ou application.<br />
             Cela évite de devoir analyser et chercher dans du code HTML extrêmement long comme je le fais pour effectuer les recherches.
         </p>
+        <p>
+            Pour s'authentifier, il faut envoyer le cookie suivant avec la rêquete: ".AspNetCore.Identity.Application"="la valeur du cookie donnée lors du login"
+        </p>
     </div>
 </div>
 
-@{ 
-    string path = Context.Request.Host + Context.Request.Path;
-}
+<div class="ml-0 mr-0 text-white">
+    <div class="row">
+        <div class="col-auto">
+            <div class="nav flex-sm-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                <a class="nav-link active" id="v-pills-home-tab" data-toggle="pill" href="#v-pills-home" role="tab" aria-controls="v-pills-home" aria-selected="true">Infos</a>
+                <a class="nav-link" id="v-pills-profile-tab" data-toggle="pill" href="#v-pills-profile" role="tab" aria-controls="v-pills-profile" aria-selected="false">Recherches</a>
+                <a class="nav-link" id="pill-multiple-search" data-toggle="pill" href="#multiple-search" role="tab" aria-controls="multiple-search" aria-selected="false">Recherches Multiple</a>
+                <a class="nav-link" id="pill-utilitaires" data-toggle="pill" href="#utilitaires" role="tab" aria-controls="utilitaires" aria-selected="false">Utilitaires</a>
+                @if (isAdmin || isSuperAdmin) { <a class="nav-link" id="pill-admin" data-toggle="pill" href="#admin" role="tab" aria-controls="admin" aria-selected="false">Admin</a> }
+                @if (isSuperAdmin) { <a class="nav-link" id="pill-super-admin" data-toggle="pill" href="#super-admin" role="tab" aria-controls="super-admin" aria-selected="false">Super-Admin</a>}
+            </div>
+        </div>
+        <div class="col">
+            <div class="tab-content" id="v-pills-tabContent">
+                <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <div class="container text-white">
+                        <h2>Chercher des informations</h2>
 
-<div class="container text-white">
-    <h1>Chercher des informations</h1>
+                        <p>
+                            Le résultat est un Json contenant des infos comme les noms selon les languages, l'adresse de l'image publique du film/serie etc...:<br />
+                            /api/type/la recherche<br />
+                            exemple: <a target="_blank" href="~/api/serie/One Piece">@(Utilities.BASE_URL)serie/One%20Piece</a>
+                        </p>
+                        <p>
+                            Autre exemple pour un film<br />
+                            /api/film/nom de serie<br />
+                            exemple: <a target="_blank" href="~/api/film/Dragon%20Ball%20Broly">@(Utilities.BASE_URL)film/Dragon%20Ball%20Broly</a>
+                        </p>
+                    </div>
+                </div>
 
-    <p>
-        Le résultat est un Json contenant des infos comme les noms selon les languages, l'adresse de l'image publique du film/serie etc...:<br />
-        /api/type/la recherche<br />
-        exemple: <a target="_blank" href="~/api/serie/One Piece">@path/serie/One%20Piece</a>
-    </p>
-    <p>
-        Autre exemple pour un film<br />
-        /api/film/nom de serie<br />
-        exemple: <a target="_blank" href="~/api/film/Dragon%20Ball%20Broly">@path/film/Dragon%20Ball%20Broly</a>
-    </p><br />
+                <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                    <div class="container text-white">
+                        <h2>Recherche sur des site</h2>
+                        <p>
+                            Cette fois-ci le json contient les adresse/icon/type du site ainsi que le nombre de résultat de la recherche:<br />
+                            /api/search/type/la recherche<br />
+                            exemple: <a target="_blank" href="~/api/search/serie/One Piece">@(Utilities.BASE_URL)search/serie/One%20Piece</a>
+                        </p>
+                        <p>
+                            On peut aussi ne pas préciser de type. Si les deux databases trouvent un résultat, celui de la série sera utilisé en premier.<br />
+                            /api/search/nom de serie<br />
+                            exemple: <a target="_blank" href="~/api/search/Hancock">@(Utilities.BASE_URL)search/Hancock</a>
+                        </p><br />
+                        <p>
+                            Enfin, on peut rechercher sur les deux databases, en précisant laquel doit être prioritaire:<br />
+                            /api/search/serie=>nom de serie<br />
+                            exemple: <a target="_blank" href="~/api/search/movie=>one piece">@(Utilities.BASE_URL)search/movie=>one%20piece</a>
+                        </p>
+                    </div>
+                </div>
 
-    <h1>Recherche sur des site</h1>
-    <p>
-        Cette fois-ci le json contient les adresse/icon/type du site ainsi que le nombre de résultat de la recherche:<br />
-        /api//search/type/la recherche<br />
-        exemple: <a target="_blank" href="~/api/search/serie/One Piece">@path/search/serie/One%20Piece</a>
-    </p>
-    <p>
-        On peut aussi ne pas préciser de type. Si les deux databases trouvent un résultat, celui de la série sera utilisé en premier.<br />
-        /api/search/nom de serie<br />
-        exemple: <a target="_blank" href="~/api/search/Hancock">@path/search/Hancock</a>
-    </p><br />
-    <p>
-        Enfin, on peut rechercher sur les deux databases, en précisant laquel doit être prioritaire:<br/>
-        /api/search/serie=>nom de serie<br />
-        exemple: <a target="_blank" href="~/api/search/movie=>one piece">@path/search/movie=>one%20piece</a>
-    </p><br/>
+                <div class="tab-pane fade" id="multiple-search" role="tabpanel" aria-labelledby="pill-multiple-search">
+                    <h2>Recherche Multiple</h2>
+                    <p>
+                        Il est possible d'effectuer une recherche de multiple éléments venant des deux API en ligne.
+                        Les résultats ne donnent que quelques information basique avec une image, et permet de sélectionné précisément l'élément souhaiter.<br />
+                        exemple: <a target="_blank" href="~/api/msearch/one piece">@(Utilities.BASE_URL)api/msearch/one%20piece</a>
+                    </p>
+                </div>
 
-    <h1>Recherche Multiple</h1>
-    <p>
-        Il est possible d'effectuer une recherche de multiple éléments venant des deux API en ligne. 
-        Les résultats ne donnent que quelques information basique avec une image, et permet de sélectionné précisément l'élément souhaiter.<br/>
-        exemple: <a target="_blank" href="~/api/msearch/one piece">~/api/msearch/one%20piece</a>
-    </p>
+                <div class="tab-pane fade" id="utilitaires" role="tabpanel" aria-labelledby="pill-utilitaires">
+                    <h2>Routes Utilitaires</h2>
+                    Voici quelques autres Routes API qui peuvent être pratique:
 
+
+                    <div class="table table-striped table-bordered table-dark">
+                        <div class="row border p-1 mt-2 mb-1 rounded">
+                            <div class="col-sm-auto align-self-center mb-2 m-sm-auto text-center">Testeur de sites</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-sm-auto align-self-center mb-2"><a target="_blank" asp-controller="api" asp-action="TestUrl" asp-route-url="http://nyaa.si">@(Utilities.BASE_URL)testURL?url=http://nyaa.si</a></div>
+                                    <div class="col">Permet de tester si un site est accéssible par le serveur. Selon la localisation ou selon le firewall de celui-ci, un site peut être bloqué.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row border p-1 mt-2 mb-1 rounded">
+                            <div class="col-sm-auto align-self-center mb-2 text-center">Récupérer HTML</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-sm-auto align-self-center mb-2"><form method="post" target="_blank" asp-controller="api" asp-action="GetHtmlSite" asp-route-url="http://nyaa.si"><input type="submit" value="@(Utilities.BASE_URL)GetHTMLSite?url=http://nyaa.si" /></form></div>
+                                    <div class="col">Permet de récupéré le code HTML d'un site sans le code JavaScript et CSS. (les balise style restent comme même) Accessible en POST étant donnée qu'on peut envoyer des données supplémentaire aux sites. Les données doivent être un dictionnaire de type: {"clé"="valeur"}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row border p-1 mt-2 mb-1 rounded">
+                            <div class="col-sm-auto align-self-center mb-2 text-center">Top des recherches</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-sm-auto align-self-center mb-2"><a target="_blank" asp-controller="api" asp-action="GetRecherchesDatas">@(Utilities.BASE_URL)recherchesdatas</a></div>
+                                    <div class="col">Liste des recherches trié par ordre de la plus à la moins recherché. Les données sont rassembler et annonymisées.</div>
+                                </div>
+                            </div>
+                        </div>
+                        @if (current != null)
+                        {
+                            <div class="row border p-1 mt-2 mb-1 rounded">
+                                <div class="col-sm-auto align-self-center mb-2 text-center">Historique personnel</div>
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-sm-auto align-self-center mb-2"><a target="_blank" asp-controller="api" asp-action="GetAllRecherchesForCurrentUser">@(Utilities.BASE_URL)searchsForCurrent</a></div>
+                                        <div class="col">Liste des recherches effectuer par vous-même, trié par date. Les données sont rassembler et annonymisées.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="row border p-1 mt-2 mb-1 rounded">
+                            <div class="col-sm-auto align-self-center mb-2 text-center">Proposer un site</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-sm-auto align-self-center mb-2">@(Utilities.BASE_URL)addSite => Accéssible en POST</div>
+                                    <div class="col">Permet de proposer un site. Pour cela il faut transmettre les donnée suivante: ["Title", "Url", "UrlSearch", "UrlIcon", "CheminBaliseA", "TypeSite", "PostValues"]</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row border p-1 mt-2 mb-1 rounded">
+                            <div class="col-sm-auto align-self-center mb-2 text-center">Proposer une citation</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-sm-auto align-self-center mb-2">@(Utilities.BASE_URL)citation => accéssible en POST</div>
+                                    <div class="col">Propose une citation au serveur. Pour cela il faut transmetre les données suivantes (sdiv class="row"ing) ["AuthorName", "Contenue"]</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row border p-1 mt-2 mb-1 rounded">
+                            <div class="col-sm-auto align-self-center mb-2 text-center">Tester un site avec une recherche</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-sm-auto align-self-center mb-2">@(Utilities.BASE_URL)TestSiteSearch => accéssible en POST</div>
+                                    <div class="col">Essaye d'effectuer une recherche sur un site particulier. Avec toute les données d'un site + "q" pour la recherche. Par default elle est égale à "One Piece".</div>
+                                </div>
+                            </div>
+                        </div>
+                        <di class="row border p-1 mt-2 mb-1 rounded">
+                            <div class="col-sm-auto align-self-center mb-2 text-center">Initialisé un Don</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-sm-auto align-self-center mb-2">@(Utilities.BASE_URL)ippd => accéssible en POST</div>
+                                    <div class="col">Permet d'initialisé un don avec la valeur envoyer envoyer ("amount"). Un Guid correspondant aux don seras enregistré temporairement dans les Cookies</div>
+                                </div>
+                            </div>
+                        </di>
+                        <div class="row border p-1 mt-2 mb-1 rounded">
+                            <div class="col-sm-auto align-self-center mb-2 text-center">Supprimer un don</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-sm-auto align-self-center mb-2"><a target="_blank" asp-controller="api" asp-action="Cancel_Don">@(Utilities.BASE_URL)dppd</a></div>
+                                    <div class="col">Permet de supprimer le don en suspend grâce au Guid enregistré dans les Cookies.</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row border p-1 mt-2 mb-1 rounded">
+                            <div class="col-sm-auto align-self-center mb-2 text-center">Confirmer un don</div>
+                            <div class="col">
+                                <div class="row">
+                                    <div class="col-sm-auto align-self-center mb-2"><a target="_blank" asp-controller="api" asp-action="Dons_done">@(Utilities.BASE_URL)fppd</a></div>
+                                    <div class="col">Finalise le don en suspend par rapport au Guid enregistré dans les Cookies. Puis supprime ce Cookie.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if (current != null && isSuperAdmin || isAdmin)
+                {
+                    <div class="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="pill-admin">
+                        <h2>Zone Admin</h2>
+                        Il est possible de géré le site (~ bdd) à distance via une API dédier aux Admin. Pour "s'authentifier" avec cette API, il suffit d'envoyer les Cookies
+                        donnée par le site lors de l'authentification (page de login). Pour le moment il n'existe pas de route permettant de d'avoir ce cookie.
+
+                        <h3>Liste complète des données</h3>
+                        Il est possible d'avoir la liste complète de certaines tables, comme ci-dessous:
+                        <table class="table table-striped table-bordered table-dark">
+                            <tr>
+                                <td>Liste des utilisateurs:</td>
+                                <td><a target="_blank" asp-controller="adminapi" asp-action="GetAllUsers">@(Utilities.BASE_URL)adminapi/users</a></td>
+                            </tr>
+                            <tr>
+                                <td>Liste des sites</td>
+                                <td><a target="_blank" asp-controller="adminapi" asp-action="GetAllSites">@(Utilities.BASE_URL)adminapi/sites</a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Liste de recherches<br />
+                                    par utilisateurs
+                                </td>
+                                <td>
+                                    <a target="_blank" asp-controller="adminapi" asp-action="GetAllRecherchesByUser" asp-route-id="@current.Id">@(Utilities.BASE_URL)recherchesByUser/@current.Id</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Liste des IPs<br />
+                                    par utilisateurs
+                                </td>
+                                <td>
+                                    <a target="_blank" asp-controller="adminapi" asp-action="GetAllIpsByUser" asp-route-id="@current.Id">@(Utilities.BASE_URL)ipsByUsers/@current.Id</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Liste des dons<br />
+                                    par utilisateurs
+                                </td>
+                                <td>
+                                    <a target="_blank" asp-controller="adminapi" asp-action="GetAllDonForUser" asp-route-id="@current.Id">@(Utilities.BASE_URL)dons/@current.Id</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Changer l'étât d'une citation
+                                </td>
+                                <td>
+                                    @(Utilities.BASE_URL)CCVS => POST avec id: l'id de la citation (int) et isValidated: (bool).
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Changer état d'un site
+                                </td>
+                                <td>
+                                    @(Utilities.BASE_URL)CSVS => POST avec url: l'url racine du site (string) et etat: (byte).
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Liste des types
+                                </td>
+                                <td>
+                                    <a target="_blank" asp-controller="adminapi" asp-action="GetAllTypesSites">@(Utilities.BASE_URL)types</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Supprimer un type
+                                </td>
+                                <td>
+                                    <a target="_blank" asp-controller="adminapi" asp-action="suppType" asp-route-id="-1">@(Utilities.BASE_URL)supptype/-1</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Ajouter un type
+                                </td>
+                                <td>
+                                    @(Utilities.BASE_URL)addType => POST avec name: (string)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Mettre à jour un site
+                                </td>
+                                <td>
+                                    @(Utilities.BASE_URL)majsite => POST avec les données complête d'un site + SpostValues: json d'un dictionnaire de données à envoyer (string) @if (isSuperAdmin) { @("et UrlChange: la nouvelle url du site (string)") }
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                }
+
+                @if (current != null && isSuperAdmin)
+                {
+                    <div class="tab-pane fade" id="super-admin" role="tabpanel" aria-labelledby="pill-super-admin">
+                        <h2>Zone Super-Admin</h2>
+                        Le Super-Admin à accès à toutes les API de l'admin sans exception. En plus de cela il peut accéder aux routes suivantes:
+
+                        <table class="table table-striped table-bordered table-dark">
+                            <tr>
+                                <td>Ajout de rôles</td>
+                                <td>@(Utilities.BASE_URL)addRole => Celle-ci n'est accessible que en post avec la donnée "roleName"</td>
+                            </tr>
+                            <tr>
+                                <td>Suppression de rôles</td>
+                                <td>@(Utilities.BASE_URL)deleteRole/[rolename] => le rolename devant être remplacer par le nom du role (Admin & Super-Admin impossible à supprimer)</td>
+                            </tr>
+                            <tr>
+                                <td>Maj rôles pour un<br />Utilisateur</td>
+                                <td>@(Utilities.BASE_URL)updateUserRoles => Avec des données POST aussi. Un entier étant le "userId" et une liste de rôleName à changer</td>
+                            </tr>
+                            <tr>
+                                <td>Suppression d'un don</td>
+                                <td>@(Utilities.BASE_URL)rdons => Avec des données POST aussi. Un Guid comme id</td>
+                            </tr>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>

@@ -230,10 +230,11 @@ $(document).ready(function ()
             $("#dataSearch").text(tabSearch[tmp]);
         }).fail(function ()
         {
-            $("#messageTitle").text("Erreur");
-            $("#messageBody").text("Erreur lors du chargement du site saisi.");
-
-            $("#dialogMessage").modal("show");
+            SwalFire({
+                title: "Erreur lors du chargement du site saisi.",
+                icon: "error",
+                confirmButtonText: "Ok"
+            })
         });
 
         if (indexSearch >= tabSearch.length)
@@ -278,16 +279,18 @@ $(document).ready(function ()
 
         $.post(urlBase + "api/addSite", site, function (response)
         {
-            $("#messageTitle").text("Succès");
-            $("#messageBody").text(response);
-
-            $("#dialogMessage").modal("show");
+            SwalFire({
+                title: response,
+                icon: "success",
+                confirmButtonText: "Ok"
+            });
         }).fail(function (error)
         {
-            $("#messageTitle").text("Erreur");
-            $("#messageBody").text(error.responseText);
-
-            $("#dialogMessage").modal("show");
+            SwalFire({
+                title: error.responseText,
+                icon: "error",
+                confirmButtonText: "Ok"
+            });
         });
     }
 });

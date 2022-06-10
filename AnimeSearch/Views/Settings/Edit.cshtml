@@ -1,0 +1,54 @@
+﻿@using System.Globalization
+@model AnimeSearch.Database.Setting
+
+@{
+    ViewData["Title"] = "Edit";
+
+    var isNumber = Model.TypeValue == typeof(double).FullName;
+}
+
+<<div class="text-white">
+    <h1>Edit</h1>
+
+    <h4>Setting - @Model.Name</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Name" />
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control" ></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="JsonValue" class="control-label">Valeur</label>
+                    <input 
+                        name="JsonValue" 
+                        class="form-control" 
+                        type="@GetHtmlType(Model.GetValueObject())"
+                        @(isNumber ? "step=0.1" : "")
+                        value="@(isNumber ? Model.GetValueObject().ToString("0.##", CultureInfo.InvariantCulture) : Model.GetValueObject().ToString())" />
+                    <span asp-validation-for="JsonValue" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="IsDeletable" /> @Html.DisplayNameFor(model => model.IsDeletable)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a class="btn btn-primary" asp-action="Index">Retour</a>
+    </div>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+</div>

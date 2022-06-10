@@ -1,23 +1,50 @@
 ﻿@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Identity;
+@using AnimeSearch.Database
+
+@inject SignInManager<Users> SignInManager
+
+@{
+    var nivAcce = ViewData["na"] is not null and int niv ? niv : 0;
+
+    var donsNb = 0;
+
+    if (ViewData["Paypal_mail"] is not null and string paypalMail && !string.IsNullOrWhiteSpace(paypalMail))
+        donsNb = 1;
+
+    if (ViewData["hasOpenNodeAPIKEY"] is not null and bool bo ? bo : false)
+        donsNb = 3;
+}
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="utf-8" />
+    <meta name="description" content="Site permettant de trouver où regarder un film, une série ou un anime. Le serveur recherchera pour vous votre recherche sur une liste de site, et vous donneras le nombre de résultats ainsi qu'un lien direct pour chaque site." />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AS Search</title>
+    <meta name="google" content="nositelinkssearchbox">
+    <meta name="google-site-verification" content="@(ViewData["google-site-verification"] is not null and string googleId && !string.IsNullOrWhiteSpace(googleId) ? googleId : "")" />
+    <title>@ViewData["Title"] - ASM Search</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <script type="text/javascript" src="~/lib/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="~/js/site.min.js" asp-append-version="true"></script>
-    <script type="text/javascript" src="~/lib/react/react.@(Utilities.IN_DEV ? "development" : "production").js"></script>
-    <script type="text/javascript" src="~/lib/react/react-dom.@(Utilities.IN_DEV ? "development" : "production").js"></script>
     <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    <link type="image/x-icon" rel="icon" href="~/ressources/icons/favicon.ico" />
+    <link type="image/x-icon" rel="icon" href="~/favicon.ico" />
+    <base href="~/" />
+    <script src="_content/KeudellCoding.Blazor.AdvancedBlazorSelect2/Select2JsInterop.js" type="text/javascript" language="javascript"></script>
+    <script src="_content/KeudellCoding.Blazor.AdvancedBlazorSelect2/lib/select2/js/select2.full.min.js" type="text/javascript" language="javascript"></script>
+    <link href="_content/KeudellCoding.Blazor.AdvancedBlazorSelect2/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/fontwave_all.min.css" asp-append-version="true" />
 
     @if (ViewData["google_ads_client_id"] is not null and string googleads_client_id)
     {
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=@googleads_client_id" crossorigin="anonymous"></script>
+        <script type="text/javascript">
+            window._mNHandle = window._mNHandle || {};
+            window._mNHandle.queue = window._mNHandle.queue || [];
+            medianet_versionId = "3121199";
+        </script>
+        <script src="https://contextual.media.net/dmedianet.js?cid=@googleads_client_id" async="async"></script>
     }
 </head>
 <body class="bg-dark">
@@ -38,17 +65,36 @@
                             <a class="nav-link link-white" asp-controller="Home" asp-action="Historique">Données</a>
                         </li>
                         <li class="nav-item align-self-sm-center">
-                            <a class="nav-link link-white" asp-area="" asp-controller="Home" asp-action="AddSites">Ajouter un site</a>
+                            <a class="nav-link link-white" asp-controller="Home" asp-action="AddSites">Proposer un site</a>
                         </li>
-                        @if (!string.IsNullOrWhiteSpace(Context.Session.GetString("adtoken")))
+                        @if (SignInManager.IsSignedIn(User) && nivAcce > 0)
                         {
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle item-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     Admin
                                 </a>
                                 <div class="dropdown-menu bg-dark border-white" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item item-dark" asp-controller="admin" asp-action="Index" title="Page d'administration">Page Admin</a>
-                                    <a class="dropdown-item item-dark" asp-controller="admin" asp-action="error" title="Page avec toutes les erreurs (brut)">Page d'erreurs</a>
+                                    @if(nivAcce >= Utilities.DROIT_VUE_HAUT)
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="admin" asp-action="Index" title="Page d'administration">Acceuil</a>
+                                    }
+                                    @if(nivAcce >= Utilities.DROIT_VUE_BAS)
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="admin" asp-action="sites" title="Page d'administration des sites">Sites</a>
+                                    }
+                                    @if(nivAcce >= Utilities.DROIT_VUE_BAS)
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="admin" asp-action="citations" title="Page d'administration des citations">Citations</a>
+                                    }
+                                    @if(nivAcce >= Utilities.DROIT_VUE_HAUT)
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="admin" asp-action="error" title="Page avec toutes les erreurs (brut)">Page d'erreurs</a>
+                                    }
+                                    @if (User.IsInRole(Utilities.SUPER_ADMIN_ROLE.Name))
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="admin" asp-action="Roles" title="Page de gestion des rôles (Super-Admin)">Roles</a>
+                                        <a class="dropdown-item item-dark" asp-controller="settings" asp-action="index" title="Pamètres du site">Paramètres</a>
+                                    }
                                 </div>
                             </li>
                         }
@@ -57,8 +103,18 @@
                                 Autres
                             </a>
                             <div class="dropdown-menu bg-dark border-white" aria-labelledby="navbarDropdown2">
+                                <a class="dropdown-item item-dark" asp-action="advanceSearch" asp-controller="home">Recherche avancée</a>
+                                @if(!string.IsNullOrWhiteSpace(Utilities.DISCORD_INVITE_LINK))
+                                {
+                                    <a class="dropdown-item item-dark" asp-controller="home" asp-action="botdiscord">Bot Discord</a>
+                                }
+                                @if(!string.IsNullOrWhiteSpace(Utilities.TELEGRAM_INVITE_LINK))
+                                {
+                                    <a class="dropdown-item item-dark" asp-controller="home" asp-action="bottelegram">Bot Télégram</a>
+                                }
                                 <a class="dropdown-item item-dark" href="https://github.com/Dim145/AnimeSearch">Github</a>
                                 <a title="Page principale des Dons." class="dropdown-item item-dark" asp-controller="home" asp-action="dons">Dons</a>
+                                <a title="Liste des autres domaines et serveurs" class="dropdown-item item-dark" asp-controller="home" asp-action="Domaines">Domaines</a>
                                 @if (ViewData["old"] is not null and bool old && old)
                                 {
                                     <a title="Utilise le nouveau script de recherche" class="dropdown-item item-dark" asp-controller="Home" asp-action="Index">Nouvelle Version</a>
@@ -70,22 +126,7 @@
                             </div>
                         </li>
                     </ul>
-                    @{
-                        string username = @ViewData["username"]?.ToString();
-                        if (username == Utilities.GUEST)
-                        {
-                            <a class="nav navbar-text" id="change_username" title="change username" href="#">Hello @username </a>
-                        }
-                        else
-                        {
-                            <p class="nav navbar-text" id="username">Hello @username</p>
-                        }
-
-                        if (ViewData["params"] is not null and bool prefs && prefs)
-                        {
-                            <a class="nav-item flex-grow-0" data-toggle="modal" data-target="#exampleModal" href="#" id="prefs"><img src="~/webfonts/settings.png" /></a>
-                        }
-                    }
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
@@ -105,39 +146,29 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted bg-dark">
         <div class="container text-white">
             <div class="row">
                 <div class="col-auto pr-0">
-                    <a>&copy;</a> 2021 - <a target="_blank" href="https://dim145.fr" class="link-white">Dim. Dubois</a> - <a asp-controller="home" asp-action="Contact">Contact</a> - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    <a>&copy;</a> @DateTime.Now.Year - <a target="_blank" href="https://dim145.fr" class="link-white">Dim. Dubois</a> - <a asp-controller="home" asp-action="Contact">Contact</a> - <a asp-controller="Home" asp-action="Privacy">Privacy</a>
                 </div>
-                @if (!string.IsNullOrWhiteSpace(Context.Session.GetString("adtoken")))
+                @if (SignInManager.IsSignedIn(User))
                 {
                     <div class="col text-right pl-0">
-                        <a class="btn btn-dark pr-0" asp-controller="admin" asp-action="Logout" title="déconnexion"><img height="40" src="~/ressources/images/logout.png" /></a>
-                    </div>
-                }
-                @if (ViewData["Paypal_mail"] is not null and string paypalMail && !string.IsNullOrWhiteSpace(paypalMail))
-                {
-                    <div class="col-auto position-absolute" style="bottom: 70px; right: 0;">
-                        <form action="/api/ippd" method="post">
-                            <input type="hidden" name="cmd" value="_donations" />
-                            <input type="hidden" name="business" value="@paypalMail" />
-                            <input type="hidden" name="currency_code" value="EUR" />
-                            <input type="hidden" name="item_name" value="Donation pour soutenir le site. Couvrir les frais du serveur/domaines ! Et migrer vers un serveur plus puissant avec suffisament de dons." />
-                            <input type="hidden" name="tax" value="0" />
-                            <input type="hidden" name="image_url" value="@(Utilities.BASE_URL)ressources/images/full-logo.png" />
-                            <input type="hidden" name="cancel_return" value="@(Utilities.BASE_URL)api/dppd" />
-                            <input type="hidden" name="return" value="@(Utilities.BASE_URL)api/fppd" />
-
-                            <div class="d-flex justify-content-center h-100">
-                                <div class="paypal_form p-0 d-flex">
-                                    <input class="paypal_amout text-white" type="number" step="any" name="amount" placeholder="5.94" min="1" style="padding-bottom: 0; padding-top: 0;" required>
-                                    <input class="float-right" type="image" src="~/ressources/images/paypal.png" height="40" border="0" name="submit" title="Faire un don avec PayPal" alt="Faire un don avec PayPal" />
-                                </div>
-                            </div>
+                        <form id="logoutForm" method="post" asp-controller="Identity" asp-action="LogoutPost" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button id="logout" type="submit" class="btn btn-dark pr-0"><img height="40" src="~/ressources/images/logout.png" /></button>
                         </form>
                     </div>
+                }
+                @if (donsNb > 0)
+                {
+                    <div class="col-auto position-absolute" style="bottom: 70px; right: 0px;">
+                        <div class="d-flex justify-content-center h-100">
+                            <button type="button" class="btn rounded-circle" id="swalDon" data-props="@donsNb"><img width="50" src="~/ressources/images/donate.svg" /></button>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript" src="~/js/dons.min.js"></script>
                 }
             </div>
         </div>
@@ -157,7 +188,7 @@
                     </div>
                     <div class="modal-body" style="overflow: auto; max-height: 75vh;">
                         @{
-                            this.WriteLiteral(aide);
+                            WriteLiteral(aide);
                         }
                     </div>
                     <div class="modal-footer">
@@ -168,7 +199,61 @@
         </div>
     }
 
+    <div id="components-reconnect-modal" class="my-reconnect-modal components-reconnect-hide mb-3 ml-3">
+
+        <div class="waiting">
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <span class="bg-warning rounded mr-2" style="width: 20px; height: 20px;"></span>
+                    <strong class="mr-auto">Système</strong>
+                    <small class="text-muted">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+                </div>
+                <div class="toast-body">
+                    Connection avec le serveur perdue.<br />
+                    Tentative de reconnection en cours...
+
+                    <div class="spinner-border text-warning position-absolute mt-5 ml-5" style="top: 0;" role="status">
+                        <span class="sr-only">Loading...</span>
+                        <div id=""></div>
+                    </div>
+
+                    <br /><br />
+                    Les composants dynamiques sont inutilisable pendant ce temps.
+                </div>
+            </div>
+        </div>
+        <div class="failed">
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <span class="bg-danger rounded mr-2" style="width: 20px; height: 20px;"></span>
+                    <strong class="mr-auto">Système</strong>
+                    <small class="text-muted">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+                </div>
+                <div class="toast-body">
+                    Les tentatives ont échouées.<br />
+                    Le serveur ne répond plus.
+                </div>
+            </div>
+        </div>
+        <div class="rejected">
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <span class="bg-danger rounded mr-2" style="width: 20px; height: 20px;"></span>
+                    <strong class="mr-auto">Système</strong>
+                    <small class="text-muted">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+                </div>
+                <div class="toast-body">
+                    Le serveur à rejeté votre connection.<br />
+                    Veuillez recharger la page.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
+    <link rel="stylesheet" href="_content/CurrieTechnologies.Razor.SweetAlert2/darkTheme.min.css" id="darkSweetAlert" />
+
     @await RenderSectionAsync("Scripts", required: false)
-    @Html.ReactInitJavaScript()
 </body>
 </html>

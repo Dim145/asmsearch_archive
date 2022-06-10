@@ -2,7 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using AnimeSearch.Models.Search;
 
 namespace AnimeSearch.Models.Sites
 {
@@ -105,7 +107,7 @@ namespace AnimeSearch.Models.Sites
                          "document.body.removeChild(form);";
         }
 
-        public override Task<string> SearchAsync(string search)
+        public override Task<HttpResponseMessage> SearchAsync(string search)
         {
             try
             {
@@ -115,13 +117,16 @@ namespace AnimeSearch.Models.Sites
                     {
                         if (search == null) search = "";
 
-                        KeyValuePair<string, Task<string>>[] tasks = Utilities.LAGUAGE_ORDER.Select(lang => KeyValuePair.Create(search.EndsWith(lang) ? search : search + " " + lang, base.SearchAsync(search.EndsWith(lang) ? search : search + " " + lang))).ToArray();
+                        KeyValuePair<string, Task<HttpResponseMessage>>[] tasks = Utilities.LAGUAGE_ORDER.Select(lang => KeyValuePair.Create(search.EndsWith(lang) ? search : search + " " + lang, base.SearchAsync(search.EndsWith(lang) ? search : search + " " + lang))).ToArray();
 
                         Task.WaitAll(tasks.Select(kv => kv.Value).ToArray());
 
-                        KeyValuePair<string, Task<string>> result = tasks.Where(t => t.Value != null && t.Value.Result != null).OrderByDescending(t => t.Value.Result.Length).FirstOrDefault();
+                        KeyValuePair<string, Task<HttpResponseMessage>> result = tasks
+                            .Where(t => t.Value?.Result != null)
+                            .OrderByDescending(t => t.Value.Result.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult().Length)
+                            .FirstOrDefault();
 
-                        SearchResult = result.Value.Result;
+                        SearchResult = result.Value.Result.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                         SearchStr = result.Key;
                         SearchHTMLResult.LoadHtml(SearchResult);
 
@@ -134,7 +139,7 @@ namespace AnimeSearch.Models.Sites
             catch(Exception e)
             {
                 Utilities.AddExceptionError(title, e);
-                return Task.Run(() => { string s = null; return s; });
+                return Task.FromResult<HttpResponseMessage>(null);
             }
         }
 

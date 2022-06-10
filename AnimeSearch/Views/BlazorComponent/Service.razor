@@ -1,0 +1,40 @@
+﻿@using AnimeSearch.Services
+
+<div class="card text-white border-white bg-dark mt-2 mb-2 ml-auto mr-auto mr-md-0 ml-md-0" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">@service.Title</h5>
+        <h6 class="card-subtitle mb-2 text-@(service.IsRunning ? "success" : "danger")">@(service.IsRunning ? "En cours" : "Arrété")</h6>
+        <p class="card-text">@service.Descr</p>
+        <div class="row">
+            <div class="col-auto pr-0">
+                <form method="post">
+                    <input type="hidden" name="id" value="@id" />
+                    <input type="hidden" name="val" value="1" />
+                    <input type="submit" value="Arrêter" class="btn btn-danger @(service.IsRunning ? "" : "disabled")" disabled="@(!service.IsRunning)" />
+                </form>
+            </div>
+            <div class="col-auto pr-0">
+                <form method="post">
+                    <input type="hidden" name="id" value="@id" />
+                    <input type="hidden" name="val" value="0" />
+                    <input type="submit" value="Démarrer" class="btn btn-success @(service.IsRunning ? "disabled" : "")" disabled="@service.IsRunning" />
+                </form>
+            </div>
+            <div class="col">
+                <form method="post">
+                    <input type="hidden" name="id" value="@id" />
+                    <input type="hidden" name="val" value="2" />
+                    <input type="submit" value="Exécuter 1 fois maintenant" class="btn btn-primary" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public BaseService service { get; set; }
+
+    [Parameter]
+    public int id { get; set; }
+}

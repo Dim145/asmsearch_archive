@@ -15,6 +15,7 @@
             $("#ips").attr("href", baseURL + "admin/ips/" + thisTR.data("userid"));
             $("#recherches").attr("href", baseURL + "admin/recherches/" + thisTR.data("userid"));
             $("#dons").attr("href", baseURL + "admin/dons/" + thisTR.data("userid"));
+            $("#savedsearch").attr("href", baseURL + "admin/SavedSearchsForUser/" + thisTR.data("userid"))
 
             menu[0].style.top = mouseY(event) + "px";
             menu[0].style.left = mouseX(event) + "px";

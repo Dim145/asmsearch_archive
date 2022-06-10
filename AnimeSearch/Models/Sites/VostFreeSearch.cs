@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System.Collections.Generic;
 using System.Linq;
+using AnimeSearch.Models.Search;
 
 namespace AnimeSearch.Models.Sites
 {
@@ -10,7 +11,7 @@ namespace AnimeSearch.Models.Sites
 
         public VostFreeSearch(string search) : this()
         {
-            this.SearchResult = this.SearchAsync(search).Result;
+            this.SearchAsync(search).Wait();
         }
 
         public VostFreeSearch() : base("https://vostfree.tv/", new())

@@ -1,0 +1,12 @@
+User-Agent: *
+Allow: /
+Allow: /contact
+Allow: /domaines
+Allow: /privacy
+Allow: /addsites
+Disallow: /api
+Disallow: /identity/register
+Disallow: /identity/login
+
+Sitemap: sitemap.xml
+

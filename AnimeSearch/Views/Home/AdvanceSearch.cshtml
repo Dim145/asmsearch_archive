@@ -1,0 +1,138 @@
+﻿@using System.Globalization
+@using AnimeSearch.Models.Results
+@model AdvanceSearch
+
+@{
+    ViewData["title"] = "Recherche avancée";
+    var advSearch = ViewData["advs"] is not null and AdvanceSearch a ? a : new();
+    var results = ViewData["results"] is not null and List<Result> res ? res : new();
+    var inc = 0;
+}
+
+<head>
+    <script type="text/javascript" src="~/js/AdvanceSearch.min.js"></script>
+    <link rel="stylesheet" href="~/css/AdvanceSearch.min.css" />
+</head>
+
+<div class="row text-white">
+    <div class="col">
+        <form method="@(advSearch.Without_genres == null && advSearch.With_genres == null ? "get" : "post")" asp-action="@nameof(AdvanceSearch)">
+            
+            <div class="container">
+                <div class="row rounded fa-border border-white p-1">
+                    <div class="row">
+                        <div class="col-4">
+                            <h3>Genres:</h3>
+                        </div>
+                        <div class="col-8">
+                            <select class="custom-select form-control btn-outline-secondary" asp-for="AndGenre">
+                                <option value="true">ET (tous)</option>
+                                <option value="false">Ou (au moins un)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        @foreach(TheMovieDbGenres genre in Utilities.TMBD_GENRES.DistinctBy(g => g.Name).OrderBy(g => g.Name))
+                        {
+                            <div class="col mb-1">
+                                <button type="button" 
+                                    class="filter btn @(advSearch.With_genres != null && advSearch.With_genres.Contains(genre.Name) ? "btn-success" : advSearch.Without_genres != null && advSearch.Without_genres.Contains(genre.Name) ? "btn-danger" : "btn-dark")"
+                                    id="genre-@(inc++)"
+                                    data-select="@(advSearch.With_genres != null && advSearch.With_genres.Contains(genre.Name) ? "1" : advSearch.Without_genres != null && advSearch.Without_genres.Contains(genre.Name) ? "-1" : "0")"
+                                >@genre.Name</button>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="row mt-3 mb-2">
+                    <div class="col-8">
+                        <label for="q">Titre (optionel):</label>
+                        <input class="form-control rounded" type="text" placeholder="English name" title="filtre simple sur la page courrante" name="q" value="@advSearch.Q" />
+                    </div>
+                    <div class="col-4">
+                        <label asp-for=SearchIn>Type</label>
+                        <select class="custom-select form-control btn-outline-secondary" asp-for="SearchIn">
+                            <option value="@AdvanceSearch.SearchType.ALL">N'importe</option>
+                            <option value="@AdvanceSearch.SearchType.MOVIES">Film</option>
+                            <option value="@AdvanceSearch.SearchType.SERIES">Série/Animé</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-6 col-md-3">
+                        <label for="after">Après:</label>
+                        <input type="date" name="After" class="form-control rounded" asp-for="After" />
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <label for="before">Avant:</label>
+                        <input type="date" name="Before" class="form-control rounded" asp-for="Before" />
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-3 col-md-2">
+                        <label for="page">Page:</label>
+                        <input class="form-control rounded" type="number" name="page" placeholder="page" value="@advSearch.Page" min="1" />
+                    </div>
+                    <div class="col-9 col-md-4">
+                        <label for="sortBy">Trier par:</label>
+                        <select name="sortBy" class="custom-select form-control btn-outline-secondary" asp-for="SortBy">
+                            <option value="-1"></option>
+                            @for(int i = 0; i < Utilities.SORT_BY_DISCOVERY.Length; i++)
+                            {
+                                <option value="@i">@Utilities.SORT_BY_DISCOVERY[i].Value</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-dark border-white mr-2" id="val" type="submit">Valider</button>
+            <button class="btn btn-dark border-danger" id="reset" type="reset">Effacer</button>
+        </form>
+    </div>
+</div>
+<div class="row text-white">
+    <div class="col">
+        <div class="container">
+            @if(results.Count == 0)
+            {
+                <div class="row">
+                    <div class="col-12 text-center">
+                        Aucuns résultats.
+                    </div>
+                </div>
+            }
+            else
+            {
+                foreach(Result result in results)
+                {
+                    <a class="row border-bottom border-secondary table-element text-white" href="/@(result is TvMazeResult ? "tv" : result.IsFilm() ? "movie" : "tvmovie")/@result.GetId()" >
+                        <div class="col-8 align-self-center">
+                            <table class="table-borderless table-sm text-white text-decoration-none">
+                                <tr><td>Nom:</td><td>@result.GetName()</td></tr>
+                                <tr><td>Date:</td><td>@result.GetRealeaseDate().GetValueOrDefault().ToString("d", CultureInfo.GetCultureInfo("fr-FR"))</td></tr>
+                                <tr><td>Genres:</td><td>@string.Join(", ", result.GetGenres() ?? Array.Empty<string>())</td></tr>
+                                <tr><td>Origine:</td><td>@(result is TheMovieDbResult ? $"TMDB ({(result.IsFilm() ? "Film" : "Série/Anime")})" : result is TvMazeResult ? "TVMaze" : "Inconnue")</td></tr>
+                                <tr>
+                                    <td style="vertical-align: top;">Résumé:</td>
+                                    <td>
+                                        <div class="box">
+                                            <p class="text">
+                                                @result.GetDescription()
+                                            </p>
+                                            <button class="btnToggle" type="button"><i class="arrow"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="col-4" style="align-self: center;">
+                            <img class="affiche img-fluid" src="@result.GetImage()" />
+                        </div>
+                    </a>
+                }
+            }
+        </div>
+    </div>
+</div>

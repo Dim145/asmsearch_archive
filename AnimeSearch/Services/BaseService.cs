@@ -18,12 +18,9 @@ namespace AnimeSearch.Services
             Title = title;
             Periode = periode;
             Descr = descr;
-
             IsRunning = false;
 
-            int index = Math.Max(Utilities.SERVICES.IndexOf(this), 0);
-
-            Utilities.SERVICES.Insert(index, this);
+            Utilities.SERVICES.Add(this);
         }
 
         protected override sealed Task ExecuteAsync(CancellationToken stoppingToken) => Task.Run(() =>
@@ -32,14 +29,14 @@ namespace AnimeSearch.Services
 
         }, stoppingToken);
 
-        public sealed override async Task StartAsync(CancellationToken cancellationToken)
+        public override async Task StartAsync(CancellationToken cancellationToken)
         {
             await base.StartAsync(cancellationToken);
 
             IsRunning = true;
         }
 
-        public sealed override async Task StopAsync(CancellationToken cancellationToken)
+        public override async Task StopAsync(CancellationToken cancellationToken)
         {
             await base.StopAsync(cancellationToken);
 
@@ -60,7 +57,7 @@ namespace AnimeSearch.Services
 
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            return Title.GetHashCode() ^ Timer.GetHashCode();
         }
     }
 }

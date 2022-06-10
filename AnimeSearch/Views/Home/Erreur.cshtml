@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Erreur";
+
+    int code = ViewData["code"] is not null and int c ? c : -1;
+}
+
+<link rel="stylesheet" href="~/css/Error.min.css" />
+
+<div class="row text-white">
+    <div class="col h-3 text-center mt-3">
+        @if(code == 404)
+        {
+            <h3>Page introuvable ou bien aucune des API n'a trouvé de résultats pour votre recherche... Êtes-vous sûr de ce que vous avez saisi ? &#129300;</h3>
+        }
+        else if(code == -1 || code == 500)
+        {
+            <h3>Une erreur est interne suvenue pendant la requête... Qu'avez-vous fait ? &#128561;</h3>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="d-flex text-center justify-content-center align-items-center img-@code fixed-bottom fixed-top mb-3 mt-3" style="z-index: -1;">
+        @if (SUPPORTED_ERROR_CODE.Contains(code))
+        {
+            <img src="~/ressources/images/errors/@(code).png" style="width: -webkit-fill-available; max-width: 520px;" />
+        }
+        else if (code > -1 && code != 800)
+        {
+            <img src="~/ressources/images/errors/others.gif" style="width: -webkit-fill-available; max-width: 520px;" />
+        }
+    </div>
+</div>
+
+@if(code == 800)
+{
+    <conf id="liveConf" style="left: 0; width: 200px; height: 200px;">
+        <script src="~/lib/live/autoload.min.js"></script>
+    </conf>
+
+    <div class="row">
+        <div class="@(code == 404 ? "fixed-bottom" : "col")" style="@(code == 404 ? "bottom: 48px!important;" : "")">
+            <partial name="~/Views/Shared/T-RexBody.cshtml" />
+        </div>
+    </div>
+}

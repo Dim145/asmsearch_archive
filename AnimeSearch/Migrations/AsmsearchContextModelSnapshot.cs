@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace AnimeSearch.Migrations
 {
     [DbContext(typeof(AsmsearchContext))]
@@ -15,17 +17,19 @@ namespace AnimeSearch.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.1");
+                .HasAnnotation("ProductVersion", "6.0.1")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("AnimeSearch.Database.Citations", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id")
-                        .UseIdentityColumn();
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AuthorName")
                         .IsRequired()
@@ -40,8 +44,10 @@ namespace AnimeSearch.Migrations
                         .HasColumnName("contenue");
 
                     b.Property<DateTime?>("DateAjout")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("date_ajout");
+                        .HasColumnName("date_ajout")
+                        .HasDefaultValueSql("SYSDATETIME()");
 
                     b.Property<bool>("IsValidated")
                         .ValueGeneratedOnAdd()
@@ -74,8 +80,10 @@ namespace AnimeSearch.Migrations
                         .HasColumnName("amout");
 
                     b.Property<DateTime>("Date")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("Date");
+                        .HasColumnName("Date")
+                        .HasDefaultValueSql("SYSDATETIME()");
 
                     b.Property<bool>("Done")
                         .ValueGeneratedOnAdd()
@@ -98,8 +106,9 @@ namespace AnimeSearch.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id")
-                        .UseIdentityColumn();
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Adresse_IP")
                         .IsRequired()
@@ -107,8 +116,10 @@ namespace AnimeSearch.Migrations
                         .HasColumnName("Adresse_IP");
 
                     b.Property<DateTime?>("Derniere_utilisation")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("Derniere_utilisation");
+                        .HasColumnName("Derniere_utilisation")
+                        .HasDefaultValueSql("SYSDATETIME()");
 
                     b.Property<string>("Localisation")
                         .HasColumnType("nvarchar(max)")
@@ -122,7 +133,7 @@ namespace AnimeSearch.Migrations
 
                     b.HasIndex("Users_ID");
 
-                    b.ToTable("IP");
+                    b.ToTable("IP", (string)null);
                 });
 
             modelBuilder.Entity("AnimeSearch.Database.Recherche", b =>
@@ -130,16 +141,25 @@ namespace AnimeSearch.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id")
-                        .UseIdentityColumn();
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime?>("Derniere_Recherche")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("derniere_recherche");
+                        .HasColumnName("derniere_recherche")
+                        .HasDefaultValueSql("SYSDATETIME()");
 
                     b.Property<int>("Nb_recherches")
                         .HasColumnType("int")
                         .HasColumnName("nb_recherche");
+
+                    b.Property<byte>("Source")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("tinyint")
+                        .HasDefaultValue((byte)1)
+                        .HasColumnName("Source");
 
                     b.Property<int>("User_ID")
                         .HasColumnType("int")
@@ -154,7 +174,102 @@ namespace AnimeSearch.Migrations
 
                     b.HasIndex("User_ID");
 
-                    b.ToTable("Recherche");
+                    b.ToTable("Recherche", (string)null);
+                });
+
+            modelBuilder.Entity("AnimeSearch.Database.Roles", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("")
+                        .HasColumnName("Color");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NiveauAutorisation")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1)
+                        .HasColumnName("Niveau_Requis");
+
+                    b.Property<string>("NormalizedName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("AnimeSearch.Database.SavedSearch", b =>
+                {
+                    b.Property<string>("Search")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("SavedSearch");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("User_id");
+
+                    b.Property<DateTime>("DateSauvegarde")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasColumnName("Date_Sauvegarde")
+                        .HasDefaultValueSql("SYSDATETIME()");
+
+                    b.Property<string>("Results")
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Resultats");
+
+                    b.HasKey("Search", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SavedSearch");
+                });
+
+            modelBuilder.Entity("AnimeSearch.Database.Setting", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("Name");
+
+                    b.Property<string>("Description")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("")
+                        .HasColumnName("Description");
+
+                    b.Property<bool>("IsDeletable")
+                        .HasColumnType("bit")
+                        .HasColumnName("IsDeletable");
+
+                    b.Property<string>("JsonValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Json_Value");
+
+                    b.Property<string>("TypeValue")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(max)")
+                        .HasDefaultValue("String")
+                        .HasColumnName("Type");
+
+                    b.HasKey("Name");
+
+                    b.ToTable("Settings");
                 });
 
             modelBuilder.Entity("AnimeSearch.Database.Sites", b =>
@@ -225,8 +340,9 @@ namespace AnimeSearch.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Type_Site")
-                        .UseIdentityColumn();
+                        .HasColumnName("Type_Site");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -243,29 +359,166 @@ namespace AnimeSearch.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("id")
-                        .UseIdentityColumn();
+                        .HasColumnName("id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("Dernier_Acces_Admin")
                         .HasColumnType("datetime2")
                         .HasColumnName("Dernier_Acces_Admin");
 
                     b.Property<DateTime?>("Derniere_visite")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
-                        .HasColumnName("Derniere_visite");
+                        .HasColumnName("Derniere_visite")
+                        .HasDefaultValueSql("SYSDATETIME()");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("Name");
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Navigateur")
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Navigateur");
 
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("Name");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("RoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProviderKey");
+
+                    b.ToTable("UserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.ToTable("UserRoles");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LoginProvider", "UserId");
+
+                    b.ToTable("UserTokens");
                 });
 
             modelBuilder.Entity("AnimeSearch.Database.Citations", b =>
@@ -283,8 +536,8 @@ namespace AnimeSearch.Migrations
                     b.HasOne("AnimeSearch.Database.Users", "User")
                         .WithMany("Dons")
                         .HasForeignKey("User_id")
-                        .HasConstraintName("FK_Dons_Users")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Dons_Users");
 
                     b.Navigation("User");
                 });
@@ -294,9 +547,9 @@ namespace AnimeSearch.Migrations
                     b.HasOne("AnimeSearch.Database.Users", "User")
                         .WithMany("IPs")
                         .HasForeignKey("Users_ID")
-                        .HasConstraintName("FK_IP_Users")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_IP_Users");
 
                     b.Navigation("User");
                 });
@@ -306,9 +559,21 @@ namespace AnimeSearch.Migrations
                     b.HasOne("AnimeSearch.Database.Users", "User")
                         .WithMany("Recherches")
                         .HasForeignKey("User_ID")
-                        .HasConstraintName("FK_Recherche_Users")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Recherche_Users");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AnimeSearch.Database.SavedSearch", b =>
+                {
+                    b.HasOne("AnimeSearch.Database.Users", "User")
+                        .WithMany("SavedSearch")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_SavedSearchs_Users");
 
                     b.Navigation("User");
                 });
@@ -322,6 +587,8 @@ namespace AnimeSearch.Migrations
                     b.Navigation("IPs");
 
                     b.Navigation("Recherches");
+
+                    b.Navigation("SavedSearch");
                 });
 #pragma warning restore 612, 618
         }

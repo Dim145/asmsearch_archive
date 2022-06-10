@@ -1,0 +1,124 @@
+﻿@using AnimeSearch.Models.ViewsModel
+@using AnimeSearch.Models
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@using AnimeSearch.Core
+
+@inject IJSRuntime JsRuntime
+@inject AsmsearchContext _database
+@inject SweetAlertService Swal
+
+<BaseTable 
+    TabType="Sites"
+    Datas="datas"
+    RowClick="RowClick"
+    Onclick="(a) => this.a = a"
+    RowClassSelector='(s) => "site " + (s.Etat == EtatSite.VALIDER ? "" : s.Etat == EtatSite.NON_VALIDER ? "bg-warning" : "bg-danger")'
+    Columns='Utilities.Tab<TabColumns<Sites>>(
+        new() { Title = "Title", Colonnes = (a) => a.Title, Width = 15},
+        new() { Title = "URL", Colonnes = (a) => a.Url, Width = 25},
+        new() { Title = "Icon", Colonnes = (a) => a.UrlIcon, Width = 20},
+        new() { Title = "Type du site", Colonnes = (a) => a.TypeSite, Width = 25},
+        new() { Title = "Status", Colonnes = (a) => a.Etat, Width = 15}
+    )' />
+
+@if(NA >= Utilities.DROIT_MODIF_BAS)
+{
+    <div class="dcm" @onclick="HideMenu" style="display: @dcmDisplay;">
+        <div id="rmenu" style="display: none;" class="bg-dark border border-white rounded text-white">
+            <button class="btn btn-dark w-100" id="cval" @onclick="ChangeState">@(tmpSite?.Etat == EtatSite.VALIDER ? "Erreur (404)" : "Valider" )</button>
+            @if(NA >= Utilities.DROIT_MODIF_HAUT)
+            {
+                <form action="@url_form_modif" method="post">
+                    <input type="hidden" class="d-none" style="display: none;" id="modifid" name="Url" value="@tmpSite?.Url" />
+                    <input type="hidden" name="__RequestVerificationToken" value="@Token2" />
+                    <button class="btn btn-dark w-100" id="modif">Modifier</button>
+                </form>
+            }
+
+            @if(NA >= Utilities.DROIT_DELETE)
+            {
+                <button class="btn btn-dark w-100" @onclick="() => DeleteSite(tmpSite)" >Supprimer</button>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    public List<Sites> datas { get => Task.Run( async () => { return await DatabaseCom.GetAllSites(_database); }).GetAwaiter().GetResult(); }
+
+    [Parameter]
+    public string url_form_modif { get; set; }
+
+    [Parameter]
+    public string Token2 { get; set; }
+
+    [Parameter]
+    public int NA { get; set; }
+
+    private string dcmDisplay = "none";
+
+    private MouseEventArgs a;
+
+    private Sites tmpSite = null;
+
+    private void RowClick(Sites e)
+    {
+        if (NA < Utilities.DROIT_MODIF_BAS) return;
+
+        tmpSite = e;
+
+        dcmDisplay = "block";
+
+        this.a = null;
+
+        if (e != null) Task.Run(() =>
+        {
+            while (a == null) Task.Delay(100);
+
+            JsRuntime.InvokeVoidAsync("setMenuPos", this.a);
+        });
+    }
+
+    private void HideMenu()
+    {
+        dcmDisplay = "none";
+        this.a = null;
+    }
+
+    private void ChangeState()
+    {
+        tmpSite.Etat = tmpSite.Etat == EtatSite.VALIDER ? EtatSite.ERREUR_404 : EtatSite.VALIDER;
+
+        DatabaseCom.SetSiteValidationState(_database, tmpSite.Url, tmpSite.Etat).GetAwaiter().GetResult();
+
+        StateHasChanged();
+    }
+
+    private void DeleteSite(Sites site)
+    {
+        Swal.FireAsync(new()
+        {
+            Title = "Voulez-vous vraiment supprimer " + site.Title,
+            Icon = SweetAlertIcon.Question,
+            CancelButtonText = "Je ne suis pas sûr",
+            ConfirmButtonText = "Oui !",
+            ShowCancelButton = true
+        }).ContinueWith(t =>
+        {
+            var res = t.Result;
+
+            if(res.IsConfirmed)
+            {
+                DatabaseCom.DeleteSite(_database, site).ContinueWith(task =>
+                {
+                    if (task.Result > 0)
+                    {
+                        datas.Remove(site);
+                        InvokeAsync(StateHasChanged);
+                    }
+                });
+            }
+        });
+    }
+}

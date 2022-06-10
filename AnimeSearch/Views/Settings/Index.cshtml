@@ -1,0 +1,34 @@
+﻿@model IEnumerable<AnimeSearch.Database.Setting>
+
+@{
+    ViewData["Title"] = "Paramètres";
+}
+
+<h1 class="text-white">Paramètres</h1>
+
+<p>
+    <a class="btn btn-success" asp-action="Create">Create New</a>
+</p>
+<div class="container text-white">
+
+    <div class="row">
+        @foreach (var item in Model) 
+        {
+            <div class="col">
+                <div class="card bg-dark mb-3" style="min-width: 18rem; box-shadow: 0px 0px 3px 3px rgba(200, 200, 200, .5); border-radius: 10px;">
+                    <div class="card-header"><h5>@Html.DisplayFor(modelItem => item.Name)</h5></div>
+                    <div class="card-body">
+                        <h6 class="card-title">Valeur: @Html.DisplayFor(itemModel => item.JsonValue)</h6>
+                        <h6 class="card-subtitle mb-2 text-muted">@item.TypeValue[Math.Min(item.TypeValue.Length, item.TypeValue.LastIndexOf(".")+1)..]</h6>
+                        <pre class="card-text text-white">@Html.DisplayFor(modelItem => item.Description)</pre>
+                        <a class="btn btn-primary" asp-controller="settings" asp-action="Edit" asp-route-id="@item.Name" >Modifier</a>
+                        @if(item.IsDeletable)
+                        {
+                            <a class="btn btn-danger" asp-controller="settings" asp-action="Delete" asp-route-id="@item.Name" >Supprimer</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

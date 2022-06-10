@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System.Collections.Generic;
 using System.Linq;
+using AnimeSearch.Models.Search;
 
 namespace AnimeSearch.Models.Sites
 {
@@ -10,7 +11,7 @@ namespace AnimeSearch.Models.Sites
 
         public ADKamiSearch(string search) : this()
         {
-            this.SearchResult = this.SearchAsync(search).Result;
+            SearchAsync(search).Wait();
         }
 
         public ADKamiSearch() : base("https://www.adkami.com/", "video?search=")

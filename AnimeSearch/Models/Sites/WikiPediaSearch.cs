@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using AnimeSearch.Models.Search;
 
 namespace AnimeSearch.Models.Sites
 {
@@ -9,7 +10,7 @@ namespace AnimeSearch.Models.Sites
 
         public WikiPediaSearch( string search ): this()
         {
-            this.SearchResult = this.SearchAsync(search).Result;
+           this.SearchAsync(search).Wait();
         }
 
         public WikiPediaSearch(): base("https://fr.wikipedia.org/", "w/api.php?action=opensearch&format=json&search=")

@@ -1,9 +1,12 @@
 ﻿@using AnimeSearch.Database;
+@using Microsoft.AspNetCore.Antiforgery;
+
+@inject IAntiforgery antiforgery
 
 @{
     Users selected_user = ViewData["selected user"] is not null and Users u ? u : null;
 
-    ViewData["Title"] = "Dons pour " + (selected_user != null ? selected_user.Name : "????");
+    ViewData["Title"] = "Dons pour " + (selected_user != null ? selected_user.UserName : "????");
 }
 
 <script type="text/javascript" src="~/js/Admin/Dons.min.js"></script>
@@ -16,23 +19,14 @@
     <a class="text-white" title="format = minutes:secondes">Prochain passage du service dans @decompte.ToString(@"mm\:ss")</a>
 }
 
-<div class="rounded border max-height">
-     @if (ViewData["dons"] is not null and Don[] dons)
-    {
-         @Utilities.ReactComponent(Html, "~/js/react/Table.jsx", new { cols = Tab("Montant", "Date de création/Maj", "Est validé"), 
-            rows = dons.Select(d => Tab(d.Amout, d.Date.ToString("dd/MM/yyyy HH:mm:ss"), d.Done))})
-    }
+<div class="rounded border">
+    <component type="typeof(TableDons)"
+               render-mode="ServerPrerendered"
+               param-UserId="selected_user.Id"
+               param-url_form='Url.Action("rdons", "admin")'
+               param-Token="antiforgery.GetTokens(Context).RequestToken" />
 </div>
 
 <div class="container mt-2">
     <a class="btn btn-dark border-white" asp-controller="admin" asp-action="index">Retour</a>
 </div>
-
-<div id="rmenu" style="display: none;" class="bg-dark border border-white rounded text-white">
-    <form asp-controller="admin" asp-action="rdons" method="post">
-        <input type="hidden" class="d-none" style="display: none;" id="formid" name="id" />
-        <button class="btn btn-dark w-100">Supprimer</button>
-    </form>
-</div>
-
-<div class="dcm" style="display: none;"></div>

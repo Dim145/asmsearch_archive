@@ -1,18 +1,24 @@
+using AnimeSearch.Attributes;
 using AnimeSearch.Database;
 using AnimeSearch.Services;
-using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
-using JavaScriptEngineSwitcher.V8;
+using BlazorTable;
+using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using React.AspNet;
 using System;
 using System.Globalization;
+using System.Reflection;
+using System.Threading.Tasks;
+using Blazored.LocalStorage;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace AnimeSearch
 {
@@ -28,33 +34,73 @@ namespace AnimeSearch
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AsmsearchContext>(x => x.UseSqlServer(Configuration.GetConnectionString("SQLServer")),
-                ServiceLifetime.Transient, ServiceLifetime.Singleton);
+            services.AddServerSideBlazor((a) => a.DisconnectedCircuitMaxRetained = 5);
+
+            services.AddBlazoredLocalStorage();
+
+            services.AddBlazorTable();
+            services.AddSweetAlert2(options => options.Theme = SweetAlertTheme.Dark);
+
+            services.AddIdentity<Users, Roles>(options =>
+           {
+               options.Password.RequiredLength = 6;
+               options.Password.RequireLowercase = true;
+               options.Password.RequireUppercase = true;
+               options.Password.RequireNonAlphanumeric = false;
+               options.Password.RequireDigit = true;
+           })
+            .AddEntityFrameworkStores<AsmsearchContext>();
+
+            services.ConfigureApplicationCookie(o =>
+            {
+                o.ExpireTimeSpan = TimeSpan.FromDays(31);
+
+                o.LoginPath = "/account/login";
+                o.LogoutPath = "/account/logout";
+
+                o.AccessDeniedPath = "/error";
+
+                o.Events.OnRedirectToAccessDenied = ctx =>
+                {
+                    var accept = ctx.Request.Headers.Accept.ToString();
+                    if (accept.Contains("html") || accept.Equals("*/*"))
+                        ctx.Response.Redirect("/Error?c=401");
+                    else
+                    {
+                        ctx.Response.StatusCode = 401;
+                        ctx.Response.CompleteAsync();
+                    }
+
+                    return Task.CompletedTask;
+                };
+            });
 
             services.AddControllersWithViews().AddNewtonsoftJson();
+
             services.AddRouting(options => options.LowercaseUrls = true);
-            services.AddSession(options => options.IdleTimeout = TimeSpan.FromHours(1));
+
+            services.AddSingleton(Utilities.GetInstance(Configuration));
+
+            services.AddDbContext<AsmsearchContext>(x => x.UseSqlServer(Utilities.SQL_SERVER_CONNECTIONS_STRING),
+                ServiceLifetime.Transient, ServiceLifetime.Transient);
 
             services.AddHostedService<CitationService>();
             services.AddHostedService<ResteEnVieService>();
             services.AddHostedService<DonsTimeoutService>();
             services.AddHostedService<CheckSites>();
 
+            services.AddHostedService<DiscordService>();
+            services.AddHostedService<TelegramService>();
+
             services.AddTransient<MailService>();
 
-            services.AddSingleton(new Utilities(Configuration));
-
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddReact();
-
-            // Make sure a JS engine is registered, or you will get an error!
-            services.AddJsEngineSwitcher(options => options.DefaultEngineName = V8JsEngine.EngineName).AddV8();
+            services.AddSentry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            var supportedCultures = new[] { new CultureInfo("fr-FR") };
+            var supportedCultures = Utilities.Tab( new CultureInfo("fr-FR") );
             
             app.UseRequestLocalization(new RequestLocalizationOptions
             {
@@ -70,49 +116,53 @@ namespace AnimeSearch
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Error");
             }
 
-            app.UseHttpMethodOverride();
+            app.UseStatusCodePages(new StatusCodePagesOptions()
+            {
+                HandleAsync = (context) => Task.Run(() =>
+                {
+                    var accept = context.HttpContext.Request.Headers.Accept.ToString();
+
+                    if (accept.Contains("html") || accept.Contains("*/*"))
+                        context.HttpContext.Response.Redirect($"/Error?c={context.HttpContext.Response.StatusCode}");
+                })
+            });
 
             app.UseHttpsRedirection();
 
-            // Initialise ReactJS.NET. Must be before static files.
-            app.UseReact(config =>
-            {
-                Utilities.ConfigReact = config;
-
-                // If you want to use server-side rendering of React components,
-                // add all the necessary JavaScript files here. This includes
-                // your components as well as all of their dependencies.
-                // See http://reactjs.net/ for more information. Example:
-                //config
-                //  .AddScript("~/js/First.jsx")
-                //  .AddScript("~/js/Second.jsx");
-                config.UseDebugReact = Utilities.IN_DEV;
-
-                config.AddScriptWithoutTransform("~/lib/react/react-table.min.js");
-                config.AddScript("~/js/react/Test.jsx");
-
-                // If you use an external build too (for example, Babel, Webpack,
-                // Browserify or Gulp), you can improve performance by disabling
-                // ReactJS.NET's version of Babel and loading the pre-transpiled
-                // scripts. Example:
-                //config
-                //  .SetLoadBabel(false)
-                //  .AddScriptWithoutTransform("~/js/bundle.server.js");
-            });
-
             app.UseStaticFiles();
 
+            var provider = new FileExtensionContentTypeProvider();
+            // Add new mappings
+            provider.Mappings[".mtn"] = "application/octet-stream";
+            provider.Mappings[".moc"] = "application/octet-stream";
+            provider.Mappings[".moc3"] = "application/octet-stream";
+            provider.Mappings[".cache"] = "application/octet-stream";
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.WebRootPath, "lib/live/api")),
+                RequestPath = "/live2dapi",
+                ContentTypeProvider = provider
+            });
+
             app.UseRouting();
-            app.UseSession();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseSentryTracing();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                );
+                
+                endpoints.MapBlazorHub();
             });
         }
     }

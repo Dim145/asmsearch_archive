@@ -6,6 +6,8 @@
         return;
 
     ViewData["title"] = "Editer site: " + site.Url;
+
+    bool isSuperAdmin = ViewData["isSuperAdmin"] is not null and bool sa ? sa : false;
 }
 
 @model Sites
@@ -18,104 +20,103 @@
         <p class="text-danger">@ViewData["erreurs"]</p>
     }
 
-    @using (Html.BeginForm("EditerSite", "admin", FormMethod.Post))
-    {
-        <div class="row">
-            <div class="col form-group">
-                <label for="url">Url de base du site (= Acceuil?)</label>
-                <input class="form-control" name="url" value="@site.Url" type="url" readonly />
-            </div>
-            <div class="col form-group">
-                <label for="urlSearch">Url de recherche (à partir de la base)</label>
-                <input class="form-control" value="@site.UrlSearch" name="urlSearch" type="text" />
-            </div>
+<form>
+    <div class="row">
+        <div class="col form-group">
+            <label for="url">Url de base du site (= Acceuil?)</label>
+            <input class="form-control" name="urlChange" value="@site.Url" type="url" readonly="@(!isSuperAdmin)" id="url" />
         </div>
-
-        <div class="row">
-            <div class="col form-group">
-                <label for="urlIcon">Url compête de l'icone</label>
-                <input class="form-control" name="urlIcon" value="@site.UrlIcon" type="url" required />
-            </div>
-            <div class="col form-group align-self-end">
-                <img src="@site.UrlIcon" alt="image indisponible" style="max-height: 43px; height: auto;" />
-            </div>
+        <div class="col form-group">
+            <label for="urlSearch">Url de recherche (à partir de la base)</label>
+            <input class="form-control" value="@site.UrlSearch" name="urlSearch" type="text" />
         </div>
+    </div>
 
-        <div class="row">
-            <div class="col form-group">
-                <label for="title">Titre</label>
-                <input class="form-control" name="title" value="@site.Title" />
-            </div>
-            <div class="col form-group">
-                <label for="typeSite">Type de site</label>
-                <select class="custom-select btn-outline-secondary" name="typeSite">
-                    @if (ViewData["types"] is not null and TypeSite[] types)
+    <div class="row">
+        <div class="col form-group">
+            <label for="urlIcon">Url compête de l'icone</label>
+            <input class="form-control" name="urlIcon" value="@site.UrlIcon" type="url" required />
+        </div>
+        <div class="col form-group align-self-end">
+            <img src="@site.UrlIcon" alt="image indisponible" style="max-height: 43px; height: auto;" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col form-group">
+            <label for="title">Titre</label>
+            <input class="form-control" name="title" value="@site.Title" />
+        </div>
+        <div class="col form-group">
+            <label for="typeSite">Type de site</label>
+            <select class="custom-select btn-outline-secondary" name="typeSite">
+                @if (ViewData["types"] is not null and TypeSite[] types)
+                {
+                    foreach (TypeSite type in types)
                     {
-                        foreach (TypeSite type in types)
+                        @if (type.Name == site.TypeSite)
                         {
-                            @if (type.Name == site.TypeSite)
-                            {
-                                <option value="@type.Name" selected>@type.Name</option>
-                            }
-                            else
-                            {
-                                <option value="@type.Name">@type.Name</option>
-                            }
-                        }
-                    }
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col form-group">
-                <label for="idBase">ID de la balise de départ</label>
-                <input class="form-control" name="idBase" value="@site.IdBase" />
-            </div>
-            <div class="col form-group">
-                <label for="cheminBaliseA">Chemin vers une balise "a"</label>
-                <input class="form-control" name="cheminBaliseA" value="@site.CheminBaliseA" required />
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col form-group">
-                <label for="spostValues">Post values</label>
-                <input class="form-control" id="site_PostValues" name="spostValues" type="text"  value="@(site.PostValues != null ? Newtonsoft.Json.JsonConvert.SerializeObject(site.PostValues) : null)" />
-            </div>
-        </div>
-
-        <div class="row form-group">
-            <div class="col form-group mb-0">
-                <label for="etat">Etat du site</label>
-                <select name="etat" class="custom-select btn-outline-secondary">
-                    @foreach (EtatSite etat in Enum.GetValues<EtatSite>())
-                    {
-                        if (etat == EtatSite.NON_VALIDER) continue;
-
-                        if (etat == site.Etat)
-                        {
-                            <option value="@((byte) etat)" selected>@(Enum.GetName<EtatSite>(etat))</option>
+                            <option value="@type.Name" selected>@type.Name</option>
                         }
                         else
                         {
-                            <option value="@((byte) etat)">@(Enum.GetName<EtatSite>(etat))</option>
+                            <option value="@type.Name">@type.Name</option>
                         }
                     }
-                </select>
-            </div>
-            <div class="col custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input position-relative" name="is_Inter" id="is_inter" checked="@site.Is_inter" data-val="true" data-form-type="other" value="true" />
-                <label class="custom-control-label" for="is_inter">Site Internationnal</label>
-            </div>
+                }
+            </select>
         </div>
+    </div>
 
-        <div class="row form-group mb-0">
-            <div class="col text-left"><a class="btn btn-dark border-white" asp-controller="admin" asp-action="sites">Retour</a></div>
-            <div class="col text-center"><button class="btn btn-dark border-white" id="tester" title="Si le javascript ne fonctionne pas, ce button valide le formulaire (comme valider)">Tester</button></div>
-            <div class="col text-right"><input type="submit" class="btn btn-dark border-white" value="Valider" /></div>
+    <div class="row">
+        <div class="col form-group">
+            <label for="idBase">ID de la balise de départ</label>
+            <input class="form-control" name="idBase" value="@site.IdBase" />
         </div>
-    }
+        <div class="col form-group">
+            <label for="cheminBaliseA">Chemin vers une balise "a"</label>
+            <input class="form-control" name="cheminBaliseA" value="@site.CheminBaliseA" required />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col form-group">
+            <label for="spostValues">Post values</label>
+            <input class="form-control" id="site_PostValues" name="spostValues" type="text" value="@(site.PostValues != null ? Newtonsoft.Json.JsonConvert.SerializeObject(site.PostValues) : null)" />
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col form-group mb-0">
+            <label for="etat">Etat du site</label>
+            <select name="etat" class="custom-select btn-outline-secondary">
+                @foreach (EtatSite etat in Enum.GetValues<EtatSite>())
+                {
+                    if (etat == EtatSite.NON_VALIDER) continue;
+
+                    if (etat == site.Etat)
+                    {
+                        <option value="@((byte) etat)" selected>@(Enum.GetName<EtatSite>(etat))</option>
+                    }
+                    else
+                    {
+                        <option value="@((byte) etat)">@(Enum.GetName<EtatSite>(etat))</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input position-relative" name="is_Inter" id="is_inter" checked="@site.Is_inter" data-val="true" data-form-type="other" value="true" />
+            <label class="custom-control-label" for="is_inter">Site Internationnal</label>
+        </div>
+    </div>
+
+    <div class="row form-group mb-0">
+        <div class="col text-left"><a class="btn btn-dark border-white" asp-controller="admin" asp-action="sites">Retour</a></div>
+        <div class="col text-center"><button type="button" class="btn btn-dark border-white" id="tester" title="Si le javascript ne fonctionne pas, ce button valide le formulaire (comme valider)">Tester</button></div>
+        <div class="col text-right"><button type="button" class="btn btn-dark border-white" id="valdier">Valider</button></div>
+    </div>
+</form>
 </div>
 
 <partial name="~/Views/Shared/ModalMessage.cshtml" />

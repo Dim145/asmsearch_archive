@@ -1,5 +1,7 @@
 ﻿$(document).ready(() =>
 {
+    var urlSiteBase = $("#url").val();
+
     $("#tester").click((event) =>
     {
         event.preventDefault();
@@ -10,6 +12,8 @@
 
         if (obj["spostValues"] != undefined && obj["spostValues"].length > 0)
             obj["PostValues"] = JSON.parse(obj["spostValues"]);
+
+        obj["url"] = urlSiteBase;
 
         $("#loading").show("fast");
         $.post("/api/TestSiteSearch", obj, function (res)
@@ -46,6 +50,41 @@
                 $("#messageBody").text(error.responseText);
                 $("#dialogMessage").modal("show");
             });
+        });
+    });
+
+    $("#valdier").click((e) =>
+    {
+        e.preventDefault();
+
+        var form = $("form").first();
+        var obj = {};
+        form.serializeArray().map((e) => obj[e.name] = e.value)
+
+        if (obj["spostValues"] != undefined && obj["spostValues"].length > 0)
+            obj["PostValues"] = JSON.parse(obj["spostValues"]);
+
+        obj["url"] = urlSiteBase;
+
+        $.post("/adminapi/majsite", obj, (response) =>
+        {
+            console.log(response);
+            SwalFire({
+                title: "Modification enregistrées",
+                icon: "success",
+                confirmButtonText: 'Cool !'
+            });
+
+            if (obj["urlChange"] != urlSiteBase)
+                urlSiteBase = obj["urlChange"];
+
+        }).fail((error) =>
+        {
+            SwalFire({
+                icon: "error",
+                confirmButtonText: 'Super...',
+                title: error.responseText
+            })
         });
     });
 });

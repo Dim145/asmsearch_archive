@@ -24,6 +24,10 @@ a {
   border-color: #1861ac;
 }
 
+.cursor-pointer {
+    cursor: pointer;
+}
+
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
@@ -93,7 +97,9 @@ body {
 }
 
 .icon {
-    max-height: 5vh;
+    height: 5vh;
+    max-height: 60px;
+    min-height: 20px;
 }
 
 .paypal_form {
@@ -145,4 +151,121 @@ body {
 
 item-dark:hover {
     color: black!important;
+}
+
+.my-reconnect-modal {
+    position: fixed;
+    bottom: -150px;
+    left: 0;
+    transition-timing-function: linear;
+    transition-duration: 2s
+}
+
+.components-reconnect-failed {
+    transform: translateY(-150px);
+}
+
+.components-reconnect-rejected {
+    transform: translateY(-150px);
+}
+
+.components-reconnect-show {
+    transform: translateY(-150px);
+}
+
+.components-reconnect-hide {
+    transform: translateY(+150px);
+}
+
+.waiting {
+    transition: opacity 2s;
+    -webkit-transition: opacity 2s;
+    opacity: 0;
+    transition: height 2s linear;
+    -webkit-transition: height 2s;
+}
+
+.rejected {
+    transition: opacity 2s;
+    -webkit-transition: opacity 2s;
+    opacity: 0;
+    transition: height 2s linear;
+    -webkit-transition: height 2s;
+}
+
+.failed {
+    transition: opacity 2s;
+    -webkit-transition: opacity 2s;
+    opacity: 0;
+    transition: height 2s linear;
+    -webkit-transition: height 2s;
+}
+
+.components-reconnect-hide > div {
+    opacity: 0;
+    height: 0;
+}
+
+.components-reconnect-show > div {
+    opacity: 0;
+    height: 0;
+}
+
+.components-reconnect-show > .waiting {
+    transition-delay: 1s;
+    opacity: 1;
+    height: auto;
+}
+
+.components-reconnect-failed > div {
+    opacity: 0;
+    height: 0;
+}
+
+.components-reconnect-failed > .failed {
+    transition-delay: 1s;
+    opacity: 1;
+    height: auto;
+}
+
+.components-reconnect-rejected > div {
+    opacity: 0;
+    height: 0;
+}
+
+.components-reconnect-rejected > .rejected {
+    transition-delay: 1s;
+    opacity: 1;
+    height: auto;
+}
+
+.fade-in {
+    -webkit-animation-name: fadeInOpacity;
+    animation-name: fadeInOpacity;
+    -webkit-animation-iteration-count: 1;
+    animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+}
+
+@-webkit-keyframes fadeInOpacity {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInOpacity {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }

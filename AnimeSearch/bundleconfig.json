@@ -184,5 +184,59 @@
     "inputFiles": [
       "wwwroot/js/Admin/Dons.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Error.min.css",
+    "inputFiles": [
+      "wwwroot/css/Error.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/live/autoload.min.js",
+    "inputFiles": [
+      "wwwroot/lib/live/autoload.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/live/waifu.min.css",
+    "inputFiles": [
+      "wwwroot/lib/live/waifu.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/t-rex/index.min.css",
+    "inputFiles": [
+      "wwwroot/lib/t-rex/index.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/t-rex/index.min.js",
+    "inputFiles": [
+      "wwwroot/lib/t-rex/index.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/live/waifu-tips.min.js",
+    "inputFiles": [
+      "wwwroot/lib/live/waifu-tips.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/dons.min.js",
+    "inputFiles": [
+      "wwwroot/js/dons.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/AdvanceSearch.min.js",
+    "inputFiles": [
+      "wwwroot/js/AdvanceSearch.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/AdvanceSearch.min.css",
+    "inputFiles": [
+      "wwwroot/css/AdvanceSearch.css"
+    ]
   }
 ]

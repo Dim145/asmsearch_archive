@@ -76,3 +76,11 @@ _[Ss]cripts
 *.ncrunchsolution
 *.dot[Cc]over
 /AnimeSearch/wwwroot/.well-known
+/AnimeSearch/wwwroot/sitemap.xml
+*.v1
+.dtbcache.v2
+
+#########
+# Rider #
+#########
+/.idea/

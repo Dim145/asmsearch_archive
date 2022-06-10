@@ -1,0 +1,74 @@
+﻿@using AnimeSearch.Models.ViewsModel
+@using AnimeSearch.Core
+
+@inject IJSRuntime JsRuntime
+@inject AsmsearchContext _database
+
+<BaseTable 
+    TabType="Citations"
+    Datas="datas" 
+    Columns='Utilities.Tab<TabColumns<Citations>>(
+new() { Title = "Auteur", Width = 20, Colonnes = (c) => c.AuthorName },
+new() { Title = "Contenue", Width = 60, Colonnes = (c) => c.Contenue },
+new() { Title = "Date Ajout", Width = 20, Colonnes = (c) => c.DateAjout, Template = (c) => c.DateAjout.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss"), DefaultSortingDescending = true, SortDefault = true }
+    )'
+    RowClick="RowClick"
+    RowClassSelector='(a) => a.IsValidated ? "" : "bg-danger"'
+    Onclick="(a) => this.a = a" />
+
+@if(NA >= Utilities.DROIT_MODIF_BAS)
+{
+    <div class="dcm" @onclick="HideMenu" style="display: @dcmDisplay;">
+        <div id="rmenu" style="display: none;" class="bg-dark border border-white rounded text-white">
+            <button class="btn btn-dark w-100" id="cval" @onclick="ChangeState">@((tmpCitations?.IsValidated).GetValueOrDefault() ? "Invalider" : "Valider")</button>
+        </div>
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public int NA { get; set; }
+
+    public IEnumerable<Citations> datas { get => Task.Run( async () => { return await DatabaseCom.GetCitations(_database); }).GetAwaiter().GetResult().OrderByDescending(c => c.DateAjout); }
+
+    private string dcmDisplay = "none";
+
+    private MouseEventArgs a;
+
+    private Citations tmpCitations = null;
+
+    private void RowClick(Citations e)
+    {
+        if (NA < Utilities.DROIT_MODIF_BAS) return;
+
+        tmpCitations = e;
+
+        dcmDisplay = "block";
+
+        this.a = null;
+
+        if (e != null) Task.Run(() =>
+        {
+            while (a == null) Task.Delay(100);
+
+            JsRuntime.InvokeVoidAsync("setMenuPos", this.a);
+        });
+    }
+
+    private void HideMenu()
+    {
+        dcmDisplay = "none";
+        this.a = null;
+    }
+
+    private void ChangeState()
+    {
+        tmpCitations.IsValidated = !tmpCitations.IsValidated;
+
+        DatabaseCom.SetCitattionState(_database, tmpCitations.Id, tmpCitations.IsValidated).GetAwaiter().GetResult();
+        
+        HideMenu();
+        InvokeAsync(StateHasChanged);
+    }
+}

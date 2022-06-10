@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using AnimeSearch.Models.Search;
+using HtmlAgilityPack;
 
 namespace AnimeSearch.Models.Sites
 {
@@ -6,7 +7,7 @@ namespace AnimeSearch.Models.Sites
     {
         public static readonly string TYPE = TypeEnum.FILM_ANIME_SERIES_DL;
 
-        public YggTorrent(): base("https://www3.yggtorrent.nz/", "engine/search?do=search&category=2145&name=")
+        public YggTorrent(): base("https://www3.yggtorrent.re/", "engine/search?do=search&category=2145&name=")
         {
         }
 

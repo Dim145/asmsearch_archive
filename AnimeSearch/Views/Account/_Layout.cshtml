@@ -1,0 +1,46 @@
+﻿@using AnimeSearch.Database
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<Users> _userManager
+@inject RoleManager<Roles> _roleManager
+
+@{
+    if (ViewData.TryGetValue("ParentLayout", out var parentLayout))
+    {
+        Layout = (string)parentLayout;
+    }
+    else
+    {
+        Layout = "/Views/Shared/_Layout.cshtml";
+    }
+
+    var user = (Users) (ViewData["user"] is not null and Users u ? u : ViewData["user"] = await _userManager.FindByNameAsync(User.Identity.Name));
+
+    var roles = ViewData["roles"] is not null and IList<string> rs ? rs : await _userManager.GetRolesAsync(user);
+
+    var role = roles.Select(r => _roleManager.FindByNameAsync(r).GetAwaiter().GetResult()).ToList();
+
+    if (role != null && role.Count > 0)
+    {
+        var r = role.MaxBy(r => r.NiveauAutorisation);
+        ViewData["na"] = r.NiveauAutorisation;
+        ViewData["role"] = r;
+    }
+}
+
+<div class="text-white">
+    <h4>Modifier les paramètres de votre compte</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <partial name="_ManageNav" />
+        </div>
+        <div class="col-md-9">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @RenderSection("Scripts", required: false)
+}

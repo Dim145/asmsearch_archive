@@ -11,36 +11,7 @@
             @for (int cpt2 = cpt1 * 3; cpt2 < services.Length && cpt2 < cpt1 * 3 + 3; cpt2++)
             {
                 <div class="col">
-                    <div class="card text-white border-white bg-dark mt-2 mb-2 ml-auto mr-auto mr-md-0 ml-md-0" style="width: 18rem;">
-                        <div class="card-body">
-                            <h5 class="card-title">@services[cpt2].Title</h5>
-                            <h6 class="card-subtitle mb-2 text-@(services[cpt2].IsRunning ? "success" : "danger")">@(services[cpt2].IsRunning ? "En cours" : "Arrété")</h6>
-                            <p class="card-text">@services[cpt2].Descr</p>
-                            <div class="row">
-                                <div class="col-auto pr-0">
-                                    <form method="post">
-                                        <input type="hidden" name="id" value="@cpt2" />
-                                        <input type="hidden" name="val" value="1" />
-                                        <input type="submit" value="Arrêter" class="btn btn-danger @(services[cpt2].IsRunning ? "" : "disabled")" disabled="@(!services[cpt2].IsRunning)" />
-                                    </form>
-                                </div>
-                                <div class="col-auto pr-0">
-                                    <form method="post">
-                                        <input type="hidden" name="id" value="@cpt2" />
-                                        <input type="hidden" name="val" value="0" />
-                                        <input type="submit" value="Démarrer" class="btn btn-success @(services[cpt2].IsRunning ? "disabled" : "")" disabled="@services[cpt2].IsRunning" />
-                                    </form>
-                                </div>
-                                <div class="col">
-                                    <form method="post">
-                                        <input type="hidden" name="id" value="@cpt2" />
-                                        <input type="hidden" name="val" value="2" />
-                                        <input type="submit" value="Exécuter 1 fois maintenant" class="btn btn-primary" />
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <component type="typeof(Service)" render-mode="ServerPrerendered" param-service="services[cpt2]" param-id="cpt2" />
                 </div>
             }
         </div>

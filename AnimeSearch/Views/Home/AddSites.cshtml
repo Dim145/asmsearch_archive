@@ -3,9 +3,11 @@
     ViewData["Title"] = "Add sites";
 }
 
-<script type="text/javascript" src="~/js/AddSites.min.js"></script>
-<link rel="stylesheet" href="~/css/AddSites.min.css" />
-<link rel="stylesheet" href="~/lib/switchios/component-custom-switch.min.css" />
+<header>
+    <script type="text/javascript" src="~/js/AddSites.min.js"></script>
+    <link rel="stylesheet" href="~/css/AddSites.min.css" />
+    <link rel="stylesheet" href="~/lib/switchios/component-custom-switch.min.css" />
+</header>
 
 <div class="container text-white text-center">
     <h1>@ViewData["Title"]</h1>
@@ -127,69 +129,72 @@
         </div>
     </div>
 </div>
-<a style="display: none;" class="d-none" href="~/" id="urlbase"></a>
-<!-- Modal Site -->
-<div class="modal fade" id="dialogIframe" tabindex="-1" role="dialog" aria-labelledby="ajout" aria-hidden="true">
-    <div class="modal-dialog" role="document" id="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">HTML venant de l'adresse du site</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <p>
-                    Cliquez sur un résultat de recherche. Le premier de préférence. Si il n'y as aucun résultats vous pouvez relancer une autre rehcerche. <br />
-                    La recherche actuelle est: <a id="dataSearch"></a>
-                </p>
 
-                <div id="site">
+<footer>
+        <a style="display: none;" class="d-none" href="~/" id="urlbase"></a>
+    <!-- Modal Site -->
+    <div class="modal fade" id="dialogIframe" tabindex="-1" role="dialog" aria-labelledby="ajout" aria-hidden="true">
+        <div class="modal-dialog" role="document" id="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">HTML venant de l'adresse du site</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Cliquez sur un résultat de recherche. Le premier de préférence. Si il n'y as aucun résultats vous pouvez relancer une autre rehcerche. <br />
+                        La recherche actuelle est: <a id="dataSearch"></a>
+                    </p>
 
+                    <div id="site">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" id="research">changer recherche</button>
+                    <button type="button" class="btn btn-primary" id="btnFermer" data-dismiss="modal">Fermer</button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" id="research">changer recherche</button>
-                <button type="button" class="btn btn-primary" id="btnFermer" data-dismiss="modal">Fermer</button>
+        </div>
+    </div>
+
+    <!-- Modal POST -->
+    <div class="modal fade" id="dialogPOST" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="max-height: 90vh;">
+                <div class="modal-header">
+                    <h5 class="modal-title">Valeurs cachées à envoyer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body overflow-auto">
+                    <p>Liste des valeurs qui seront envoyer au site. Un '?' seul seras remplacé par la recherche (ex: one piece). <br/>
+                    Si une des deux colonnes est vide, la ligne seras ignorée.</p>
+                    <table class="table table-striped table-bordered">
+                        <thead class="text-center">
+                            <tr>
+                                <th>Nom</th>
+                                <th>Valeur</th>
+                            </tr>
+                        </thead>
+                        <tbody id="POST-values">
+                        </tbody>
+                    </table>
+
+                    <button class="btn btn-dark border rounded-circle text-center align-middle" id="addPOST" style="background-color: lawngreen;">+</button>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Modal POST -->
-<div class="modal fade" id="dialogPOST" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content" style="max-height: 90vh;">
-            <div class="modal-header">
-                <h5 class="modal-title">Valeurs cachées à envoyer</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body overflow-auto">
-                <p>Liste des valeurs qui seront envoyer au site. Un '?' seul seras remplacé par la recherche (ex: one piece). <br/>
-                Si une des deux colonnes est vide, la ligne seras ignorée.</p>
-                <table class="table table-striped table-bordered">
-                    <thead class="text-center">
-                        <tr>
-                            <th>Nom</th>
-                            <th>Valeur</th>
-                        </tr>
-                    </thead>
-                    <tbody id="POST-values">
-                    </tbody>
-                </table>
-
-                <button class="btn btn-dark border rounded-circle text-center align-middle" id="addPOST" style="background-color: lawngreen;">+</button>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<partial name="~/Views/Shared/ModalMessage.cshtml" />
+    <partial name="~/Views/Shared/ModalMessage.cshtml" />
+</footer>
 
 @{
     ViewData["aideHTML"] = "<p>lors de l'ajout d'une adresse URL de recherche, un bouton de recherche permettant de \"simplifier\" la récupération de la balise pour repérer une résultat de recherche.</p>" + 

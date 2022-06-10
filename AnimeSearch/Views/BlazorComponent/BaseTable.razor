@@ -1,0 +1,59 @@
+﻿@using BlazorTable
+@using AnimeSearch.Models.ViewsModel
+@using Blazored.LocalStorage
+@using BlazorTable.Interfaces
+@using BlazorTable.Components.ServerSide
+@using Newtonsoft.Json;
+
+@typeparam TabType
+
+<AnimeSearch.Views.BlazorComponent.Table 
+       @onclick="Onclick"
+       @oncontextmenu:preventDefault="true"
+       TableClass="table table-dark table-striped border table-hover" 
+       RowClickAction="RowClick" 
+       TableItem="TabType" 
+       Items="Datas" 
+       PageSize="10"
+       ColumnReorder="true"
+       TableBodyClass="text-white"
+       DataLoader="Loader"
+       TableRowClass='RowClassSelector'
+       @ref="ChildTable">
+    
+    @foreach (TabColumns<TabType> c in Columns)
+    {
+        <Column DefaultSortColumn="OrderInfo != null && OrderInfo.ColName == c.Title ? true : c.SortDefault" TableItem="TabType" Title="@c.Title" Field="c.Colonnes" Sortable="c.Sortable" Filterable="c.Filterable" DefaultSortDescending="OrderInfo != null ? OrderInfo.Desc : c.DefaultSortingDescending" Width=@(c.Width + "%")>
+            <Template>
+                @{
+                    var data = c.Template != null ? c.Template(context) : c.Colonnes.Compile()(context);
+                }
+
+                @if (data is not null and string s && s.StartsWith("http"))
+                {
+                    if (Utilities.ImgExt.Any(e => s.EndsWith(e)))
+                    {
+                        <img height="25" src="@s" />
+                    }
+                    else
+                    {
+                        int coupure = Math.Max(s.LastIndexOf("&"), s.LastIndexOf("="));
+
+                        <a class="link-white" href="@s" target="_blank">@s[(coupure+1)..]</a>
+                    }
+                }
+                else
+                {
+                    var color = c.CellColor(context);
+
+                    <div 
+                        style="@(color.IsEmpty ? "" : $"color: rgb({color.R}, {color.G}, {color.B});")" 
+                        class="@(c.TextCenter ? "text-center" : "")"
+                        title="@(color.IsNamedColor ? $"couleur: {color.Name}" : "")" >@data</div>
+                }
+            </Template>
+        </Column>
+    }
+    
+    <Pager ShowPageNumber="true" ShowTotalCount="true" ShowPageSizes="true" AlwaysShow="false" PageSizes="Utilities.Tab(5, 10, 15, 20, 50, 75, 100).ToList()" />
+</AnimeSearch.Views.BlazorComponent.Table>

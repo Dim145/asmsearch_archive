@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AnimeSearch.Models.Search;
 
 namespace AnimeSearch.Models.Sites
 {
@@ -17,7 +18,7 @@ namespace AnimeSearch.Models.Sites
 
         public NautiljonSearch(string search, int type): this(type)
         {
-            this.SearchResult = this.SearchAsync(search).Result;
+            this.SearchAsync(search).Wait();
         }
 
         public NautiljonSearch(): this(FILTER_NONE)
@@ -79,11 +80,11 @@ namespace AnimeSearch.Models.Sites
             return this.javascript == null ? "window.open(\"" + Search_URL + this.SearchStr + "\");" : javascript;
         }
 
-        public override Task<string> SearchAsync(string search)
+        public override Task<HttpResponseMessage> SearchAsync(string search)
         {
-            if(search.Contains(":"))
+            if(search.Contains(':'))
             {
-                int index = search.IndexOf(":");
+                int index = search.IndexOf(':');
 
                 if (search[index - 1] != ' ')
                     search = search.Insert(index - 1, " ");

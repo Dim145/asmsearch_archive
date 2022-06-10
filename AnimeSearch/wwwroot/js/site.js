@@ -47,6 +47,10 @@ function eraseCookie(name) {
     createCookie(name, "", -1);
 }
 
+window.ChangeUrl = function (url) {
+    history.pushState(null, '', url);
+}
+
 var showPopUp = true;
 
 $(document).ready(function () {
@@ -63,7 +67,11 @@ $(document).ready(function () {
     var username = readCookie("userName");
 
     if (username != undefined && username != null && username != "" && username != "null")
-        document.getElementById("username").textContent = "Hello, " + username;
+    {
+        var balise = document.getElementById("username");
+        if (balise != undefined)
+            balise.textContent = "Hello, " + username;
+    }
 
     $("#change_username").on("click", function (event)
     {
@@ -81,8 +89,13 @@ $(document).ready(function () {
 
         if (username != undefined && username != null && username != "" && username != "null")
         {
-            document.getElementById("change_username").textContent = "Hello, " + username;
-            document.getElementById("change_username").href = "";
+            var usernameBalise = document.getElementById("change_username");
+
+            if (usernameBalise != undefined)
+            {
+                usernameBalise.textContent = "Hello, " + username;
+                usernameBalise.href = "";
+            }
 
             $(this).unbind();
         }
@@ -141,3 +154,67 @@ $(document).ready(function () {
         }, true);
     }
 });
+
+function setMenuPos(event)
+{
+    let menu = $("#rmenu");
+
+    menu[0].style.top = mouseY(event) + "px";
+    menu[0].style.left = mouseX(event) + "px";
+
+    menu.show("fast");
+}
+
+function mouseX(evt)
+{
+    if (evt.pageX)
+    {
+        return evt.pageX;
+    } else if (evt.clientX)
+    {
+        return evt.clientX + (document.documentElement.scrollLeft ?
+            document.documentElement.scrollLeft :
+            document.body.scrollLeft);
+    } else
+    {
+        return null;
+    }
+}
+
+function mouseY(evt)
+{
+    if (evt.pageY)
+    {
+        return evt.pageY;
+    }
+    else if (evt.clientY)
+    {
+        return evt.clientY + (document.documentElement.scrollTop ?
+            document.documentElement.scrollTop :
+            document.body.scrollTop);
+    }
+    else
+    {
+        return null;
+    }
+}
+
+/**
+ * 
+ * @param {{ title: "", html: "", icon: "success" | "error" | "warning" | "info", showDenyButton: false, confirmButtonText: "Ok", denyButtonText: "", preConfirm: function(e):void, preDeny: function(e):void, didClose: function(e):void, didDestroy: function(e):void}} props
+ * @param {boolean} isDark valeur true par default (didDestroy est override si valeur = false)
+ * @returns {Promise}
+ */
+function SwalFire(props, isDark = true)
+{
+    var darkcss = $("#darkSweetAlert");
+
+    if (!isDark)
+    {
+        darkcss.remove();
+
+        props.didDestroy = () => $("body").append(darkcss);
+    }
+
+    return window.Swal.fire(props);
+}

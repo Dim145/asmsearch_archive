@@ -10,8 +10,10 @@ namespace AnimeSearch.Services
 {
     public class MailService
     {
-        private readonly dynamic _mailSettings;
+        private readonly MailSettings _mailSettings;
         private readonly SmtpClient _smtp;
+
+        public string DestMail { get => _mailSettings.To.Address; }
 
         public MailService(IConfiguration configRoot)
         {
@@ -19,26 +21,26 @@ namespace AnimeSearch.Services
 
             var mailSetting = configRoot.GetSection("MailSettings");
 
-            _mailSettings = new
+            _mailSettings = new()
             {
                 Host = mailSetting["Host"],
                 Port = int.TryParse(mailSetting["Port"], out int res) ? res : -1,
-                Mail = mailSetting["Mail"],
+                Mail = MailboxAddress.Parse(mailSetting["Mail"]),
                 Password = mailSetting["Password"],
-                To = mailSetting["Destination"]
+                To = MailboxAddress.Parse(mailSetting["Destination"])
             };
         }
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
             MimeMessage email = new()
             {
-                Sender = MailboxAddress.Parse(_mailSettings.Mail),
+                Sender = _mailSettings.Mail,
                 Date = DateTime.Now
             };
 
             
 
-            email.To.Add(MailboxAddress.Parse(_mailSettings.To));
+            email.To.Add(_mailSettings.To);
             email.Subject = mailRequest.Subject;
 
             email.From.Add(InternetAddress.Parse(mailRequest.Email));
@@ -51,9 +53,18 @@ namespace AnimeSearch.Services
             email.Body = builder.ToMessageBody();
 
             _smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.Auto);
-            _smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+            _smtp.Authenticate(_mailSettings.Mail.Address, _mailSettings.Password);
             await _smtp.SendAsync(email);
             _smtp.Disconnect(true);
         }
+    }
+
+    public class MailSettings
+    {
+        public string Host { get; set; } 
+        public int Port { get; set; }
+        public MailboxAddress Mail { get; set; }
+        public string Password { get; set; }
+        public MailboxAddress To { get; set; }
     }
 }

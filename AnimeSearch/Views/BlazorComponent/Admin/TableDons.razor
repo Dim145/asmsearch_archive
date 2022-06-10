@@ -1,0 +1,81 @@
+﻿@using AnimeSearch.Models.ViewsModel
+@using AnimeSearch.Core
+
+@inject IJSRuntime JsRuntime
+@inject AsmsearchContext _database
+
+<BaseTable TabType="Don"
+           Datas="datas"
+           Columns='Utilities.Tab<TabColumns<Don>>(
+        new() { Title = "Montant", Width = 40, Colonnes = (c) => c.Amout },
+        new() { Title = "Date création/Maj", Width = 40, Colonnes = (c) => c.Date, Template = (c) => c.Date.ToString("dd/MM/yyyy HH:mm:ss"), SortDefault = true, DefaultSortingDescending = true },
+        new() { Title = "Est Validé ?", Width = 20, Colonnes = (c) => c.Done, Template = (c) => c.Done ? "Oui" : "Non" }
+    )'
+           RowClick="RowClick"
+           RowClassSelector='(a) => a.Done ? "" : "bg-warning"'
+           Onclick="(a) => this.a = a" />
+
+<div class="dcm" @onclick="HideMenu" style="display: @dcmDisplay;">
+    <div id="rmenu" style="display: none;" class="bg-dark border border-white rounded text-white">
+        <button class="btn btn-dark w-100" @onclick="DeleteDon">Supprimer</button>
+    </div>
+</div>
+
+@code {
+
+    public List<Don> datas { get => Task.Run(async () => { return await DatabaseCom.DonsByUser(_database, UserId); }).GetAwaiter().GetResult().OrderByDescending(d => d.Date).ToList(); }
+
+    [Parameter]
+    public string url_form { get; set; }
+
+    [Parameter]
+    public string Token { get; set; }
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    private string dcmDisplay = "none";
+
+    private MouseEventArgs a;
+    private Guid id = Guid.Empty;
+    private bool state = false;
+
+    private void RowClick(Don e)
+    {
+        id = e.Id;
+        state = !e.Done;
+
+        dcmDisplay = "block";
+
+        this.a = null;
+
+        if (e != null) Task.Run(() =>
+        {
+            while (a == null) Task.Delay(100);
+
+            JsRuntime.InvokeVoidAsync("setMenuPos", this.a);
+        });
+    }
+
+    private async Task DeleteDon()
+    {
+        if(id != Guid.Empty && await DatabaseCom.DeleteDon(_database, id).ConfigureAwait(false))
+        {
+            Don d = datas.FirstOrDefault(d => d.Id == id);
+
+            if(d != null)
+                datas.Remove(d);
+        }
+
+        HideMenu();
+        StateHasChanged();
+    }
+
+    private void HideMenu()
+    {
+        dcmDisplay = "none";
+        this.a = null;
+
+        StateHasChanged();
+    }
+}

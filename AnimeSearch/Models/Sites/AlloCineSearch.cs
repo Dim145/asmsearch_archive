@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using AnimeSearch.Models.Search;
+using HtmlAgilityPack;
 
 namespace AnimeSearch.Models.Sites
 {
@@ -11,7 +12,7 @@ namespace AnimeSearch.Models.Sites
 
         public AlloCineSearch(string search): this()
         {
-            this.SearchResult = this.SearchAsync(search).GetAwaiter().GetResult();
+            this.SearchAsync(search).Wait();
         }
 
         public override int GetNbResult()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using AnimeSearch.Models.Results;
 
 namespace AnimeSearch.Models
 {
@@ -9,6 +10,6 @@ namespace AnimeSearch.Models
         public string InfoLink { get; set; }
         public string Bande_Annone { get; set; }
 
-        public Dictionary<string, ModelSearchResult> SearchResults = new();
+        public Dictionary<string, ModelSearchResult> SearchResults { get; } = new();
     }
 }

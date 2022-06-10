@@ -1,12 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>fb13d9d7-3db3-45bc-8150-f5bd0a603057</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <NeutralLanguage>fr-FR</NeutralLanguage>
     <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
+    <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\lib\live2d\**" />
+    <Content Remove="wwwroot\lib\live2d\**" />
+    <EmbeddedResource Remove="wwwroot\lib\live2d\**" />
+    <None Remove="wwwroot\lib\live2d\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Remove="bundleconfig.json" />
@@ -20,6 +29,27 @@
     <_ContentIncludedByDefault Remove="wwwroot\js\Home.min.js" />
     <_ContentIncludedByDefault Remove="wwwroot\js\Pokemon\animation.min.js" />
     <_ContentIncludedByDefault Remove="wwwroot\js\site.min.js" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\ForgotPassword.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\ForgotPasswordConfirmation.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Lockout.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Login.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Logout.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Register.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\ResetPassword.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\ResetPasswordConfirmation.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ValidationScriptsPartial.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ViewImports.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ViewStart.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\Manage\DeletePersonalData.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\Manage\GenerateRecoveryCodes.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\Manage\SetPassword.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\Manage\ShowRecoveryCodes.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\_Layout.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\_ManageNav.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\_StatusMessage.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\_ValidationScriptsPartial.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\_ViewImports.cshtml" />
+    <_ContentIncludedByDefault Remove="Areas\Account\Pages\_ViewStart.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,26 +58,248 @@
 
   <ItemGroup>
     <None Include="bundleconfig.json" />
+    <None Include="Views\Settings\Create.cshtml" />
+    <None Include="Views\Settings\Delete.cshtml" />
+    <None Include="Views\Settings\Details.cshtml" />
+    <None Include="Views\Settings\Edit.cshtml" />
     <None Include="wwwroot\js\Home.min.js" />
     <None Include="wwwroot\js\Pokemon\animation.min.js" />
     <None Include="wwwroot\js\site.min.js" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Black_Heart.moc" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_06.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_07.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_08.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_09.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_10.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_11.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_12.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_13.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_14.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_15.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\idle_16.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\m_01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\m_02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\m_03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\m_04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\m_05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Motions\m_06.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Sounds\m_01.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Sounds\m_02.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Sounds\m_03.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Sounds\m_04.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Sounds\m_05.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Black_Heart\Sounds\m_06.ogg" />
+    <None Include="wwwroot\lib\live\api\model\HyperdimensionNeptunia\general\mtn\idle_00.mtn" />
+    <None Include="wwwroot\lib\live\api\model\HyperdimensionNeptunia\general\mtn\idle_01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\HyperdimensionNeptunia\general\mtn\idle_02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\moc\kasumi_event128.moc" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\angry01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\bye01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\cry01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\cry02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\cry03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\eeto01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\gacha01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\gattsu01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\hukumi01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\idle01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\idle02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\jaan01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\kime01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nf01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nf02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nf03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nf04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nf05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nf_left01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nf_right01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\niyaniya01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nnf01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nnf02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nnf03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nnf04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nnf05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nnf_left01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nnf_right01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nod01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\nod02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\oowarai01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\sad01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\sad02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\scared01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\serious01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\serious02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\shame01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\sing01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\sleep01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\sleep02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\smile01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\smile01_ingameV2.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\smile02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\smile03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\smile04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\smile05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\smile06.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\sneeze01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\sneeze02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\surprised01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\surprised02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\surprised03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kasumi\mtn\wink01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\moc\hijiki.moc" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\mtn\00_idle.mtn" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\mtn\01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\mtn\02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\mtn\03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\mtn\04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\mtn\05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\mtn\06.mtn" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\mtn\07.mtn" />
+    <None Include="wwwroot\lib\live\api\model\hijiki\mtn\08.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kurumi\model.moc" />
+    <None Include="wwwroot\lib\live\api\model\kurumi\motions\id4.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kurumi\motions\id4_1.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kurumi\motions\id4_2.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kurumi\motions\id4_3.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kurumi\motions\id4_4.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kurumi\motions\id4_5.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kurumi\motions\id4_6.mtn" />
+    <None Include="wwwroot\lib\live\api\model\kurumi\textures\.md" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\moc\nipsilon.moc" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\00_idle.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\01_happy.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\02_angry.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\03_fear.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\04_surprise.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\05_fun.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\06_love.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\07_bye.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\08_sad.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\09_yawn.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\10_yeah.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\11_muscle.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\12_stagger.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\13_cry.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\14_ sigh.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\15_joy.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\16_menace.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\17_yes.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\18_no.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\19_walk.mtn" />
+    <None Include="wwwroot\lib\live\api\model\nipsilon\mtn\20_sleep.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu06.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu07.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu08.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu09.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu10.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu11.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu12.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu13.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu14.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu15.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu16.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu17.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu18.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu19.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu20.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu21.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu22.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu23.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu24.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu25.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu26.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu27.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu28.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu29.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu30.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu31.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu32.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu33.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu34.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\motions\Live2D_remu_idle.mtn" />
+    <None Include="wwwroot\lib\live\api\model\rem\remu.moc" />
+    <None Include="wwwroot\lib\live\api\model\tororo\moc\tororo.moc" />
+    <None Include="wwwroot\lib\live\api\model\tororo\mtn\00_idle.mtn" />
+    <None Include="wwwroot\lib\live\api\model\tororo\mtn\01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\tororo\mtn\02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\tororo\mtn\03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\tororo\mtn\04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\tororo\mtn\05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\tororo\mtn\06.mtn" />
+    <None Include="wwwroot\lib\live\api\model\tororo\mtn\07.mtn" />
+    <None Include="wwwroot\lib\live\api\model\tororo\mtn\08.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\idle_01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\idle_02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\idle_03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\idle_04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\idle_05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\idle_06.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\idle_07.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\idle_08.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\idle_09.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_01.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_02.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_03.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_04.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_05.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_06.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_07.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_08.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_09.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_10.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_11.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_12.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_13.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Motions\m_14.mtn" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_01.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_02.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_03.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_04.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_05.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_06.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_07.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_08.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_09.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_10.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_11.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_12.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_13.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Sounds\m_14.ogg" />
+    <None Include="wwwroot\lib\live\api\model\Uni\Uni.moc" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.36" />
-    <PackageReference Include="JavaScriptEngineSwitcher.Extensions.MsDependencyInjection" Version="3.3.0" />
-    <PackageReference Include="JavaScriptEngineSwitcher.V8" Version="3.12.5" />
-    <PackageReference Include="JavaScriptEngineSwitcher.V8.Native.win-x64" Version="3.12.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="5.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.10" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.10">
+    <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageReference Include="BlazorTable" Version="1.17.0" />
+    <PackageReference Include="CurrieTechnologies.Razor.SweetAlert2" Version="5.2.0" />
+    <PackageReference Include="DSharpPlus" Version="4.1.0" />
+    <PackageReference Include="DSharpPlus.CommandsNext" Version="4.1.0" />
+    <PackageReference Include="DSharpPlus.Interactivity" Version="4.1.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.42" />
+    <PackageReference Include="KeudellCoding.Blazor.AdvancedBlazorSelect2" Version="1.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.3" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.11.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.2" />
     <PackageReference Include="NETCore.MailKit" Version="2.0.3" />
-    <PackageReference Include="React.AspNet" Version="5.2.11" />
+    <PackageReference Include="Sentry.AspNetCore" Version="3.15.0" />
+    <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>

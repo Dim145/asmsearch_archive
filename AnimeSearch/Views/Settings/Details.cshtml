@@ -1,0 +1,48 @@
+﻿@model AnimeSearch.Database.Setting
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<div class="tex-white">
+    <h1>Details</h1>
+
+    <div>
+        <h4>Setting</h4>
+        <hr />
+        <dl class="row">
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.TypeValue)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.TypeValue)
+            </dd>
+            <dt class = "col-sm-2">
+                @Html.DisplayNameFor(model => model.JsonValue)
+            </dt>
+            <dd class = "col-sm-10">
+                @Html.DisplayFor(model => model.JsonValue)
+            </dd>
+            @if(Model?.IsDeletable == true)
+            {
+                <dt class = "col-sm-2">
+                    @Html.DisplayNameFor(model => model.IsDeletable)
+                </dt>
+
+                <dd class = "col-sm-10">
+                    @Html.DisplayFor(model => model.IsDeletable)
+                </dd>
+            }
+        </dl>
+    </div>
+    <div>
+        <a class="btn btn-primary" asp-action="Edit" asp-route-id="@Model?.Name">Edit</a> |
+        <a class="btn btn-primary" asp-action="Index">Retour</a>
+    </div>
+</div>

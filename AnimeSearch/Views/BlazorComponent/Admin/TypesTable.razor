@@ -1,0 +1,78 @@
+﻿@using AnimeSearch.Models.ViewsModel;
+@using AnimeSearch.Core
+
+@inject AsmsearchContext _database
+@inject SweetAlertService Swal
+
+<BaseTable TabType="TypeSite"
+           Datas="Datas"
+           Columns='Utilities.Tab(new TabColumns<TypeSite>() { Title = "Type de site", Colonnes = t => t.Name, Width = 80, Sortable = true, Filterable = true})'
+           RowClick="RowClick" />
+
+<div class="row mt-2">
+    <div class="col-2">
+        <a class="btn btn-dark border-white text-white" href="@AdminIndexUrl">Retour</a>
+    </div>
+    @if(NA >= Utilities.DROIT_ADD)
+    {
+        <div class="col text-right">
+            <input class="form-control w-50 d-inline align-bottom center" type="text" maxlength="50" required placeholder="(50 caracteres max)" @bind-value="tmpStr" @onkeyup='(e) => { if (e.Key == "Enter") addType(); }' />
+            <button class="btn btn-success" @onclick="addType">Ajouter</button>
+        </div>
+
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string AdminIndexUrl { get; set; }
+
+    [Parameter]
+    public int NA { get; set; }
+
+    private List<TypeSite> Datas { get => Task.Run(async () => await DatabaseCom.GetAllTypeSites(_database)).GetAwaiter().GetResult(); }
+
+    private string tmpStr = string.Empty;
+
+    private List<TypeSite> CanDelete { get; } = new();
+
+    private void RowClick(TypeSite type)
+    {
+        if(NA >= Utilities.DROIT_DELETE || CanDelete.Contains(type))
+        {
+            Swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Etes-vous sûr ?",
+                Text = "Il n'est pas possible de revenir en arrière après cela...",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Oui, ce type est moche !",
+                CancelButtonText = "J'ai changé d'avis"
+            }).ContinueWith(task =>
+            {
+                var result = task.Result;
+
+                if (result.IsConfirmed && DatabaseCom.SuppTypes(_database, type).GetAwaiter().GetResult() > 0)
+                    Datas.Remove(type);
+
+                InvokeAsync(StateHasChanged);
+            });   
+        }
+    }
+
+    private void addType()
+    {
+        if (!string.IsNullOrWhiteSpace(tmpStr))
+        {
+            int id = DatabaseCom.AddType(_database, tmpStr).GetAwaiter().GetResult();
+            if (id > 0)
+            {
+                TypeSite tmp = new() { Name = tmpStr, Id = id };
+                Datas.Add(tmp);
+                CanDelete.Add(tmp);
+
+                tmpStr = string.Empty;
+            }
+        }
+    }
+}

@@ -1,171 +1,149 @@
 ﻿@using AnimeSearch.Models.Sites;
 @using System.Globalization;
+@using AnimeSearch.Models.Results
 
-<link rel="stylesheet" href="~/css/Search.css" />
-<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" />
+<header>
+    <link rel="stylesheet" href="~/css/Search.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" />
 
-<script type="text/javascript" src="~/js/Search.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/Search.min.js" asp-append-version="true"></script>
+</header>
+
+@{ 
+    Result s = (Result)ViewData["response"];
+
+    ViewData["Title"] = s.GetName() + " - Search";
+
+    DateTime? dateSauv = ViewData["DateSauv"] is not null and DateTime t ? t : null;
+
+    bool isSaved = dateSauv != null;
+}
 
 <div class="text-white">
-    <h1 class="text-center">Search</h1>
+    <h1 class="text-center">@(isSaved ? "Recherche sauvegardée" : "Search")</h1>
 
-    @{
-        Result s = (Result)ViewData["response"];
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-sm-8">
+                <div class="container align-content-center">
+                    <p>@(isSaved ? $"Date de sauvegarde: {dateSauv.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss")}" : $"Recherche tappé: {ViewData["search"]}")</p>
 
-        ViewData["Title"] = s.GetName() + " - Search";
+                    @if (ViewData["result"] != null)
+                    {
+                        <p>@ViewData["result"]</p>
+                    }
+                    else
+                    {
+                        <p>Série trouvé: @s.GetName()</p>
 
-        <div class="container">
-            <div class="row">
-                <div class="col-12 col-sm-8">
-                    <div class="container align-content-center">
-                        <p>Recherche tappé: @ViewData["search"]</p>
-
-                        @if (ViewData["result"] != null)
-                        {
-                            <p>@ViewData["result"]</p>
-                        }
-                        else
-                        {
-                            <p>Série trouvé: @s.GetName()</p>
-
-                            <table class="table-dark table-sm table-striped table-bordered">
-                                <thead>
+                        <table class="table-dark table-sm table-striped table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Langages</th>
+                                    <th>Autres noms</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (CultureInfo keys in s.GetAllOtherNames().Keys)
+                                {
                                     <tr>
-                                        <th>Langages</th>
-                                        <th>Autres noms</th>
+                                        <td>@(keys.EnglishName.Contains("Invariant") ? "Unknown" : keys.EnglishName)</td>
+                                        <td>@string.Join(" / ", s.GetAllOtherNames().GetValueOrDefault(keys))</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach (CultureInfo keys in s.GetAllOtherNames().Keys)
-                                    {
-                                        <tr>
-                                            <td>@(keys.EnglishName.Contains("Invariant") ? "Unknown" : keys.EnglishName)</td>
-                                            <td>@string.Join(" / ", s.GetAllOtherNames().GetValueOrDefault(keys))</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        }
-                    </div>
-
-                    <div class="container align-content-center">
-                        <table class="table-dark table-sm table-borderless">
-                            @if (s.GetGenres() != null)
-                            {
-                                <tr>
-                                    <td><b>Genres:</b></td>
-                                    <td>@string.Join(" - ", s.GetGenres())</td>
-                                </tr>
-                            }
-
-                            @if (s.GetRealeaseDate() != null)
-                            {
-                                <tr title="dd/mm/yyyy">
-                                    <td><b>Sortie:</b></td>
-                                    <td>@s.GetRealeaseDate().GetValueOrDefault().ToString("d", CultureInfo.GetCultureInfo("fr-FR")) </td>
-                                </tr>
-                            }
-
-                            @if (!string.IsNullOrWhiteSpace(s.GetStatus()))
-                            {
-                                <tr>
-                                    <td><b>Statut:</b></td>
-                                    <td>@s.GetStatus()</td>
-                                </tr>
-                            }
+                                }
+                            </tbody>
                         </table>
-                    </div>
+                    }
                 </div>
 
-                <div class="col-12 col-sm-4 align-self-center text-center">
-                    @if (s != null && s.GetImage() != null)
-                    {
-                        Uri u = s.GetImage();
+                <div class="container align-content-center">
+                    <table class="table-dark table-sm table-borderless">
+                        @if (s.GetGenres() != null)
+                        {
+                            <tr>
+                                <td><b>Genres:</b></td>
+                                <td>@string.Join(" - ", s.GetGenres())</td>
+                            </tr>
+                        }
 
-                        <a href="@s.GetUrl()" target="_blank"><img class="affiche img-fluid" id="affiche" src="@u" /></a>
-                    }
+                        @if (s.GetRealeaseDate() != null)
+                        {
+                            <tr title="dd/mm/yyyy">
+                                <td><b>Sortie:</b></td>
+                                <td>@s.GetRealeaseDate().GetValueOrDefault().ToString("d", CultureInfo.GetCultureInfo("fr-FR")) </td>
+                            </tr>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(s.GetStatus()))
+                        {
+                            <tr>
+                                <td><b>Statut:</b></td>
+                                <td>@s.GetStatus()</td>
+                            </tr>
+                        }
+                    </table>
                 </div>
             </div>
 
-            @if (ViewData["searchInfos"] is not null and string infos)
-            {
-                <div class="row">
-                    <a class="btn btn-dark border-white" href="@infos" target="_blank" id="btnInfo">+ d'infos</a>
+            <div class="col-12 col-sm-4 align-self-center text-center">
+                @if (s != null && s.GetImage() != null)
+                {
+                    Uri u = s.GetImage();
 
-                    @if (ViewData["ba"] is not null and string ba)
-                    {
-                        <a id="btnBa" data-toggle="modal" href="#" data-target="#ba" title="bande-annonce" style="margin-top: auto; margin-left: 10px; padding-top: 0; padding-bottom: 0; vertical-align: middle;"><img height="35" src="~/ressources/images/play.png" /></a>
+                    <a href="@s.GetUrl()" target="_blank"><img class="affiche img-fluid" id="affiche" src="@u" /></a>
+                }
+            </div>
+        </div>
 
-                        <div class="modal fade text-dark" id="ba" tabindex="-1" role="dialog" aria-labelledby="ajout" aria-hidden="true">
-                            <div class="modal-dialog" role="document" id="modalBA">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">bande-annonce</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <iframe id="frame" src="@ba" class="w-100" style="height: 35vh;" allow="fullscreen" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true">
-                                        </iframe>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" id="btnFermerBA" data-dismiss="modal">Fermer</button>
-                                    </div>
+        @if (ViewData["searchInfos"] is not null and string infos)
+        {
+            <div class="row">
+                <a class="btn btn-dark border-white" href="@infos" target="_blank" id="btnInfo">+ d'infos</a>
+
+                @if (ViewData["ba"] is not null and string ba)
+                {
+                    <a id="btnBa" data-toggle="modal" href="#" data-target="#ba" title="bande-annonce" style="margin-top: auto; margin-left: 10px; padding-top: 0; padding-bottom: 0; vertical-align: middle;"><img height="35" src="~/ressources/images/play.png" /></a>
+
+                    <div class="modal fade text-dark" id="ba" tabindex="-1" role="dialog" aria-labelledby="ajout" aria-hidden="true">
+                        <div class="modal-dialog" role="document" id="modalBA">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">bande-annonce</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <iframe id="frame" src="@ba" class="w-100" style="height: 35vh;" allow="fullscreen" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true">
+                                    </iframe>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="btnFermerBA" data-dismiss="modal">Fermer</button>
                                 </div>
                             </div>
                         </div>
-                    }
-                </div>
-            }
-        </div>
-
-        var results = ViewData["nbResults"];
-
-        if (results is not null and Dictionary<string, ModelSearchResult> dicResults)
-        {
-            <br /><br />
-
-            <div class="border rounded border-secondary">
-                <table class="table table-hover table-dark table-responsive-sm rounded" style="margin-bottom: 0px!important;">
-
-                    <thead class="text-center">
-                        <tr>
-                            <th scope="col" class="noTop">Logo</th>
-                            <th scope="col" class="noTop">Type</th>
-                            <th scope="col" class="noTop">Nom</th>
-                            <th scope="col" class="noTop">Nb Resultats</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach (string key in dicResults.Keys)
-                        {
-                            ModelSearchResult site = dicResults.GetValueOrDefault(key);
-
-                            <tr scope="row">
-                                <td>
-                                    @if (site.IconUrl != null && site.IconUrl.StartsWith("http"))
-                                    {
-                                        <a target="_blank" href="@site.SiteUrl"><img class="image-icon" src="@site.IconUrl" /></a>
-                                    }
-                                    else
-                                    {
-                                        <a target="_blank" href="@site.SiteUrl"><img class="image-icon" src="~/@site.IconUrl" /></a>
-                                    }
-                                </td>
-                                <td onclick="@site.OpenJavaScript" class="mouseClickCol">@site.Type</td>
-                                <td onclick="@site.OpenJavaScript" class="mouseClickCol">@key</td>
-                                <td onclick="@site.OpenJavaScript" class="mouseClickCol text-center">@site.NbResults</td>
-                            </tr>
-                        }
-                    </tbody>
-
-                </table>
+                    </div>
+                }
             </div>
         }
-    }
+    </div>
+    <br /><br />
+
+    <component type="typeof(SearchTable)"
+               render-mode='Server'
+               param-Search='ViewData["type"] is null ? s.GetName() : null'
+               param-Id="s.GetId()"
+               param-Type='ViewData["type"]'
+               param-InfosLink='ViewData["searchInfos"]'
+               param-BaLink='ViewData["ba"]'
+               param-UserName='ViewData["username"] is not null and string username && !string.IsNullOrWhiteSpace(username) ? username : User?.Identity?.Name'
+               param-IsSaved='isSaved'
+               param-NA='ViewData["na"] is not null and int na ? na : 0'/>
 </div>
+
+<conf id="liveConf" style="width: 200px; height: 200px; bottom: 0;">
+    <script src="~/lib/live/autoload.min.js"></script>
+</conf>
 
 @{
     ViewData["aideHTML"] = "<p>la fiche du résultat contient les noms dans différentes langues (inconnue dans le cas où la langue n'est pas précisée) ainsi que quelques informations telle que les genres (affichés en anglais) et la date de sortie...</p>" + 

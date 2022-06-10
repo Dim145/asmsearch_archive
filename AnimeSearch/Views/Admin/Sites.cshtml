@@ -2,30 +2,18 @@
     ViewData["Title"] = "Sites";
 }
 @using AnimeSearch.Database
+@using Microsoft.AspNetCore.Antiforgery
+
+@inject IAntiforgery antiforgery
 
 <link rel="stylesheet" href="~/css/Admin/Sites.min.css" />
-<script type="text/javascript" src="~/js/Admin/Sites.min.js"></script>
 
-<div class="border rounded max-height">
-    @if (ViewData["sites"] is not null and Sites[] sites && sites.Length > 0)
-    {
-        @Utilities.ReactComponent(Html, "~/js/react/Table.jsx", new { cols = Tab( "Title", "URL", "Icon", "Type du site", "Internationnal" ),
-            rows = sites.Select(s => new { datas = Tab( s.Title, s.Url, s.UrlIcon, s.TypeSite, s.Is_inter ? "oui" : "non" ), key = s.Url, className = "site " + (s.Etat == EtatSite.VALIDER ? "" : s.Etat == EtatSite.NON_VALIDER ? "bg-warning" : "bg-danger") }),});
-    }
-
-    <div id="rmenu" style="display: none;" class="bg-dark border border-white rounded text-white">
-        <form asp-controller="admin" asp-action="CSVS" method="post">
-            <input type="hidden" class="d-none" style="display: none;" id="formid" name="url" />
-            <input type="hidden" class="d-none" style="display: none;" id="valstate" name="etat" />
-            <button class="btn btn-dark w-100" id="cval">Supprimer</button>
-        </form>
-        <form asp-controller="admin" asp-action="EditerSite" method="post">
-            <input type="hidden" class="d-none" style="display: none;" id="modifid" name="Url" />
-            <button class="btn btn-dark w-100" id="modif">Modifier</button>
-        </form>
-    </div>
-
-    <div class="dcm" style="display: none;"></div>
+<div class="rounded">
+    <component type="typeof(TableSites)"
+               render-mode="ServerPrerendered"
+               param-url_form_modif='Url.Action("EditerSite", "admin")'
+               param-token2="antiforgery.GetTokens(Context).RequestToken"
+               param-NA='ViewData["na"] is not null and int na ? na : 0'/>
 </div>
 
 <div class="row mt-2">
@@ -37,5 +25,5 @@
     }
     <div class="col text-right">
         <a class="btn btn-dark border-white" asp-controller="admin" asp-action="index">Retour</a>
-</div>
+    </div>
 </div>

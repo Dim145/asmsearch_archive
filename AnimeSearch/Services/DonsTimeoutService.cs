@@ -23,10 +23,17 @@ namespace AnimeSearch.Services
         {
             // séparé en deux where car la première est traduit en SQL et la seconde condition est trop complexe pour être traduite.
             // La seconde condition s'applique donc sur le tableau directement après la récupération
-            _database.Dons.RemoveRange((await _database.Dons.Where(d => !d.Done).ToArrayAsync()).Where(d => DateTime.Now.Subtract(d.Date) >= Periode * 2));
-            await _database.SaveChangesAsync();
+            try
+            {
+                _database.Dons.RemoveRange((await _database.Dons.Where(d => !d.Done).ToArrayAsync()).Where(d => DateTime.Now.Subtract(d.Date) >= Periode * 2));
+                await _database.SaveChangesAsync();
 
-            heureDernierPassage = DateTime.Now;
+                heureDernierPassage = DateTime.Now;
+            }
+            catch(Exception e)
+            {
+                Utilities.AddExceptionError("Don Services", e);
+            }
         }
 
         public TimeSpan GetTempsProchainPassage()

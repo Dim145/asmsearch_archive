@@ -1,67 +1,64 @@
-﻿using AnimeSearch.Database;
+﻿using AnimeSearch.Attributes;
+using AnimeSearch.Database;
 using AnimeSearch.Models;
 using AnimeSearch.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Security.Principal;
 using System.Threading.Tasks;
+using static AnimeSearch.Utilities;
 
 namespace AnimeSearch.Controllers
 {
     [Route("admin")]
-    public class AdminController : Controller
+    [LevelAuthorize(1)]
+    public class AdminController : BaseController
     {
-        private readonly AsmsearchContext _database;
-        private readonly string mdp;
+        private readonly UserManager<Users> _userManager;
+        private readonly RoleManager<Roles> _roleManager;
 
-        public AdminController(AsmsearchContext database, IConfiguration configRoot)
+        public AdminController(AsmsearchContext database, RoleManager<Roles> roleManager, UserManager<Users> userManager): base(database)
         {
-            _database = database;
-            mdp = configRoot["admin_mdp"];
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             ViewData["heure"] = DateTime.Now;
 
-            if (Utilities.BASE_URL == null)
+            if (BASE_URL == null)
             {
-                Utilities.BASE_URL = Request.Scheme + "://" + Request.Host.ToString();
+                BASE_URL = Request.Scheme + "://" + Request.Host.ToString();
 
-                if (!Utilities.BASE_URL.EndsWith("/"))
-                    Utilities.BASE_URL += "/";
+                if (!BASE_URL.EndsWith("/"))
+                    BASE_URL += "/";
             }
 
-            string token = HttpContext.Session.GetString("adtoken");
+            IIdentity userIdentity = User.Identity;
 
-            if ("Login" != context.ActionDescriptor.RouteValues["action"] && string.IsNullOrWhiteSpace(token))
-                context.Result = RedirectToAction("Login", "admin");
+            string username = userIdentity?.Name;
 
-            if (!string.IsNullOrWhiteSpace(token) && context.ActionDescriptor.RouteValues["action"] == "Login")
-                context.Result = RedirectToAction("Index", "admin");
-
-            if (Request.Cookies.TryGetValue("userName", out string username))
-                ViewData["username"] = username;
-
-            if (!string.IsNullOrWhiteSpace(token) && !string.IsNullOrWhiteSpace(username))
+            if (!string.IsNullOrWhiteSpace(username))
             {
                 try
                 {
-                    Users user = await _database.Users.FirstOrDefaultAsync(item => item.Name == username);
+                    Users user = await _database.Users.FirstOrDefaultAsync(item => item.UserName == username);
 
                     if (user == null)
                     {
                         var userAgent = HttpContext.Request.Headers["User-Agent"];
                         string uaString = Convert.ToString(userAgent[0]);
 
-                        user = new() { Name = username, Navigateur = uaString };
+                        user = new() { UserName = username, Navigateur = uaString };
 
                         await _database.Users.AddAsync(user);
                         await _database.SaveChangesAsync(); // afin d'obtenir l'id
@@ -77,7 +74,7 @@ namespace AnimeSearch.Controllers
                         {
                             ipExist = new() { Adresse_IP = ip, Users_ID = user.Id, Derniere_utilisation = DateTime.Now };
 
-                            await Utilities.Update_IP_Localisation(ipExist);
+                            await ipExist.UpdateLocalisation();
 
                             await _database.IPs.AddAsync(ipExist);
                         }
@@ -86,7 +83,7 @@ namespace AnimeSearch.Controllers
                             ipExist.Derniere_utilisation = DateTime.Now;
 
                             if (string.IsNullOrWhiteSpace(ipExist.Localisation))
-                                await Utilities.Update_IP_Localisation(ipExist);
+                                await ipExist.UpdateLocalisation();
 
                             _database.IPs.Update(ipExist);
                         }
@@ -98,32 +95,44 @@ namespace AnimeSearch.Controllers
                         user.Dernier_Acces_Admin = DateTime.Now;
 
                         _database.Users.Update(user);
+
+                        var role = (await _userManager.GetRolesAsync(user)).Select(r => _roleManager.FindByNameAsync(r).GetAwaiter().GetResult()).ToList();
+
+                        if (role != null && role.Count > 0)
+                        {
+                            var r = role.MaxBy(r => r.NiveauAutorisation);
+                            ViewData["na"] = r.NiveauAutorisation;
+                            ViewData["role"] = r;
+                        }
+
+                        ViewData["user"] = user;
                     }
 
                     await _database.SaveChangesAsync();
                 }
                 catch (Exception e)
                 {
-                    Utilities.AddExceptionError("Le OnActionExcecuting de l'Admin", e);
+                    AddExceptionError("Le OnActionExcecuting de l'Admin", e);
                 }
             }
 
             await base.OnActionExecutionAsync(context, next);
         }
 
-        [HttpGet()]
+        [HttpGet]
+        [LevelAuthorize(2)]
         public async Task<IActionResult> IndexAsync()
         {
             ViewData["users"] = await _database.Users.OrderByDescending(u => u.Derniere_visite).ToArrayAsync();
+            ViewData["isSuperAdmin"] = await _userManager.IsInRoleAsync(await _userManager.FindByNameAsync(User.Identity.Name), SUPER_ADMIN_ROLE.Name);
 
             return View();
         }
 
         [HttpGet("sites")]
-        public async Task<IActionResult> SitesAsync()
+        public IActionResult SitesAsync()
         {
-            ViewData["sites"] = await _database.Sites.ToArrayAsync();
-            ViewData["time_before_cs_service"] = Utilities.GetTimeBeforeNextCheckSiteService();
+            ViewData["time_before_cs_service"] = GetTimeBeforeNextCheckSiteService();
 
             ViewData["aideHTML"] = "<p>Liste des sites avec quelques informations basiques. De la même façon que pour les citations, il faut faire un clic droit pour modifier un site ou pour mettre l'état du site en erreur du type 404 (site introuvable)</p>" +
                 "<p>Pour plus d'informations sur ce système d'erreur, se référer à la page de modification.</p>";
@@ -131,33 +140,18 @@ namespace AnimeSearch.Controllers
             return View();
         }
 
-        [HttpPost("CSVS")]
-        [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> ChangeSiteValidateState([FromForm] string url, [FromForm] EtatSite etat)
-        {
-            if (!string.IsNullOrWhiteSpace(url))
-            {
-                Sites s = await _database.Sites.FirstOrDefaultAsync(c => c.Url == url);
-
-                if (s != null && s.Etat != etat)
-                {
-                    s.Etat = etat;
-                    _database.Sites.Update(s);
-                    await _database.SaveChangesAsync();
-                }
-            }
-
-            return RedirectToAction("sites", "admin", null, url);
-        }
-
         [HttpPost("sites/edit")]
         [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> EditerSite([FromForm] ModelSiteBdd s)
+        [LevelAuthorize(4)]
+        public async Task<IActionResult> EditerSite([FromForm] string Url)
         {
-            if (s == null || string.IsNullOrWhiteSpace(s.Url))
+            if (string.IsNullOrWhiteSpace(Url))
                 return RedirectToAction("sites", "admin");
 
+            bool canModifyURL = ViewData["na"] is not null and int na && na >= DROIT_ADD;
+
             ViewData["types"] = await _database.TypeSites.ToArrayAsync();
+            ViewData["isSuperAdmin"] = canModifyURL;
 
             ViewData["aideHTML"] = "<p>Page permettant de modifier les données d'un site. La page contient moins de restrictions que lors de l'ajout d'un site. (Notamment sur les données \"POST\").</p>" +
                 "<p>Le changement d'état permet d'indiquer aux autres admins ou au super-admin l'état du site et empêche le serveur d'utiliser ce site lors de des recherches.</p>" +
@@ -169,96 +163,27 @@ namespace AnimeSearch.Controllers
                 "</ul></p>" +
                 "<p>Le bouton testé permet de demander au serveur d'exécuter une recherche qu'avec les données saisies du site (celle dans les champs). Pour le moment seul la recherche One Piece est possible.</p>";
 
-            Sites site = new()
-            {
-                Url = s.Url,
-                UrlSearch = s.UrlSearch,
-                Title = s.Title,
-                CheminBaliseA = s.CheminBaliseA,
-                IdBase = s.IdBase,
-                Etat = s.Etat,
-                Is_inter = s.Is_inter,
-                TypeSite = s.TypeSite,
-                UrlIcon = s.UrlIcon
-            };
 
-            if (!string.IsNullOrWhiteSpace(s.SpostValues))
-            {
-                site.PostValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(s.SpostValues);
-                s.PostValues = site.PostValues;
-            }
+            ViewData["site"] = await _database.Sites.FirstOrDefaultAsync(s => s.Url == Url);
 
-            if (site.UrlSearch == null)
-                site.UrlSearch = string.Empty;
+            bool ok = ViewData["site"] is not null;
 
-            if (string.IsNullOrWhiteSpace(site.Title))
-            {
-                bool ok = !string.IsNullOrWhiteSpace(site.Url);
+            return ok ? View("SitesEditer") : RedirectToAction("sites", "admin");
 
-                if (ok)
-                {
-                    ViewData["site"] = await _database.Sites.FirstOrDefaultAsync(s => s.Url == site.Url);
-
-                    ok = ViewData["site"] != null;
-                }
-
-                return ok ? View("SitesEditer") : RedirectToAction("sites", "admin");
-            }
-            else
-            {
-                if (site.PostValues != null && site.PostValues.Count == 0)
-                    site.PostValues = null;
-
-                if (!await _database.Sites.AnyAsync(s => s.Url == site.Url) || (!TypeEnum.TabTypes.Contains(site.TypeSite) && !await _database.TypeSites.AnyAsync(t => t.Name == site.TypeSite)) || string.IsNullOrWhiteSpace(site.CheminBaliseA))
-                {
-                    ViewData["erreurs"] = "Une des valeurs saisies n'est pas corrects.";
-
-                    return await EditerSite(new() { Url = site.Url });
-                }
-
-                _database.Sites.Update(site);
-                await _database.SaveChangesAsync();
-
-                ViewData["site"] = site;
-
-                return View("SitesEditer");
-            }
         }
 
         [HttpGet("citations")]
-        public async Task<IActionResult> CitationsAsync()
+        public IActionResult CitationsAsync()
         {
-            ViewData["citations"] = await _database.Citations.OrderByDescending(c => c.DateAjout).ToArrayAsync();
-
             ViewData["aideHTML"] = "<p>Liste des citations triées par date d'ajout. Pour valider ou invalider une citation, il faut faire un clic droit dessus.</p>";
 
             return View();
         }
 
-        [HttpPost("CCVS")]
-        [AutoValidateAntiforgeryToken]
-        public async Task<IActionResult> ChangeCitationValidateState([FromForm] int id, [FromForm] bool isValidated)
-        {
-            if (id > 0)
-            {
-                Citations c = await _database.Citations.FirstOrDefaultAsync(c => c.Id == id);
-
-                if (c != null && c.IsValidated != isValidated)
-                {
-                    c.IsValidated = isValidated;
-                    _database.Citations.Update(c);
-                    await _database.SaveChangesAsync();
-                }
-            }
-
-            return RedirectToAction("citations", "admin", null, id > 0 ? id.ToString() : string.Empty);
-        }
-
         [HttpGet("types")]
-        public async Task<IActionResult> TypeSites()
+        [LevelAuthorize(4)]
+        public IActionResult TypeSites()
         {
-            ViewData["types"] = await _database.TypeSites.OrderByDescending(t => t.Id).ToArrayAsync();
-
             ViewData["aideHTML"] = "<p>Cette page permet d'éditer les propositions de types de sites.</p>" +
                 "<p>Tous les types ne sont pas directement relier aux sites. Donc supprimer un type ne cause aucuns problèmes et " +
                 "ne change pas le type des sites qui l'utilisent. Cela ne change que les propositions lors de l'ajout ou de la modification de sites.</p>";
@@ -266,185 +191,122 @@ namespace AnimeSearch.Controllers
             return View();
         }
 
-        [HttpGet("suppType")]
-        public async Task<IActionResult> SuppType(int id)
-        {
-            if (id > 0)
-            {
-                try
-                {
-                    _database.TypeSites.Remove(new() { Id = id });
-
-                    await _database.SaveChangesAsync();
-                }
-                catch (Exception e)
-                {
-                    Utilities.AddExceptionError($"la suppression de Types({id})", e);
-                }
-            }
-
-            return RedirectToAction("types", "admin");
-        }
-
-        [HttpPost("addType")]
-        public async Task<IActionResult> AddType([FromForm] string name)
-        {
-            if (!string.IsNullOrWhiteSpace(name) && !await _database.TypeSites.AnyAsync(t => t.Name == name))
-            {
-                try
-                {
-                    await _database.TypeSites.AddAsync(new() { Name = name });
-                    await _database.SaveChangesAsync();
-                }
-                catch (Exception e)
-                {
-                    Utilities.AddExceptionError($"l'ajout de Types({name})", e);
-                }
-            }
-
-            return RedirectToAction("types", "admin");
-        }
-
         [HttpGet("recherches/{userId}")]
-        public async Task<IActionResult> Recherches(int userId)
+        [LevelAuthorize(2)]
+        public async Task<IActionResult> Recherches(int userId, int page = 0)
         {
             if (userId <= 0)
                 return BadRequest("Id Invalide");
 
-            ViewData["selected user"] = await _database.Users
-                .Where(u => u.Id == userId)
-                .FirstOrDefaultAsync();
-
-            ViewData["recherches"] = await _database.Recherches
-                .Where(r => r.User_ID == userId)
-                .OrderByDescending(r => r.Derniere_Recherche)
-                .ThenByDescending(r => r.Nb_recherches)
-                .Select(r => new string[] { r.recherche, r.Nb_recherches.ToString(), r.Derniere_Recherche.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss") })
-                .ToArrayAsync();
+            ViewData["selected user"] = await _database.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            ViewData["page"] = page;
 
             return View();
         }
 
         [HttpGet("ips/{userId}")]
+        [LevelAuthorize(2)]
         public async Task<IActionResult> Ips(int userId)
         {
             if (userId <= 0)
                 return BadRequest("Id Invalide");
 
             ViewData["selected user"] = await _database.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            ViewData["ips"] = await _database.IPs.Where(r => r.Users_ID == userId).OrderByDescending(r => r.Derniere_utilisation).ToArrayAsync();
-
             ViewData["aideHTML"] = "<p>Liste des adresses IP d'un utilisateur avec la localisation de chaque adresse. Il est possible de cliquer sur les localisations pour ouvrir une page google maps.</p>";
 
             return View();
         }
 
         [HttpGet("dons/{userId}")]
+        [LevelAuthorize(6)]
         public async Task<IActionResult> Dons(int userId)
         {
             if (userId <= 0)
                 return BadRequest("Id Invalide");
 
             ViewData["selected user"] = await _database.Users.FirstOrDefaultAsync(u => u.Id == userId);
-            ViewData["dons"] = await _database.Dons.Where(d => d.User_id == userId).ToArrayAsync();
-            ViewData["pp"] = Utilities.LAST_DONS_SERVICE.GetTempsProchainPassage();
+            ViewData["pp"] = LAST_DONS_SERVICE.GetTempsProchainPassage();
 
             ViewData["aideHTML"] = "<p>Cette page montre tous les evntuels dons d'un utilisateur.<br /> Ceux-ci ne sont modifiable que si ils ne sont pas validée depuis plus d'une heure et que le service n'est pas encore passé.</p>";
 
             return View();
         }
 
-        [HttpPost("rdons")]
-        public async Task<IActionResult> DeleteDon([FromForm] Guid id)
-        {
-            if (Guid.Empty != id)
-            {
-                Don don = await _database.Dons.FirstOrDefaultAsync(d => d.Id == id);
-
-                if (don != null && !don.Done && DateTime.Now.Subtract(don.Date) >= TimeSpan.FromHours(1))
-                {
-                    _database.Dons.Remove(don);
-                    await _database.SaveChangesAsync();
-                }
-
-                if (don != null)
-                    return RedirectToAction("dons", "admin", new { userId = don.User_id });
-            }
-
-            return RedirectToAction("index", "admin");
-        }
-
         [HttpGet("services")]
         [HttpPost("services")]
+        [LevelAuthorize(4)]
         public async Task<IActionResult> ServicesAsync([FromForm] int id = -1, [FromForm] int val = -1)
         {
-            if (id > -1 && id < Utilities.SERVICES.Count && val > -1 && val < 3)
+            if (id > -1 && id < SERVICES.Count && val > -1 && val < 3)
             {
-                BaseService currentService = Utilities.SERVICES[id];
+                BaseService currentService = SERVICES[id];
 
                 switch (val)
                 {
-                    case 0: await currentService.StartAsync(new()); break;
-                    case 1: await currentService.StopAsync(new()); break;
-                    case 2: await currentService.ExecutionCode(); break;
+                    case 0: await currentService.StartAsync(new());break;
+                    case 1: await currentService.StopAsync(new());break;
+                    case 2: await currentService.ExecutionCode();break;
                 }
             }
 
-            ViewData["services"] = Utilities.SERVICES.ToArray();
+            ViewData["services"] = SERVICES.ToArray();
 
             return View();
-        }
-
-        [HttpGet("Login")]
-        [HttpPost("Login")]
-        public IActionResult Login([FromForm] Dictionary<string, string> datas)
-        {
-            string username = datas?.GetValueOrDefault("username");
-            string password = datas?.GetValueOrDefault("password");
-
-            if (Request.Cookies.TryGetValue("userName", out string pseudo))
-            {
-                ViewData["username"] = pseudo;
-            }
-            else if (!string.IsNullOrWhiteSpace(username))
-            {
-                Response.Cookies.Append("userName", username);
-                ViewData["username"] = username;
-            }
-
-            if (!string.IsNullOrWhiteSpace(password) && mdp == password)
-            {
-                HttpContext.Session.SetString("adtoken", Guid.NewGuid().ToString());
-
-                return RedirectToAction("Index", "admin");
-            }
-
-            if (username != null)
-            {
-                ViewBag.error = "Identifiant invalides";
-            }
-
-            return View();
-        }
-
-        [HttpGet("Logout")]
-        public IActionResult Logout()
-        {
-            HttpContext.Session.Remove("adtoken");
-
-            return RedirectToAction("Login");
         }
 
         [Route("Error")]
+        [LevelAuthorize(2)]
         public IActionResult Error()
         {
-            ViewData["errors"] = Utilities.Errors.ToArray();
+            ViewData["errors"] = Errors.ToArray();
 
             return View();
         }
-        public class ModelSiteBdd : Sites
+
+        [Authorize(Roles = "Super-Admin")]
+        [HttpGet("Roles")]
+        public IActionResult Roles()
         {
-            public string SpostValues { get; set; }
+            ViewData["aideHTML"] = "<p>Les numéro associé au rôle correspond au niveau du droit de celui-ci. Ce numéro va de 1 à 6, six étant le niveau maximum de droits*</p>" +
+                "<p>les numéros correspondent aux droits suivants:" +
+                "<ul>" +
+                    "<li>1: droit de vue basique. (ex: citations /sites)</li>" +
+                    "<li>2: droits de vues complètes. Permets de voir toutes les pages admin. (sauf celle-ci)</li>" +
+                    "<li>3: droit de modifications basique. Équivalant aux droits \"modérateurs\". (ex: valider des citations)</li>" +
+                    "<li>4: droits de modifications complètes. (ex: modifier les données des sites. Excepté l'adresse URL)</li>" +
+                    "<li>5: droit d'ajout de données (ex: types de sites etc...)</li>" +
+                    "<li>6: droit de suppression des données. (ex: sites/users) presque équivalent au Super-Admin. N'ont pas les droits d'écriture sur les rôles</li>" +
+                "</ul>";
+
+            return View();
+        }
+
+        [HttpGet("SavedSearchsForUser/{id}")]
+        [LevelAuthorize(2)]
+        public async Task<IActionResult> SavedSearchsForUserAsync(int id)
+        {
+            ViewData["selected user"] = await _database.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+            return View();
+        }
+
+        [HttpGet("SavedSearch/{userId}/{search}")]
+        [LevelAuthorize(2)]
+        public async Task<IActionResult> SavedSearchAsync(int userId, string search)
+        {
+            SavedSearch ss = await _database.SavedSearch.Include(ss => ss.User).FirstOrDefaultAsync(ss => ss.Search == search && ss.UserId == userId);
+
+            if (ss == null)
+                return RedirectToAction("DefaultError", "home", new { c = 404 });
+
+            ViewData["search"] = ss.Search;
+            ViewData["response"] = ss.Results.Result;
+            ViewData["searchInfos"] = ss.Results.InfoLink;
+            ViewData["ba"] = ss.Results.Bande_Annone;
+            ViewData["DateSauv"] = ss.DateSauvegarde;
+            ViewData["username"] = ss.User.UserName;
+
+            return View("../Home/Search");
         }
     }
 }

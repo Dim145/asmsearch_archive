@@ -1,23 +1,31 @@
 ﻿using AnimeSearch.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using AnimeSearch.Models.Results;
+using AnimeSearch.Models.Search;
 
 namespace AnimeSearch.Database
 {
-    public class AsmsearchContext: DbContext
+    public class AsmsearchContext: IdentityDbContext<Users,Roles, int>
     {
         public AsmsearchContext(DbContextOptions<AsmsearchContext> options): base(options)
         {
         }
 
         public virtual DbSet<IP> IPs { get; set; }
-        public virtual DbSet<Users> Users { get; set; }
         public virtual DbSet<Recherche> Recherches { get; set; }
         public virtual DbSet<Sites> Sites { get; set; }
         public virtual DbSet<Citations> Citations { get; set; }
         public virtual DbSet<TypeSite> TypeSites { get; set; }
         public virtual DbSet<Don> Dons { get; set; }
+        public virtual DbSet<SavedSearch> SavedSearch { get; set; }
+        public virtual DbSet<Setting> Settings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,10 +36,25 @@ namespace AnimeSearch.Database
                 entity.ToTable("Users");
 
                 entity.Property(e => e.Id).ValueGeneratedOnAdd().HasColumnName("id");
-                entity.Property(e => e.Name).IsRequired().HasColumnName("Name");
+                entity.Property(e => e.UserName).IsRequired().HasColumnName("Name");
                 entity.Property(e => e.Navigateur).HasColumnName("Navigateur");
-                entity.Property(e => e.Derniere_visite).HasColumnName("Derniere_visite");
+                entity.Property(e => e.Derniere_visite).HasDefaultValueSql("SYSDATETIME()").HasColumnName("Derniere_visite");
                 entity.Property(e => e.Dernier_Acces_Admin).HasColumnName("Dernier_Acces_Admin");
+            });
+
+            modelBuilder.Entity<IdentityUserLogin<int>>(entity =>
+            {
+                entity.HasKey(e => e.ProviderKey);
+            });
+
+            modelBuilder.Entity<IdentityUserRole<int>>(entity =>
+            {
+                entity.HasKey("UserId", "RoleId");
+            });
+
+            modelBuilder.Entity<IdentityUserToken<int>>(entity =>
+            {
+                entity.HasKey("LoginProvider", "UserId");
             });
 
             modelBuilder.Entity<Recherche>(entity =>
@@ -43,11 +66,15 @@ namespace AnimeSearch.Database
                 entity.Property(e => e.Id).ValueGeneratedOnAdd().HasColumnName("id");
                 entity.Property(e => e.User_ID).HasColumnName("User_ID");
                 entity.Property(e => e.Nb_recherches).HasColumnName("nb_recherche");
-                entity.Property(e => e.Derniere_Recherche).HasColumnName("derniere_recherche");
+                entity.Property(e => e.Derniere_Recherche).HasDefaultValueSql("SYSDATETIME()").HasColumnName("derniere_recherche");
 
                 entity.Property(e => e.recherche)
                     .IsRequired()
                     .HasColumnName("recherche");
+
+                entity.Property(e => e.Source)
+                    .HasColumnName("Source")
+                    .HasDefaultValue(SearchSource.API);
 
 
                 entity.HasOne(r => r.User)
@@ -70,7 +97,7 @@ namespace AnimeSearch.Database
                     .HasColumnName("Adresse_IP");
 
                 entity.Property(e => e.Users_ID).HasColumnName("User_ID");
-                entity.Property(e => e.Derniere_utilisation).HasColumnName("Derniere_utilisation");
+                entity.Property(e => e.Derniere_utilisation).HasDefaultValueSql("SYSDATETIME()").HasColumnName("Derniere_utilisation");
 
                 entity.Property(e => e.Localisation).IsRequired(false).HasColumnName("Localisation");
 
@@ -151,6 +178,7 @@ namespace AnimeSearch.Database
                     .IsRequired();
 
                 entity.Property(e => e.DateAjout)
+                    .HasDefaultValueSql("SYSDATETIME()")
                     .HasColumnName("date_ajout");
 
                 entity.Property(e => e.IsValidated)
@@ -185,6 +213,7 @@ namespace AnimeSearch.Database
                 entity.HasKey(d => d.Id);
 
                 entity.Property(d => d.Date)
+                    .HasDefaultValueSql("SYSDATETIME()")
                     .HasColumnName("Date");
 
                 entity.Property(d => d.Amout)
@@ -201,6 +230,79 @@ namespace AnimeSearch.Database
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Dons_Users");
             });
+
+            modelBuilder.Entity<SavedSearch>(entity =>
+            {
+                entity.Property(ss => ss.Search).HasColumnName("SavedSearch");
+
+                entity.Property(ss => ss.UserId).HasColumnName("User_id");
+
+                entity.Property(ss => ss.DateSauvegarde).HasDefaultValueSql("SYSDATETIME()").HasColumnName("Date_Sauvegarde");
+
+                entity.Property(ss => ss.Results)
+                    .HasColumnName("Resultats")
+                    .HasConversion(r => JsonConvert.SerializeObject(r), (s) => JsonConvert.DeserializeObject<ModelAPI>(s, new ModelAPIDeserialiser(s)));
+
+                entity.HasOne(ss => ss.User)
+                    .WithMany(u => u.SavedSearch)
+                    .HasForeignKey(ss => ss.UserId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_SavedSearchs_Users");
+
+                entity.HasKey(ss => new {ss.Search, ss.UserId});
+            });
+
+            modelBuilder.Entity<Roles>(entity =>
+            {
+                entity.Property(r => r.NiveauAutorisation)
+                    .HasColumnName("Niveau_Requis")
+                    .HasDefaultValue(1);
+
+                entity.Property(r => r.Color)
+                    .HasColumnName("Color")
+                    .HasDefaultValue(Color.Empty)
+                    .HasConversion(c => Utilities.ColorConverter.ConvertToInvariantString(c), c => (Utilities.ColorConverter.ConvertFromInvariantString(c) as Color?).GetValueOrDefault());
+            });
+
+            modelBuilder.Entity<Setting>(entity =>
+            {
+                entity.Property(s => s.Name)
+                    .HasColumnName("Name")
+                    .IsRequired();
+
+                entity.HasKey(s => s.Name);
+
+                entity.Property(s => s.Description)
+                    .HasColumnName("Description")
+                    .HasDefaultValue(string.Empty)
+                    .IsRequired(false);
+
+                entity.Property(s => s.TypeValue)
+                    .HasColumnName("Type")
+                    .HasDefaultValue(typeof(string).Name)
+                    .IsRequired();
+
+                entity.Property(s => s.JsonValue)
+                    .HasColumnName("Json_Value")
+                    .IsRequired();
+
+                entity.Property(s => s.IsDeletable)
+                    .HasColumnName("IsDeletable");
+            });
+        }
+    }
+    public class ModelAPIDeserialiser : CustomCreationConverter<Result>
+    {
+        private readonly bool isTvMaze;
+
+        public ModelAPIDeserialiser(string json)
+        {
+            isTvMaze = json.Contains("tvmaze") || !json.Contains("Adult");
+        }
+
+        public override Result Create(Type objectType)
+        {
+            return isTvMaze ? new TvMazeResult() : new TheMovieDbResult();
         }
     }
 }

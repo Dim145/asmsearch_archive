@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Dons";
+
+    double objDons = ViewData["obj dons"] is not null and double objdon ? objdon : 0;
+    bool hasOpenAPIKEY = ViewData["hasOpenNodeAPIKEY"] is not null and bool b ? b : false;
 }
 
 <div class="container text-white text-center">
@@ -33,7 +36,7 @@
                         <p class="card-text">
                             @if (ViewData["totalYear"] is not null and double total)
                             {
-                                int objTotal = ((int)Math.Round(Utilities.DONS_OBJECTIF_MONTH * 12));
+                                int objTotal = ((int)Math.Round(objDons * 12));
                                 int percent  = ((int)((total / objTotal) * 100));
 
                                 <div class="w-100"><i>@total</i>/@objTotal€</div>
@@ -60,9 +63,9 @@
                         <p class="card-text">
                             @if (ViewData["totalMonth"] is not null and double totalMonth)
                             {
-                                int percent = ((int)(totalMonth / Utilities.DONS_OBJECTIF_MONTH * 100));
+                                int percent = ((int)(totalMonth / objDons * 100));
 
-                                <div class="w-100"><i>@totalMonth</i>/@Utilities.DONS_OBJECTIF_MONTH€ par mois.</div>
+                                <div class="w-100"><i>@totalMonth</i>/@objDons€ par mois.</div>
 
                                 <div class="progress mt-2">
                                     <div class="progress-bar progress-bar-striped" role="progressbar" style="width: @percent%;" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@percent%</div>
@@ -90,7 +93,7 @@
                                         <div class="col">
                                             <div class="row">
                                                 <div class="col text-left">
-                                                    @(d.User.Name != Utilities.GUEST ? d.User.Name : "Visiteur")
+                                                    @(d.User.UserName != Utilities.GUEST ? d.User.UserName : "Visiteur")
                                                 </div>
                                                 <div class="col-auto text-right">
                                                     @d.Amout€
@@ -98,7 +101,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col text-left text-white-50">
-                                                    &emsp;=> Le @d.Date.ToString("dd/MM/yyyy");
+                                                    &emsp;=> Le @d.Date.ToString("dd/MM/yyyy")
                                                 </div>
                                             </div>
                                         </div>

@@ -155,8 +155,6 @@
         menu[0].style.top = mouseY(event) + "px";
         menu[0].style.left = mouseX(event) + "px";
 
-        menu.show("fast");
-
         return false;
     });
 
@@ -170,22 +168,50 @@
     {
         var citation = { contenue: $("#contenue").val(), authorName: $("#auteur").val() };
 
+        var sweetParams = {
+            title: "Titre test",
+            confirmButtonText: "Ok"
+        };
+
         $.post(urlBase + "api/citation", citation, function (response)
         {
-            $("#messageTitle").text("Succès");
-            $("#messageBody").text(response);
             $("#contenue").val("");
             $("#auteur").val("");
 
-            $("#dialogMessage").modal("show");
+            sweetParams.title = response;
+            sweetParams.icon = "success";
+
+            SwalFire(sweetParams);
         }).fail(function (error)
         {
-            $("#messageTitle").text("Erreur");
-            $("#messageBody").text(error.responseText);
+            sweetParams.title = error.responseText;
+            sweetParams.icon = "error";
 
-            $("#dialogMessage").modal("show");
+            SwalFire(sweetParams);
         });
     });
+
+    $("#dform").submit(function ()
+    {
+        let loading = $("#loading");
+
+        loading.show("fast");
+        loading.focus();
+    });
+
+    /*window.Swal.fire(
+    {
+        title: "Titre test",
+        html: "texte",
+        icon: "success",
+        showDenyButton: true,
+        confirmButtonText: "Oui, ce type est moche !",
+        denyButtonText: "J'ai changé d'avis",
+        preConfirm: (e) => console.log("confirm", e), // appel juste avant fermeture si valider
+        preDeny: (e) => console.log("deny", e), // appel juste avant fermeture si refus (deny mais pas cancel)
+        didClose: (e) => console.log("close", e), // appel à la fermeture dans tous les cas
+        didDestroy: (e) => console.log("destroy", e) // appel en dernier dans tous les cas
+    });*/
 });
 
 

@@ -50,12 +50,12 @@
     padding-left: 10px;
 }
 
-.searchbar:hover > .search_icon {
+.searchbar:hover > form > .search_icon {
     background: white;
     color: #e74c3c;
 }
 
-.searchbar:hover > .search_input {
+.searchbar:hover > form > .search_input {
     width: 50vw;
     height: initial;
     padding-left: 10px;

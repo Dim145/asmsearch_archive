@@ -26,7 +26,7 @@
                         foreach (Users u in users)
                         {
                             <tr data-userid="@u.Id" class="user_lig">
-                                <td class="text-center overflow-auto col-3">@u.Name</td>
+                                <td class="text-center overflow-auto col-3">@u.UserName</td>
                                 <td class="text-center col-md-2 col-3" title="dd/MM/yyyy HH:mm:ss">@(u.Derniere_visite.HasValue ? u.Derniere_visite.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss") : "Aucunes visites")</td>
                                 <td class="text-center col-md-2 col-3">@( u.Dernier_Acces_Admin.HasValue ? u.Dernier_Acces_Admin.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss") : "Jamais accédé")</td>
                                 <td class="col-md-5 col-3 overflow-auto">@u.Navigateur</td>
@@ -54,10 +54,14 @@
     </div>
 </div>
 
-<div id="rmenu" style="display: none;" class="bg-dark border border-white rounded text-white">
+<div id="rmenu" style="display: none; max-width: 250px" class="bg-dark border border-white rounded text-white">
     <a class="btn btn-dark w-100" id="ips" href="~/">Addr. IP</a>
     <a class="btn btn-dark w-100" id="recherches" href="~/">Recherches</a>
-    <a class="btn btn-dark w-100" id="dons" href="~/">Dons</a>
+    <a class="btn btn-dark w-100" id="savedsearch" href="~/">Recherches Sauvegardées</a>
+    @if (ViewData["isSuperAdmin"] is not null and bool isSuperAdmin && isSuperAdmin)
+    {
+        <a class="btn btn-dark w-100" id="dons" href="~/">Dons</a>
+    }
 </div>
 
 <div class="dcm" style="display: none;"></div>

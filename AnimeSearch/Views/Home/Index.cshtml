@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 
-    int nbSites = AnimeSearch.Utilities.AllSearchSite.Count + ((int)ViewData["nb_db_site"]) + 4; // Wikipedia + Nautiljon + TheMovieDB + TVMaze
+    int nbSites = AllSearchSite.Count + ((int)ViewData["nb_db_site"]) + 4; // Wikipedia + Nautiljon + TheMovieDB + TVMaze
 
     string action = "Search";
     bool old = false;
@@ -9,20 +9,22 @@
 
 @using System.Globalization;
 
-<link rel="stylesheet" href="~/css/fontwave_all.min.css" asp-append-version="true" />
-<link rel="stylesheet" href="~/css/home.min.css" asp-append-version="true" />
-<script type="text/javascript" src="~/js/Home.min.js" asp-append-version="true"></script>
+<header>
+    <link rel="stylesheet" href="~/css/home.min.css" asp-append-version="true" />
+    <script type="text/javascript" src="~/js/Home.min.js" asp-append-version="true"></script>
+</header>
 
 <div class="text-center text-white">
     <h1 class="display-4">Bienvenue</h1>
 
     <p>
-        Voir les autres <a asp-controller="home" asp-action="Domaines">adresses url</a><br />
-        Utilisez <a asp-controller="home" asp-action="Contact">ce formulaire</a> pour faire remonter des bugs, faire des propositions ou autres.<br />
-        Les dons Paypal et Brave (BAT) sont maintenant <a asp-controller="home" asp-action="dons">disponibles</a> (bouton orange/jaune en bas à droite).
+        <u>Pour les utilisateurs connectés</u>, il est possible de sauvegarder une recherche pour la revoir plus rapidement une prochaine fois. <br />
+        La fonctionnalité de recherche avancée est maintenant disponible (menu "autres" ou clic droit sur bouton de recherche).
     </p>
-    <p>Ce petit site sert à rechercher des animes, des séries ou des films sur plusieurs sites différents, de streaming et/ou de téléchargement</p>
-    <p>P.S: Le chargement de la page peut être TRES long, cela dépend des @nbSites+ sites externes qui sont intérogés.</p>
+    <p>
+        Ce petit site sert à rechercher des animes (&#128286; inclus), des séries ou des films sur plusieurs sites différents, de streaming et/ou de téléchargement <br />
+        P.S: Le code 800 n'est pas une erreur...
+    </p>
 
     @if (ViewData["old"] is not null and bool b && b)
     {
@@ -31,34 +33,44 @@
     }
 
     <div class="text-center">
-        <form asp-action="@action" asp-controller="Home" method="get">
-            <div class="container h-100">
-                <div class="d-flex justify-content-center h-100">
-                    <div class="searchbar">
+        <div class="container h-100">
+            <div class="d-flex justify-content-center h-100">
+                <div class="searchbar">
+                    <form asp-action="@action" asp-controller="Home" method="@(old ? "get" : "post")" id="dform">
                         <input id="searchBar" class="search_input text-white" type="text" name="q" placeholder="Search...">
-                        <button class="search_icon float-right rounded-circle"><i class="fas fa-search"></i></button>
+                        <button type="submit" class="search_icon float-right rounded-circle" id="gss"><b style="position: absolute; margin-right: 15px; margin-top: 15px;">+</b><i class="fas fa-search"></i></button>
 
-                        <div id="rmenu" style="display: none;" class="bg-dark border border-white rounded ">
-                            <button type="submit" name="t" value="false" class="btn btn-dark w-100">Single</button>
-                            <button type="submit" name="t" value="true" class="btn btn-dark w-100">Multi</button>
+                        <div class="dcm" style="display: none;">
+                            <div id="rmenu" class="bg-dark border border-white rounded ">
+                                <button type="submit" class="btn btn-dark w-100">Single</button>
+                                <button type="submit" name="t" value="true" class="btn btn-dark w-100">Multi</button>
+                            </div>
                         </div>
+                    </form>
 
-                        <div class="dcm" style="display: none;"></div>
+                    <div id="propositions" class="propositions container">
+                    </div>
 
-                        <div id="propositions" class="propositions container">
+                    <div class="d-flex justify-content-center fixed-top h-100 align-items-center" style="display: none!important; z-index: 10;" id="loading">
+                        <div class="w-100 h-100 bg-dark" style="opacity: 0.6;"></div>
+                        <div class="position-absolute">
+                            Recherches en cours...
+                            <div class="spinner-border text-primary align-middle" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
 
         @if (!old)
         {
             <div class="row mt-4">
                 @if (Utilities.CITATION_DU_JOUR != null)
                 {
-                    <div class="col-11" title="Citation du jour. Changement quotidien">
-                        <p class="w-100 text-center">@Utilities.CITATION_DU_JOUR.Contenue - @Utilities.CITATION_DU_JOUR.AuthorName </p>
+                    <div class="col-11">
+                        <p class="w-100 text-center" id="cj" title="Citation du jour.">@Utilities.CITATION_DU_JOUR.Contenue - @Utilities.CITATION_DU_JOUR.AuthorName </p>
                     </div>
                 }
                 <div class="@(Utilities.CITATION_DU_JOUR != null ? "col-lg-auto" : "") col">
@@ -93,9 +105,8 @@
     </div>
 </div>
 
-<a class="d-none d-print-none" style="display: none;" href="~/" id="urlbase"></a>
 <!-- Modal Settings -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<footer class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content bg-dark text-white">
             <div class="modal-header">
@@ -125,10 +136,15 @@
             </div>
         </div>
     </div>
-</div>
+    <a class="d-none d-print-none" style="display: none;" href="~/" id="urlbase"></a>
+</footer>
 
-<partial name="~/Views/Shared/ModalMessage.cshtml" />
-
+@if(!old)
+{
+    <conf id="liveConf" style="left: 0; width: 200px; height: 200px;">
+        <script src="~/lib/live/autoload.min.js"></script>
+    </conf>
+}
 
 @{
     ViewData["aideHTML"] = "<p>Cette page permet de saisir une recherche. À partir de 3 caractères de saisie, des propositions sont affichées en fonction des réponses des API.</p>" +
