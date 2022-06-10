@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["title"] = "Domaines";
+}
+
+<style>
+    td {
+        vertical-align: middle!important;
+    }
+</style>
+
+<script type="text/javascript" src="~/js/Domaines.min.js"></script>
+
+<div class="container text-white text-center">
+    <h1>Liste des domaines pour ce sites</h1>
+</div>
+
+<table class="table table-dark table-hover table-striped table-bordered">
+    <tr>
+        <th>URL</th>
+        <th>Etat</th>
+        <th>Misc</th>
+    </tr>
+
+
+
+    <tr>
+        <td><a href="https://asm-dim145.fr">https://asm-dim145.fr</a></td>
+        <td class="text-warning">Requête en cours...</td>
+        <td>Domaine et adresse personnalisé du serveur. C'est la principale.</td>
+    </tr>
+
+    <tr>
+        <td><a href="https://asmsearch.somee.com">https://asmsearch.somee.com</a></td>
+        <td class="text-warning">Requête en cours...</td>
+        <td>Adresse par défault du serveur. Si celle-ci ne fonctionne pas, celle du dessus et juste en dessous ne fonctionnent pas.</td>
+    </tr>
+
+    <tr>
+        <td><a href="http://asm.dim145.fr">http://asm.dim145.fr</a></td>
+        <td class="text-warning">Requête en cours...</td>
+        <td>Adresse alternative pour ce serveur qui profite des optimisations cloudflare (HTML compressé etc...). Le certificat est invalide.</td>
+    </tr>
+
+    <tr>
+        <td><a href="https://assearch.dim145.fr">https://assearch.dim145.fr</a></td>
+        <td class="text-warning">Requête en cours...</td>
+        <td>Serveur secondaire qui sert en cas de secourt. Il est moins mis à jour et pas mal de site avec protection cloudflare ont blacklisté son adresse IP. Donc ils ne sont pas utilisables par le serveur.</td>
+    </tr>
+</table>

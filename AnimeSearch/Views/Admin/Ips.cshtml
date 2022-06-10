@@ -1,0 +1,17 @@
+﻿@using AnimeSearch.Database;
+
+@{
+    Users selected_user = ViewData["selected user"] is not null and Users u ? u : null;
+
+    ViewData["Title"] = "IPs pour " + (selected_user != null ? selected_user.Name : "????");
+}
+
+<h2 class="h2 w-100 text-center align-self-center text-white">@ViewData["title"]</h2>
+
+<div class="rounded border" style="max-height: 70vh; overflow: auto;">
+    @if (ViewData["ips"] is not null and IP[] ips)
+    {
+        @Utilities.ReactComponent(Html, "~/js/react/Table.jsx", new { cols = Tab( "Addresse IP", "Dernière utilisation", "Localisation (Pays/Région/Ville)" ),
+            rows = ips.Select(ip => new{ datas = Tab( ip.Adresse_IP, ip.Derniere_utilisation.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss"), new{ href = $"https://www.google.com/maps/search/?api=1&query={ip.Localisation}", text = ip.Localisation } ) })})
+    }
+</div>

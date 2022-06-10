@@ -1,0 +1,23 @@
+﻿@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">Liste des Erreurs.</h1>
+<h2 class="text-danger">Contient les erreus <a title="Les erreus prévue sont celle qui sont attrapé (=catch) par le système (= les dev savent que cette erreur peut arrivé.)">'prévue'*</a> par le site (HTML inclus) et surevenue lors d'un chargement.</h2>
+
+<p class="text-white">
+    Cette page peut être utile pour détecter les sites ne pouvant plus être intérrogé par le serveur. 
+    Mais les erreurs internes (autres que HTML) ne sont utile qu'a un développeur.
+</p>
+
+<table class="table table-dark text-white">
+    @{ 
+        if( ViewData["errors"] is not null and string[] tabErrors)
+        {
+            foreach(string s in tabErrors)
+            {
+                <tr class="text-white"><td><pre class="text-white">@s</pre></td></tr>
+            }
+        }
+    }
+</table>

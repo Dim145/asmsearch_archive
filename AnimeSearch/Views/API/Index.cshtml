@@ -1,0 +1,63 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+
+@{ 
+    ViewData["Title"] = "API";
+}
+
+<div class="text-center text-white">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+
+    <div class="text-left">
+        <p>
+            L'api est plutôt destiné aux développeurs. Elle permet de récupérer dès valeur en format JSON, sans aucun code HTML. <br />
+            C'est plus rapide et surtout plus simple pour eux afin de récupérer les résultats de la recherche et de les utiliser dans un autre site ou application.<br />
+            Cela évite de devoir analyser et chercher dans du code HTML extrêmement long comme je le fais pour effectuer les recherches.
+        </p>
+    </div>
+</div>
+
+@{ 
+    string path = Context.Request.Host + Context.Request.Path;
+}
+
+<div class="container text-white">
+    <h1>Chercher des informations</h1>
+
+    <p>
+        Le résultat est un Json contenant des infos comme les noms selon les languages, l'adresse de l'image publique du film/serie etc...:<br />
+        /api/type/la recherche<br />
+        exemple: <a target="_blank" href="~/api/serie/One Piece">@path/serie/One%20Piece</a>
+    </p>
+    <p>
+        Autre exemple pour un film<br />
+        /api/film/nom de serie<br />
+        exemple: <a target="_blank" href="~/api/film/Dragon%20Ball%20Broly">@path/film/Dragon%20Ball%20Broly</a>
+    </p><br />
+
+    <h1>Recherche sur des site</h1>
+    <p>
+        Cette fois-ci le json contient les adresse/icon/type du site ainsi que le nombre de résultat de la recherche:<br />
+        /api//search/type/la recherche<br />
+        exemple: <a target="_blank" href="~/api/search/serie/One Piece">@path/search/serie/One%20Piece</a>
+    </p>
+    <p>
+        On peut aussi ne pas préciser de type. Si les deux databases trouvent un résultat, celui de la série sera utilisé en premier.<br />
+        /api/search/nom de serie<br />
+        exemple: <a target="_blank" href="~/api/search/Hancock">@path/search/Hancock</a>
+    </p><br />
+    <p>
+        Enfin, on peut rechercher sur les deux databases, en précisant laquel doit être prioritaire:<br/>
+        /api/search/serie=>nom de serie<br />
+        exemple: <a target="_blank" href="~/api/search/movie=>one piece">@path/search/movie=>one%20piece</a>
+    </p><br/>
+
+    <h1>Recherche Multiple</h1>
+    <p>
+        Il est possible d'effectuer une recherche de multiple éléments venant des deux API en ligne. 
+        Les résultats ne donnent que quelques information basique avec une image, et permet de sélectionné précisément l'élément souhaiter.<br/>
+        exemple: <a target="_blank" href="~/api/msearch/one piece">~/api/msearch/one%20piece</a>
+    </p>
+
+</div>

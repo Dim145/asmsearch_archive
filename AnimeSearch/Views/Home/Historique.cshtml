@@ -1,0 +1,67 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@using AnimeSearch.Database;
+@{
+    ViewData["Title"] = "Données";}
+
+<link rel="stylesheet" href="~/css/Historique.min.css" asp-append-version="true" />
+<script type="text/javascript" src="~/js/Historique.min.js" asp-append-version="true"></script>
+
+<div class="row">
+    <div class="col" style="margin-right: 5px;">
+        <div class="row text-center text-white" style="margin: 5px;">
+            Historique des recherches effectuées sur ce site, triées par nombres d'occurences. Cliquez sur les lignes pour effectuer cette recherche.
+        </div>
+
+        <div class="row text-white max-height border rounded">
+            @if (ViewData["allSearch"] is not null and Dictionary<string, int> allSearch && allSearch.Count > 0)
+                @ReactComponent(Html, "~/js/react/Table.jsx", new { cols = Tab("Recherche", "Nombre de saisies"), rows = allSearch.Select(r => new { datas = Tab(r.Key, r.Value), className = "tr-search" }) })
+            
+        </div>
+    </div>
+
+    <a style="display: none;" class="d-none" href="~/" id="baseurl"></a>
+
+    <div class="col" style="margin-left: 5px;">
+        <div class="row text-center text-white" style="margin: 5px;">
+            Tous les sites interrogée lors d'une recherche. Les images sont cliquables. Si une image n'apparaît pas, c'est que le site est down.
+        </div>
+
+        <div class="row text-white max-height border rounded">
+            <table class="table table-dark table-striped table-hover">
+                <tr class="text-center">
+                    <th>Logo</th>
+                    <th>Nom</th>
+                    <th>Type</th>
+                </tr>
+
+                @if (ViewData["sites"] is not null and Search[] sites && sites.Length > 0)
+                {
+                    foreach (Search s in sites)
+                    {
+                        <tr>
+                            <td>
+                                @if (s.GetUrlImageIcon() != null && s.GetUrlImageIcon().StartsWith("http"))
+                                {
+                                    <a class="w-100 d-block" target="_blank" href="@s.GetBaseURL()"><img class="logo" src="@s.GetUrlImageIcon()" /></a>
+                                }
+                                else
+                                {
+                                    <a class="w-100 d-block" target="_blank" href="@s.GetBaseURL()"><img class="logo" src="~/@s.GetUrlImageIcon()" /></a>
+                                }
+                            </td>
+                            <td>@s.GetSiteTitle()</td>
+                            <td>@s.GetTypeSite()</td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+@{
+    ViewData["aideHTML"] = "<p>rien de spécial à faire sur cette page. Elle sert principalement de renseignement. <br/>" + 
+        "les icônes peuvent ne pas s'afficher selon les paramètres de votre réseau (proxy, pare-feu, adresse ban etc...)</p>";
+}

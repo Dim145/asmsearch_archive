@@ -1,0 +1,53 @@
+﻿.image-icon {
+    max-height: 43px;
+    max-width: 60px;
+    height: auto;
+}
+
+@media (min-width: 576px) {
+    .image-icon {
+        max-height: 43px;
+        max-width: none;
+        height: 5vw;
+    }
+}
+
+.affiche {
+    vertical-align: middle;
+    align-content: center;
+    text-align: center;
+    border-radius: 8px;
+    max-height: 450px;
+    background-color: white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 2px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.row {
+    display: flex;
+    margin: auto;
+}
+
+.mouseClickCol {
+    vertical-align: middle;
+}
+
+.mouseClickCol:hover {
+    cursor: pointer;
+}
+
+#btnInfo {
+    margin-top: 10px;
+}
+
+.noTop {
+    border-top: none!important;
+}
+
+td {
+    vertical-align: middle!important;
+}
+
+th {
+    text-align: center;
+    vertical-align: middle!important;
+}

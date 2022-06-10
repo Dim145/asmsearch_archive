@@ -1,0 +1,197 @@
+﻿@using AnimeSearch.Database
+@{
+    ViewData["Title"] = "Add sites";
+}
+
+<script type="text/javascript" src="~/js/AddSites.min.js"></script>
+<link rel="stylesheet" href="~/css/AddSites.min.css" />
+<link rel="stylesheet" href="~/lib/switchios/component-custom-switch.min.css" />
+
+<div class="container text-white text-center">
+    <h1>@ViewData["Title"]</h1>
+</div>
+
+<div class="container text-white">
+    <p>
+        Cette page permet de proposer un nouveau site à ajouter au catalogue de recherche. Le site ne sera utilisé que lorsqu'un administrateur aura validé l'ajout.
+        <br />
+        Les données sont presque toutes obligatoires. Veuillez à bien saisir le bon chemin dans le dernier champ. Sans cela, la recherche n'aboutira pas et jamais aucun résultat ne sera trouvé.
+    </p>
+</div>
+
+<div class="container text-white">
+    <div class="row">
+        <div class="col" title="URl de base du site et celle permettant d'effectuer des rehcerches">
+            <label for="baseURL">URL racine / URL de recherche</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <select class="btn btn-outline-secondary"
+                            type="button" id="httpType">
+                        <option>https://</option>
+                        <option>http://</option>
+                    </select>
+                </div>
+                <input type="text" id="baseURL" class="form-control" placeholder="otakufr.co" pattern="[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$" required />
+                <div class="input-group-append">
+                    <span class="input-group-text">/</span>
+                </div>
+                <input type="text" id="searchURL" placeholder="toute-la-liste-affiches/?q=" class="form-control rounded-right" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 col-md" title="URL pointant vers l'image du site (icon ou favicon dans le pire des cas)">
+            <label for="iconURL">URL complet de l'icone</label>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <select class="btn btn-outline-secondary"
+                            type="button" id="httpTypeIcon"
+                            aria-haspopup="true" aria-expanded="false">
+                        <option>https://</option>
+                        <option>http://</option>
+                    </select>
+                </div>
+                <input type="text" id="iconURL" class="form-control rounded-right" placeholder="i.ibb.co/YWFp87J/otakufr.png" pattern="[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$" required />
+            </div>
+        </div>
+
+        <div class="col-12 col-md-auto text-center" style="display: flex;" title="rendu de l'image avec les même dimension que celle dans le tableau des recherches">
+            <img id="imageIcon" class="image-icon" alt="Image introuvable" />
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col" title="nom du site affiché dans le tableau des recherches">
+            <label for="siteTitle">Nom du site</label>
+            <div class="input-group mb-3">
+                <input class="form-control rounded" type="text" maxlength="20" id="siteTitle" placeholder="OtakuFr" required />
+            </div>
+        </div>
+
+        <div class="col-12 col-md" title="Permet de savoir quels sites inttérogé en fonction de la recherche">
+            <label for="type">Type de site</label>
+            <div class="input-group mb-3">
+                <select class="custom-select form-control btn-outline-secondary" id="type">
+                    @if (ViewData["types"] is not null and TypeSite[] types)
+                    {
+                        @foreach (TypeSite type in types)
+                        {
+                            <option>@type.Name</option>
+                        }
+                    }
+                    else
+                    {
+                        @foreach (string str in TypeEnum.TabTypes)
+                        {
+                            <option>@str</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-auto" title="ID de la balise d'ou le chemin partira. le chemin part de la balie body si l'id est vide">
+            <label for="idDoc">Id balise de départ</label>
+            <div class="input-group mb-3">
+                <input type="text" maxlength="10" id="idDoc" class="form-control rounded" placeholder="app-otaku (optionnel)" />
+            </div>
+        </div>
+        <div class="col-12 col-md" title="Chemin a partir de la balise body. Doit se terminer par une balise a">
+            <label for="cheminElt">Chemin des balises HTML vers un résultat de recherche</label>
+            <div class="input-group mb-3">
+                <input type="text" class="form-control rounded" id="cheminElt" placeholder="section/div/div/div/div/article/div/div/div/a" pattern=".*a$" required />
+                <button style="display: none;" id="btnDiv" class="rounded-circle" data-toggle="modal" data-target="#dialogIframe" title="permet de récupéré l'élément directement sur la page web (expérimental)"><img class="search-img" width="20" src="~/webfonts/search.svg" /></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-auto text-left">
+            <button class="btn btn-dark border" data-toggle="modal" data-target="#dialogPOST" title="valeurs à envoyer en arrière plan">+ POST</button>
+        </div>
+        <div class="=col-auto row" title="Si le site est étranger, 3 recherches précisant les langues seront effectuées. (vostfr, vf, multi)">
+            <div class="col-auto align-self-center" style="padding-right: 0;"><p style="margin: 0;">Site </p></div>
+            <div class="col" style="padding-left: 5px;">
+                <div class="custom-switch custom-switch-label-status pl-0 ">
+                    <input class="custom-switch-input" id="lang" type="checkbox">
+                    <label class="custom-switch-btn" for="lang"></label>
+                </div>
+            </div>
+        </div>
+
+        <div class="col text-right" id="valid-Zone" style="padding-left: 0;">
+
+        </div>
+    </div>
+</div>
+<a style="display: none;" class="d-none" href="~/" id="urlbase"></a>
+<!-- Modal Site -->
+<div class="modal fade" id="dialogIframe" tabindex="-1" role="dialog" aria-labelledby="ajout" aria-hidden="true">
+    <div class="modal-dialog" role="document" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">HTML venant de l'adresse du site</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Cliquez sur un résultat de recherche. Le premier de préférence. Si il n'y as aucun résultats vous pouvez relancer une autre rehcerche. <br />
+                    La recherche actuelle est: <a id="dataSearch"></a>
+                </p>
+
+                <div id="site">
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="research">changer recherche</button>
+                <button type="button" class="btn btn-primary" id="btnFermer" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal POST -->
+<div class="modal fade" id="dialogPOST" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="max-height: 90vh;">
+            <div class="modal-header">
+                <h5 class="modal-title">Valeurs cachées à envoyer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body overflow-auto">
+                <p>Liste des valeurs qui seront envoyer au site. Un '?' seul seras remplacé par la recherche (ex: one piece). <br/>
+                Si une des deux colonnes est vide, la ligne seras ignorée.</p>
+                <table class="table table-striped table-bordered">
+                    <thead class="text-center">
+                        <tr>
+                            <th>Nom</th>
+                            <th>Valeur</th>
+                        </tr>
+                    </thead>
+                    <tbody id="POST-values">
+                    </tbody>
+                </table>
+
+                <button class="btn btn-dark border rounded-circle text-center align-middle" id="addPOST" style="background-color: lawngreen;">+</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<partial name="~/Views/Shared/ModalMessage.cshtml" />
+
+@{
+    ViewData["aideHTML"] = "<p>lors de l'ajout d'une adresse URL de recherche, un bouton de recherche permettant de \"simplifier\" la récupération de la balise pour repérer une résultat de recherche.</p>" + 
+        "<p>le contenu du dialogue est celui de la page internet qui se trouve à l'adresse saisie. Cette page ne contient pas de Javascript et les fichiers CSS ont été supprimer (par le serveur).</p>";
+}

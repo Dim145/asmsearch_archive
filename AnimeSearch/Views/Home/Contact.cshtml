@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Contact";
+}
+
+@model MailRequest
+
+<div class="container text-center text-white">
+    <h2>@ViewData["Title"]</h2>
+</div>
+
+<div class="container text-white">
+    @if (ViewData["errors"] is not null and string errors)
+    {
+        <p class="text-danger">@errors</p>
+    }
+    else if (ViewData["succes"] is not null and string succes)
+    {
+        <p class="text-success">@succes</p>
+    }
+
+    @{ 
+        MailRequest datas = ViewData["datas"] is not null and MailRequest r ? r : new();
+    }
+
+    <form asp-controller="home" asp-action="Contact" method="post">
+        <div class="form-group">
+            <label for="p1">Pseudo:</label>
+            <input type="text" class="form-control" name="pseudo" id="p1" placeholder="Un nom quelconque" value="@(string.IsNullOrWhiteSpace(datas.Pseudo) ? Utilities.GUEST.Equals(ViewData["username"]) ? "" : ViewData["username"] : datas.Pseudo)" required readonly=@(!Utilities.GUEST.Equals(ViewData["username"])) />
+        </div>
+
+        <div class="form-group">
+            <label for="m1">Votre email:</label>
+            <input type="email" class="form-control" name="email" id="m1" placeholder="example@gmail.fr" value="@datas.Email" required />
+        </div>
+
+        <div class="form-group">
+            <label for="s1">Sujet:</label>
+            <select class="custom-select" name="subject" id="s1">
+                @foreach(string s in Enum.GetNames<Subjects>())
+                {
+                    string subject = s.Replace("__", "'").Replace("_", " ");
+                
+                    <option selected=@(subject == datas.Subject) >@subject</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="t1">Message:</label>
+            <textarea class="form-control" name="message" id="m1" required>@datas.Message</textarea>
+        </div>
+
+        <div class="text-right">
+            <input type="submit" class="btn btn-dark border-white" value="Envoyer" />
+        </div>
+    </form>
+</div>

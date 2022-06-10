@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "defaultProvider": "jsdelivr",
+  "libraries": [
+    {
+      "library": "cheerio@1.0.0-rc.6",
+      "destination": "wwwroot/cheerio/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "request@2.88.2",
+      "destination": "wwwroot/lib/request/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jquery@3.6.0",
+      "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "jqueryui@1.12.1",
+      "destination": "wwwroot/lib/jqueryui/",
+      "files": [
+        "jquery-ui.min.js",
+        "jquery-ui.js"
+      ]
+    },
+    {
+      "library": "sp@0.1.3",
+      "destination": "wwwroot/lib/sp/"
+    },
+    {
+      "provider": "cdnjs",
+      "library": "popper.js@2.9.2",
+      "destination": "wwwroot/lib/popper.js/",
+      "files": [
+        "umd/popper.min.js",
+        "umd/popper.js"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,148 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* Provide sufficient contrast against white background */
+a {
+  color: #0366d6;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: #1b6ec2;
+  border-color: #1861ac;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+.link-white {
+    color: white!important;
+}
+
+.link-white:hover {
+    color: gray!important;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#aide {
+    position: absolute;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    border: 2px solid white;
+    border-radius: 15px;
+    cursor: pointer;
+    text-align-last: center;
+    z-index: 5;
+}
+
+.icon {
+    max-height: 5vh;
+}
+
+.paypal_form {
+    margin-bottom: auto;
+    margin-top: auto;
+    background-color: #3d3d3d;
+    border-radius: 35px;
+    padding: 10px;
+    transition: width 0.5s linear;
+}
+
+.paypal_form:hover {
+    border: solid 1px;
+    border-color: white;
+}
+
+.paypal_amout {
+    color: black;
+    lighting-color: white;
+    border: 0px;
+    outline: 0px;
+    background: none;
+    width: 0px;
+    line-height: 40px;
+    transition: width 0.5s linear;
+    max-width: 100px;
+    padding: 0;
+}
+
+.paypal_amout:focus {
+    width: 10vw;
+    min-width: 60px;
+    transition: width 0.5s linear;
+    height: initial;
+    padding-left: 10px;
+}
+
+.paypal_form:hover > .paypal_amout {
+    width: 10vw;
+    min-width: 60px;
+    height: initial;
+    padding-left: 10px;
+    transition: width 0.5s linear;
+}
+
+.item-dark{
+    color: white;
+}
+
+item-dark:hover {
+    color: black!important;
+}

@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Privacy Policy";
+}
+
+<style type="text/css">
+    .row {
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="container text-white text-center">
+    <h1>@ViewData["Title"]</h1>
+</div>
+
+<div class="container text-white">
+    <h2>Données</h2>
+    <p>
+        Ce site n'utilise aucun cookies par défaut. Mais les préférences sont sauvegardé sous forme de cookies. <br />        
+        Cela inclut le pseudo et l'ordre de recherche sur les sites.
+    </p>
+    <p>
+        Si un pseudo existe dans les cookies, il sera sauvegardé dans la base de données du serveur, ainsi que les adresses IP utilisée et les recherches effectuer.<br />
+        Cela permet de construire l'historique des recherches.
+    </p>
+</div>
+
+<div class="container text-white">
+    <h2>API externes</h2>
+
+    <p>Afin de retrouver les séries correspondant à la recherche des utilisateurs, deux apis sont interrogées:</p>
+
+
+    <div class="container">
+        <div class="row border-bottom border-secondary">
+            <div class="col-12 col-sm align-self-center"><a class="d-block" style="text-align: center;" target="_blank" href="https://www.themoviedb.org/"><img height="80" src="~/ressources/images/the_movie_db.svg" /></a></div>
+            <div class="col">The Movie DB (TMDb) est une base de données de films et de télévision construite par la communauté. Chaque donnée a été ajoutée par notre incroyable communauté depuis 2008. 
+            La forte orientation internationale et l'étendue des données de TMDb sont largement inégalées et nous en sommes incroyablement fiers. 
+            En termes simples, nous vivons et respirons la communauté et c'est précisément ce qui nous rend différents.</div>
+        </div>
+
+        <div class="row border-bottom border-secondary">
+            <div class="col-12 col-sm align-self-center"><a class="d-block" style="text-align: center;" target="_blank" href="https://www.tvmaze.com/"><img height="80" src="~/ressources/images/tvmaze_logo.png" /></a></div>
+            <div class="col">TVmaze est une base de données de télévision gratuite gérée par les utilisateurs et organisée par les amateurs de télévision du monde entier. 
+            Vous pouvez suivre vos émissions préférées de n'importe où. 
+            L'API qui peut être utilisée par n'importe qui ou par un service pour récupérer des métadonnées TV, des images et bien plus encore. 
+            TVMaze est l'api principalement utilisé pour les séries et les animés.</div>
+        </div>
+    </div>
+</div>

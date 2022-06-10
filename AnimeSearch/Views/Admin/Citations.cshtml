@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Citations";
+}
+@using AnimeSearch.Database
+
+<link rel="stylesheet" href="~/css/Admin/Citations.min.css" asp-append-version="true" />
+<script type="text/javascript" src="~/js/Admin/Citations.min.js" asp-append-version="true"></script>
+
+<div class="border rounded max-height">
+    <a href="~/" class="d-none" style="display: none;" id="baseurl"></a>
+
+    @if (ViewData["citations"] is not null and Citations[] citations)
+    {
+        @Utilities.ReactComponent(Html, "~/js/react/Table.jsx", new { cols = Tab( "Nom de l'auteur", "Contenue", "Date d'ajout" ),
+            rows = citations.Select(c => new{ datas = Tab( c.AuthorName, c.Contenue, c.DateAjout.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss") ) })});
+    }
+
+    <div id="rmenu" style="display: none;" class="bg-dark border border-white rounded text-white">
+        <form asp-controller="admin" asp-action="CCVS" method="post">
+            <input type="hidden" class="d-none" style="display: none;" id="formid" name="id" />
+            <input type="hidden" class="d-none" style="display: none;" id="valstate" name="isValidated" />
+            <button class="btn btn-dark w-100" id="cval">Supprimer</button>
+        </form>
+    </div>
+
+    <div class="dcm" style="display: none;"></div>
+</div>
+
+<div class="row mt-2">
+    <div class="col text-left">
+        <a class="btn btn-dark border-white" asp-controller="admin" asp-action="index">Retour</a>
+    </div>
+</div>

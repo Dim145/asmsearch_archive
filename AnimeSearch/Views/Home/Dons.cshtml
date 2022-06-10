@@ -1,0 +1,115 @@
+﻿@using AnimeSearch.Database
+
+@{
+    ViewData["Title"] = "Dons";
+}
+
+<div class="container text-white text-center">
+    <h1>@ViewData["Title"]</h1>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="row">
+            <div class="col text-white">
+                C'est un fait et vous le savez tous (enfin normalement), mais ce n'est pas gratuit d'héberger un site WEB.
+                Le ou les serveurs, les noms de domaines, les adresses mail et nombres d'autres options sont payantes. <br />
+                <br />
+                Le serveur actuel est donc payant avec son nom de domaines et adresse mail personnalisé. Au prix le plus bas car je reste un pauvre étudiant (et pas riche en plus).
+                Malheureusement les limitations notamment au niveau de la puissance sont encore fortement présentes.<br />
+                <br />
+                Je compte donc sur VOTRE soutien pour pouvoir augmenter le forfait actuel afin d'accélérer le site et peut-être avoir des options en plus.
+                Tout ça pour ne plus avoir des recherches qui prennent plus de 46 ans à se charger. <br />
+                <br />
+                Et si en plus les dons sont suffisants, je pourrais même engager un designer WEB pour votre plus grand plaisir. &#x1F609;
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card text-white border-white bg-dark mt-2 mb-2 ml-auto mr-auto mr-md-0 ml-md-0">
+                    <div class="card-body">
+                        <h5 class="card-title">Objectif annuel</h5>
+                        <h6 class="card-subtitle mb-2 text-white-50">Cout serveur et autres...</h6>
+                        <p class="card-text">
+                            @if (ViewData["totalYear"] is not null and double total)
+                            {
+                                int objTotal = ((int)Math.Round(Utilities.DONS_OBJECTIF_MONTH * 12));
+                                int percent  = ((int)((total / objTotal) * 100));
+
+                                <div class="w-100"><i>@total</i>/@objTotal€</div>
+
+                                <div class="progress mt-2">
+                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: @percent%;" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@percent%</div>
+                                </div>
+                            }
+                        </p>
+
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="row">
+            <div class="col">
+                <div class="card text-white border-white bg-dark mt-2 mb-2 ml-auto mr-auto mr-md-0 ml-md-0" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Objectif mensuel</h5>
+                        <h6 class="card-subtitle mb-2 text-white-50">coût actuel du serveur</h6>
+                        <p class="card-text">
+                            @if (ViewData["totalMonth"] is not null and double totalMonth)
+                            {
+                                int percent = ((int)(totalMonth / Utilities.DONS_OBJECTIF_MONTH * 100));
+
+                                <div class="w-100"><i>@totalMonth</i>/@Utilities.DONS_OBJECTIF_MONTH€ par mois.</div>
+
+                                <div class="progress mt-2">
+                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: @percent%;" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@percent%</div>
+                                </div>
+                            }
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (ViewData["last_dons"] is not null and Don[] lastDons && lastDons.Length > 0)
+        {
+            <div class="row">
+                <div class="col">
+                    <div class="card text-white border-white bg-dark mt-2 mb-2 ml-auto mr-auto mr-md-0 ml-md-0" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Liste des derniers Dons</h5>
+                            <h6 class="card-subtitle mb-2 text-white-50">Les @lastDons.Length derniers dons</h6>
+                            <p class="card-text overflow-auto">
+                                @foreach (Don d in lastDons)
+                                {
+                                    <div class="row mt-1 mb-1">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col text-left">
+                                                    @(d.User.Name != Utilities.GUEST ? d.User.Name : "Visiteur")
+                                                </div>
+                                                <div class="col-auto text-right">
+                                                    @d.Amout€
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-left text-white-50">
+                                                    &emsp;=> Le @d.Date.ToString("dd/MM/yyyy");
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

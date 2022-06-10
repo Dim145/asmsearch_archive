@@ -1,0 +1,188 @@
+[
+  {
+    "outputFileName": "wwwroot/js/Home.min.js",
+    "inputFiles": [
+      "wwwroot/js/Home.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/site.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Pokemon/animation.min.js",
+    "inputFiles": [
+      "wwwroot/js/Pokemon/animation.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Pokemon/script.min.js",
+    "inputFiles": [
+      "wwwroot/js/Pokemon/script.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Pokemon/zingtouch.min.js",
+    "inputFiles": [
+      "wwwroot/js/Pokemon/zingtouch.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/fontwave_all.min.css",
+    "inputFiles": [
+      "wwwroot/css/fontwave_all.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/home.min.css",
+    "inputFiles": [
+      "wwwroot/css/home.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Search.min.css",
+    "inputFiles": [
+      "wwwroot/css/Search.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Pokemon.min.css",
+    "inputFiles": [
+      "wwwroot/css/Pokemon.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Historique.min.js",
+    "inputFiles": [
+      "wwwroot/js/Historique.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Historique.min.css",
+    "inputFiles": [
+      "wwwroot/css/Historique.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Search.min.js",
+    "inputFiles": [
+      "wwwroot/js/Search.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/AddSites.min.css",
+    "inputFiles": [
+      "wwwroot/css/AddSites.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/AddSites.min.js",
+    "inputFiles": [
+      "wwwroot/js/AddSites.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/MultiSearcg.min.css",
+    "inputFiles": [
+      "wwwroot/css/MultiSearcg.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/switchios/component-custom-switch.min.css",
+    "inputFiles": [
+      "wwwroot/lib/switchios/component-custom-switch.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/rsa/RSA.min.js",
+    "inputFiles": [
+      "wwwroot/lib/rsa/RSA.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/rsa/Barrett.min.js",
+    "inputFiles": [
+      "wwwroot/lib/rsa/Barrett.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/rsa/BigInt.min.js",
+    "inputFiles": [
+      "wwwroot/lib/rsa/BigInt.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/AdminIndex.min.css",
+    "inputFiles": [
+      "wwwroot/css/AdminIndex.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/AdminIndex.min.js",
+    "inputFiles": [
+      "wwwroot/js/AdminIndex.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Admin/Sites.min.css",
+    "inputFiles": [
+      "wwwroot/css/Admin/Sites.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Admin/Sites.min.js",
+    "inputFiles": [
+      "wwwroot/js/Admin/Sites.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Admin/Index.min.js",
+    "inputFiles": [
+      "wwwroot/js/Admin/Index.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Admin/Login.min.css",
+    "inputFiles": [
+      "wwwroot/css/Admin/Login.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/Admin/Citations.min.css",
+    "inputFiles": [
+      "wwwroot/css/Admin/Citations.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Admin/Citations.min.js",
+    "inputFiles": [
+      "wwwroot/js/Admin/Citations.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Admin/SitesEditer.min.js",
+    "inputFiles": [
+      "wwwroot/js/Admin/SitesEditer.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Domaines.min.js",
+    "inputFiles": [
+      "wwwroot/js/Domaines.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/Admin/Dons.min.js",
+    "inputFiles": [
+      "wwwroot/js/Admin/Dons.js"
+    ]
+  }
+]
