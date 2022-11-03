@@ -1,0 +1,22 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<header>
+    <h1>@ViewData["Title"]</h1>
+    @{
+        if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <form class="form-inline" method="post" asp-controller="Identity" asp-action="LogoutPost">
+                <button type="submit" class="nav-link btn btn-link text-white">@Localizer["click here"]</button>
+            </form>
+        }
+        else
+        {
+            <p>@Localizer["success"]</p>
+        }
+    }
+</header>

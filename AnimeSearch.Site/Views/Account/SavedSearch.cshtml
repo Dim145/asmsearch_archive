@@ -1,0 +1,33 @@
+﻿@using AnimeSearch.Site.Views.BlazorComponent.Account
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Site.Views.Account
+
+@{
+    ViewData["Title"] = "Recherches sauvegardées";
+    ViewData["ActivePage"] = ManageNavPages.SavedSearch;
+
+    var user = ViewData["currentUser"] is Users u ? u : null;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+@if (ViewData["StatusMessage"] is not null)
+{
+    <partial name="_StatusMessage" model='ViewData["StatusMessage"]' />
+}
+
+<div class="row">
+    <div class="col-md">
+        <component type="typeof(SavedSearchTable)"
+                   render-mode="ServerPrerendered"
+                   param-UserId="user.Id" />
+    </div>
+</div>
+
+<conf id="liveConf" style="right: 0; width: 200px; height: 200px;">
+    <script src="~/lib/live/autoload.js"></script>
+</conf>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

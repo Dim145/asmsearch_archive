@@ -1,0 +1,33 @@
+﻿
+@using Microsoft.AspNetCore.Antiforgery;
+@using AnimeSearch.Data.Models
+
+@inject IAntiforgery antiforgery
+
+@{
+    Users selected_user = ViewData["selected user"] is not null and Users u ? u : null;
+
+    ViewData["Title"] = "Dons pour " + (selected_user != null ? selected_user.UserName : "????");
+}
+
+<script type="text/javascript" src="~/js/Admin/Dons.min.js"></script>
+<link rel="stylesheet" href="~/css/Admin/Citations.min.css" />
+
+<h2 class="h2 w-100 text-center align-self-center text-white">@ViewData["title"]</h2>
+
+@if (ViewData["pp"] is not null and TimeSpan decompte)
+{
+    <a class="text-white" data-toggle="tooltip" data-placement="top" title="format = minutes:secondes">Prochain passage du service dans @decompte.ToString(@"mm\:ss")</a>
+}
+
+<div class="rounded border">
+    <component type="typeof(TableDons)"
+               render-mode="ServerPrerendered"
+               param-UserId="selected_user.Id"
+               param-url_form='Url.Action("rdons", "admin")'
+               param-Token="antiforgery.GetTokens(Context).RequestToken" />
+</div>
+
+<div class="container mt-2">
+    <a class="btn btn-dark border-white" asp-controller="Admin" asp-action="index">Retour</a>
+</div>

@@ -1,0 +1,272 @@
+﻿@using AnimeSearch.Core
+@using AnimeSearch.Data.Models
+
+<div class="text-white">
+    <Stepper OnFinish="OnFinish" IsVertical="true">
+        <Step Title="Infos de base" IsValidStep="ValidateBasInfos">
+            <div class="row">
+                <div class="col-6">
+                    <label for="name">Nom:</label>
+                    <input class="form-control" type="text" @bind="Api.Name" id="name"/>
+                </div>
+                
+                <div class="col-6">
+                    <label for="siteUrl">Site url:</label>
+                    <input class="form-control" type="url" @bind="Api.SiteUrl" id="siteUrl"/>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-6">
+                    <label for="logoUrl">Logo:</label>
+                    <input type="url" id="logoUrl" class="form-control" @bind="Api.LogoUrl" />
+                </div>
+                <div class="col-6">
+                    <label for="logo">Vue dynamique:</label>
+                    <img src="@Api.LogoUrl" id="logo" alt="Image introuvable" class="mw-100 mh-100"/>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <label for="description">Description:</label>
+                    <textarea rows="4" class="form-control" id="description" @bind="Api.Description" style="resize: vertical; height: auto;"></textarea>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-6">
+                    <label for="apiUrl">Api url:</label>
+                    <input type="url" id="apiUrl" class="form-control" @bind="Api.ApiUrl" />
+                </div>
+                
+                <div class="col-6">
+                    <label for="imagePath">Base image url:</label>
+                    <input type="url" id="imagePath" class="form-control" @bind="Api.ImageBasePath"/>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">Token (optionnel)</div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <label for="tokenName">Nom du token</label>
+                    <input type="text" id="tokenName" class="form-control" @bind="Api.TokenName" />
+                </div>
+                <div class="col-6">
+                    <label for="token">Valeur du token</label>
+                    <input type="text" id="token" class="form-control" @bind="Api.Token" />
+                </div>
+            </div>
+        </Step>
+        
+        <Step Title="Urls de recherche" IsValidStep="ValidateSearchUrls">
+            <h4>Toutes les urls ce-dessous doivent être relavives (la base étant l'url de l'api de l'étape précédente)</h4>
+
+            <div class="row mb-3 border rounded border-white pt-1 pb-1">
+                <div class="col-12">
+                    Pour les urls de recherches (sauf la base), aucune n'est obligatoire séparémment mais au moins une est requise.<br/>
+                    Il est possible de copier coller la recherche globale dans toute les url
+                </div>
+                <hr class="w-100"/>
+                <div class="col-6">
+                    <label for="searchPath">Url de recherche (base)</label>
+                    <input type="text" id="searchPath" class="form-control" @bind="Api.SearchUrl" placeholder="search/"/>
+                </div>
+                <div class="col-6">
+                    <label for="singleSearchPath">Url recherche unique (otpionnelle)</label>
+                    <input type="text" class="form-control" id="singleSearchPath" @bind="Api.SingleSearchUrl" placeholder="singlesearch/"/>
+                </div>
+                <div class="col-6">
+                    <label for="multiSearchPath">Url recherche globale (otpionnelle)</label>
+                    <input type="text" class="form-control" id="multiSearchPath" @bind="Api.GlobalSearchUrl" placeholder="shows?q="/>
+                </div>
+                <div class="col-6">
+                    <label for="animeSearchPath">Url recherche d'animes (otpionnelle)</label>
+                    <input type="text" class="form-control" id="animeSearchPath" @bind="Api.AnimeSearchUrl"/>
+                </div>
+                <div class="col-6">
+                    <label for="seriesSearchPath">Url recherche de séries (otpionnelle)</label>
+                    <input type="text" class="form-control" id="seriesSearchPath" @bind="Api.TvSearchUrl"/>
+                </div>
+                <div class="col-6">
+                    <label for="moviesSearchPath">Url recherche de films (otpionnelle)</label>
+                    <input type="text" class="form-control" id="moviesSearchPath" @bind="Api.MoviesSearchUrl"/>
+                </div>
+            </div>
+            
+            <div class="row border rounded border-white pt-1 pb-1 mb-2">
+                <div class="col-12">
+                    Cette section est dedié a la récupération d'élément par id. <br/>
+                    Si l'api ne diférencie pas les élement par genre, mettre tous les champs id à la même valeur.
+                </div>
+                <hr class="w-100"/>
+                <div class="col-4">
+                    <label for="animeIdUrl">Url par id des animes</label>
+                    <input type="text" id="animeIdUrl" class="form-control" @bind="Api.AnimeIdUrl"/>
+                </div>
+                <div class="col-4">
+                    <label for="movieIdUrl">Url par id des films</label>
+                    <input type="text" id="movieIdUrl" class="form-control" @bind="Api.MoviesIdUrl"/>
+                </div>
+                <div class="col-4">
+                    <label for="serieIdUrl">Url par id des séries</label>
+                    <input type="text" id="serieIdUrl" class="form-control" @bind="Api.TvIdUrl"/>
+                </div>
+                <div class="col-12 mt-2">
+                    <button class="btn btn-primary" @onclick="() => Api.MoviesIdUrl = Api.TvIdUrl = Api.AnimeIdUrl">Copier la valeur d'anime sur les autres champs</button>
+                </div>
+            </div>
+            
+            <div class="row border rounded border-white pt-1 pb-1 mb-2">
+                <div class="col-12">
+                    Cette dernière section rassemble les diversent urls qui peuvent êtres utiles. Aucune n'est obligatoire.
+                </div>
+                
+                <div class="col-6">
+                    <label for="otherNamesUrl">Url depuis l'id d'un résultats pour les autres noms: </label>
+                    <input type="text" class="form-control" id="otherNamesUrl" @bind="Api.OtherNamesUrl" />
+                </div>
+                
+                <div class="col-6">
+                    <label for="discoverUrl">Chemin "Discover" (recherche filtrer par genres/date etc... = recherche avancée)</label>
+                    <input type="text" id="discoverUrl" class="form-control" @bind="Api.DiscoverUrl" />
+                </div>
+                
+                <div class="col-12">
+                    Pour les genres, si l'api ne diférencie pas les genres par types, ne remplir qu'un seul champs sur les 2.
+                </div>
+                
+                <div class="col-6">
+                    <label for="genreMovieUrl">Chemin de la liste des genres (film)</label>
+                    <input type="text" class="form-control" id="genreMovieUrl" @bind="Api.GenresMoviesUrl" />
+                </div>
+                
+                <div class="col-6">
+                    <label for="genreTvUrl">Chemin de la liste des genres (TV/animes)</label>
+                    <input type="text" class="form-control" id="genreTvUrl" @bind="Api.GenresTvUrl" />
+                </div>
+            </div>
+        </Step>
+        
+        <Step Title="Json" IsValidStep="ValidateJsonStep">
+            <h4>Cette étapes demande d'observé un peu les données de la réponse (JSON). </h4>
+            <p> Elles sont optionnelles dans le cas où les données sont directement renvoyer en tant qu'élément racine.
+                Mais si la structure ne correspond pas, les résultats seront ignoré ou incomplets.</p>
+            
+            <div class="row pt-1 pb-1 mb-2">
+                <div class="col-6">
+                    <label for="pageName">Nom du champs de pagination</label>
+                    <input type="text" id="pageName" class="form-control" @bind="Api.PageName" />
+                </div>
+                
+                <div class="col-6">
+                    <label for="resultPath">Nom du champs des résultats</label>
+                    <input type="text" id="resultPath" class="form-control" @bind="Api.PathToResults" />
+                </div>
+                
+                <div class="col-6">
+                    <label for="genrePath">Nom du champs des genres (si genre url)</label>
+                    <input type="text" id="genrePath" class="form-control" @bind="Api.GenresPath" />
+                </div>
+                
+                <div class="col-6">
+                    <label for="pathToOnRes">Chemin de récupération des autres nom.</label>
+                    <input id="pathToOnRes" type="text" class="form-control" @bind="Api.PathToOnResults" placeholder="results" />
+                </div>
+
+                <div class="col-6">
+                    <label for="pathToResLang">Nom des champs de l'objet. Celui-ci se compose en 2 parties: "nom du résultat|code de la langue"</label>
+                    <input id="pathToResLang" type="text" class="form-control" @bind="Api.PathInOnResObject" placeholder="name|country.code" />
+                </div>
+            </div>
+        </Step>
+        
+        <Step Title="Propriété d'un résultat" IsValidStep="ValidatePropertiesResult">
+            <div class="row mb-3 border rounded border-white pt-1 pb-1">
+                <div class="col-12">
+                    Table de correspondance entre un résultats avec les champs attendues. <br/>
+                    Ex: Title | Name
+                </div>
+                
+                <hr class="w-100" />
+                
+                <div class="col-12">
+                    <div class="w-100 text-right mb-1">
+                        <input type="text" class="form-control h-100 align-middle d-inline-block" style="width: 150px;" @bind="newTableFieldKey" placeholder="ex: Title"/>
+                        <select style="width: 150px;" @bind="newTableFieldValue" class="custom-select form-control btn-outline-secondary">
+                            <option></option>
+                            @foreach (var s in TabFieldsValues)
+                            {
+                                <option>@s</option>
+                            }
+                        </select>
+                        <button class="btn btn-success" @onclick="AddTableField">Ajouter</button>
+                    </div>
+                    <BaseTable
+                        TabType="KeyValuePair<string, string>"
+                        Datas="Api.TableFields"
+                        Columns='Tab<TabColumns<KeyValuePair<string, string>>>(
+    new(){ Title = "Propriété du résultat", Colonnes = kv => kv.Key},
+    new() {Title = "Champs correspondant", Colonnes = kv => kv.Value})'
+                        RowClick="ClickOnTableFieldTable"/>
+                </div>
+            </div>
+            
+            <div class="row mb-3 border rounded border-white pt-1 pb-1">
+                <div class="col-12">
+                    Cette section est optionnelle si vous n'avez pas renseignée de "recherche avancée" dans l'étape 2.
+                </div>
+                
+                <hr class="w-100" />
+                
+                <div class="col-12">
+                    <div class="w-100 text-right mb-1">
+                        <select style="width: 150px;" @bind="filterId" class="custom-select form-control btn-outline-secondary">
+                            <option value="-1"></option>
+                            @foreach (var f in Filters)
+                            {
+                                <option value="@f.Id">@f.Label</option>
+                            }
+                        </select>
+                        <input type="text" class="form-control h-100 align-middle d-inline-block" style="width: 150px;" @bind="newFilterValue" placeholder=""/>
+                        <button class="btn btn-success" @onclick="AddFilter">Ajouter</button>
+                    </div>
+                    
+                    <BaseTable
+                        TabType="ApiObjectFilter"
+                        Datas="Api.Filters"
+                        Columns='Tab<TabColumns<ApiObjectFilter>>(
+    new(){ Title = "Type de Filtre", Colonnes = af => af.ApiFilter.Label, Template = af => af.ApiFilter?.Label, Sortable = false},
+    new() {Title = "Valeur", Colonnes = af => af.FieldValue})'
+                        RowClick="ClickOnTableFilters"
+                        EmptyDataText="Auncun filtre de renseigné"/>
+                </div>
+                
+                <div class="col-12">
+                    <div class="w-100 text-right mb-1">
+                        <select style="width: 150px;" @bind="sortId" class="custom-select form-control btn-outline-secondary">
+                            <option value="-1"></option>
+                            @foreach (var s in Sorts)
+                            {
+                                <option value="@s.Id">@s.Label</option>
+                            }
+                        </select>
+                        <input type="text" class="form-control h-100 align-middle d-inline-block" style="width: 150px;" @bind="newSortValue" placeholder=""/>
+                        <button class="btn btn-success" @onclick="AddSort">Ajouter</button>
+                    </div>
+                                    
+                    <BaseTable
+                        TabType="ApiObjectSort"
+                        Datas="Api.Sorts"
+                        Columns='Tab<TabColumns<ApiObjectSort>>(
+    new(){ Title = "Type de trie", Colonnes = af => af.ApiSort.Label, Template = af => af.ApiSort?.Label, Sortable = false},
+    new() {Title = "Valeur", Colonnes = af => af.FieldValue})'
+                        RowClick="ClickOnSortTable"
+                        EmptyDataText="Auncun trie renseigné."/>
+                </div>
+            </div>
+        </Step>
+    </Stepper>
+</div>

@@ -1,0 +1,96 @@
+﻿@using AnimeSearch.Data.Models
+@using AnimeSearch.Services.Database
+
+@inject SweetAlertService Swal
+@inject DatasUtilsService DatasUtilsService
+
+<BaseTable TabType="TypeSite"
+           Datas="Datas"
+           Columns='Tab(new TabColumns<TypeSite>() { Title = "Type de site", Colonnes = t => t.Name, Width = 80, Sortable = true, Filterable = true})'
+           RowClick="RowClick" />
+
+<div class="row mt-2">
+    <div class="col-2">
+        <a class="btn btn-dark border-white text-white" href="@AdminIndexUrl">Retour</a>
+    </div>
+    @if(NA >= DroitAdd)
+    {
+        <div class="col text-right">
+            <input class="form-control w-50 d-inline align-bottom center" type="text" maxlength="50" required placeholder="(50 caracteres max)" @bind-value="tmpStr" @onkeyup='(e) => { if (e.Key == "Enter") addType(); }' />
+            <button class="btn btn-success" @onclick="addType">Ajouter</button>
+        </div>
+
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string AdminIndexUrl { get; set; }
+
+    [Parameter]
+    public int NA { get; set; }
+
+    private List<TypeSite> Datas { get; } = new();
+
+    private string tmpStr = string.Empty;
+
+    private List<TypeSite> CanDelete { get; } = new();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Datas.AddRange(await DatasUtilsService.GetAllTypeSites());
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void RowClick(TypeSite type)
+    {
+        if(NA >= DroitDelete || CanDelete.Contains(type))
+        {
+            Swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Etes-vous sûr ?",
+                Text = "Il n'est pas possible de revenir en arrière après cela...",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Oui, ce type est moche !",
+                CancelButtonText = "J'ai changé d'avis"
+            }).ContinueWith(async task =>
+            {
+                var result = task.Result;
+
+                if (result.IsConfirmed)
+                {
+                    var nb = await DatasUtilsService.SuppTypes(type);
+
+                    if (nb > 0)
+                    {
+                        Datas.Remove(type);
+                        _ = InvokeAsync(StateHasChanged);
+                    }
+                   
+                }
+            });   
+        }
+    }
+
+    private void addType()
+    {
+        if (!string.IsNullOrWhiteSpace(tmpStr))
+        {
+            DatasUtilsService.AddType(tmpStr).ContinueWith(res =>
+            {
+                var type = res.Result;
+                
+                if (type != null)
+                {
+                    Datas.Add(type);
+                    CanDelete.Add(type);
+
+                    tmpStr = string.Empty;
+                }
+
+                InvokeAsync(StateHasChanged);
+            });
+        }
+    }
+}

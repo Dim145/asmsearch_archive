@@ -1,0 +1,58 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="title" xml:space="preserve">
+        <value>Bot Discord</value>
+        <comment>title</comment>
+    </data>
+    <data name="descr" xml:space="preserve">
+        <value>Ce bot discord permet d'effectuer des recherches directement depuis Discord. Les résultats et les liens seront donnés sous forme textuelle stylisée.</value>
+        <comment>descr</comment>
+    </data>
+    <data name="i_want_it" xml:space="preserve">
+        <value>Je veux ce bot !</value>
+        <comment>i_want_it</comment>
+    </data>
+    <data name="commands" xml:space="preserve">
+        <value>Commandes</value>
+        <comment>commands</comment>
+    </data>
+    <data name="description" xml:space="preserve">
+        <value>Description</value>
+        <comment>description</comment>
+    </data>
+    <data name="search_cmd" xml:space="preserve">
+        <value>Cette commande suivie d'un nom de série (etc...) permet d'effectuer une recherche. &lt;br /&gt;Ex: '!search One Piece'</value>
+        <comment>search_cmd</comment>
+    </data>
+    <data name="i_want_you_cmd" xml:space="preserve">
+        <value>Cette commande permet d'avoir le lien d'invitation du bot.</value>
+        <comment>i_want_you_cmd</comment>
+    </data>
+    <data name="infos_cmd" xml:space="preserve">
+        <value>Suivie d'un nom de série (etc...), cette commande donne quelques infos et liens utile en rapport avec la recherche. (nom, genres, date, etc...)</value>
+        <comment>infos_cmd</comment>
+    </data>
+    <data name="msearch_cmd" xml:space="preserve">
+        <value>recherches plusieurs résultats pour les mots clés donnés. Et donne un lien vers la recherche complête pour chacuns des résultats.</value>
+        <comment>msearch_cmd</comment>
+    </data>
+    <data name="commands_cmd" xml:space="preserve">
+        <value>Donne la liste des commandes utilisables.</value>
+        <comment>commands_cmd</comment>
+    </data>
+    <data name="P.S." xml:space="preserve">
+        <value>P.S: Si un compte existe avec votre pseudo Discord, les recherches seront ajoutées à votre historique. Si vous n'en avez pas, les données seront sauvegardées et récupérables en créant un compte avec ce même pseudo.</value>
+        <comment>P.S.</comment>
+    </data>
+</root>

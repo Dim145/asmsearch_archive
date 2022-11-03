@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AnimeSearch.Core\AnimeSearch.Core.csproj" />
+      <ProjectReference Include="..\AnimeSearch.Data\AnimeSearch.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DSharpPlus" Version="4.2.0" />
+      <PackageReference Include="FluentEmail.Core" Version="3.0.2" />
+      <PackageReference Include="FluentEmail.Razor" Version="3.0.2" />
+      <PackageReference Include="Hangfire.Core" Version="1.7.30" />
+      <PackageReference Include="MailKit" Version="3.3.0" />
+      <PackageReference Include="Telegram.Bot" Version="18.0.0" />
+      <PackageReference Include="Telegram.Bot.Extensions.Polling" Version="2.0.0-alpha.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Mails\Contact.cshtml" />
+    </ItemGroup>
+
+</Project>

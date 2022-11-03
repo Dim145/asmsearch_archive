@@ -1,0 +1,102 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="title" xml:space="preserve">
+        <value>Recherche avancée</value>
+        <comment>title</comment>
+    </data>
+    <data name="type" xml:space="preserve">
+        <value>Type</value>
+        <comment>type</comment>
+    </data>
+    <data name="any" xml:space="preserve">
+        <value>N'importe</value>
+        <comment>any</comment>
+    </data>
+    <data name="movie" xml:space="preserve">
+        <value>Film</value>
+        <comment>movie</comment>
+    </data>
+    <data name="anime" xml:space="preserve">
+        <value>Série/Animé</value>
+        <comment>anime</comment>
+    </data>
+    <data name="andall" xml:space="preserve">
+        <value>Et (tous)</value>
+        <comment>andall</comment>
+    </data>
+    <data name="orany" xml:space="preserve">
+        <value>Ou (au moins un)</value>
+        <comment>orany</comment>
+    </data>
+    <data name="genres" xml:space="preserve">
+        <value>Genres</value>
+        <comment>genre</comment>
+    </data>
+    <data name="title_optional" xml:space="preserve">
+        <value>Titre (optionel)</value>
+        <comment>title_optional</comment>
+    </data>
+    <data name="after" xml:space="preserve">
+        <value>Après</value>
+        <comment>after</comment>
+    </data>
+    <data name="before" xml:space="preserve">
+        <value>Avant</value>
+        <comment>before</comment>
+    </data>
+    <data name="page" xml:space="preserve">
+        <value>Page</value>
+        <comment>page</comment>
+    </data>
+    <data name="order_by" xml:space="preserve">
+        <value>Trier par</value>
+        <comment>order_by</comment>
+    </data>
+    <data name="validate" xml:space="preserve">
+        <value>Valider</value>
+        <comment>validate</comment>
+    </data>
+    <data name="clear" xml:space="preserve">
+        <value>Effacer</value>
+        <comment>clear</comment>
+    </data>
+    <data name="no_result" xml:space="preserve">
+        <value>Aucuns résultats.</value>
+        <comment>no_result</comment>
+    </data>
+    <data name="name" xml:space="preserve">
+        <value>Nom</value>
+        <comment>name</comment>
+    </data>
+    <data name="date" xml:space="preserve">
+        <value>Date</value>
+        <comment>date</comment>
+    </data>
+    <data name="origin" xml:space="preserve">
+        <value>Origine</value>
+        <comment>origin</comment>
+    </data>
+    <data name="summary" xml:space="preserve">
+        <value>Résumé</value>
+        <comment>summary</comment>
+    </data>
+    <data name="next_page" xml:space="preserve">
+        <value>page suivante</value>
+        <comment>next_page</comment>
+    </data>
+    <data name="previous_page" xml:space="preserve">
+        <value>page précédente</value>
+        <comment>previous_page</comment>
+    </data>
+</root>

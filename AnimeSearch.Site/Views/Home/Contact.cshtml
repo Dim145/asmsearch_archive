@@ -1,0 +1,61 @@
+﻿@using AnimeSearch.Core
+@using Microsoft.AspNetCore.Mvc.Localization
+@model MailRequest
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<div class="container text-center text-white">
+    <h2>@ViewData["Title"]</h2>
+</div>
+
+<div class="container text-white">
+    @if (ViewData["errors"] is string errors)
+    {
+        <p class="text-danger">@errors</p>
+    }
+    else if (ViewData["succes"] is string succes)
+    {
+        <p class="text-success">@succes</p>
+    }
+
+    @{ 
+        MailRequest datas = ViewData["datas"] as MailRequest ?? new();
+    }
+
+    <form asp-controller="Home" asp-action="Contact" method="post">
+        <div class="form-group">
+            <label for="p1">@Localizer["pseudo"]:</label>
+            <input type="text" class="form-control" name="pseudo" id="p1" placeholder="Un nom quelconque" value="@(string.IsNullOrWhiteSpace(datas.Pseudo) ? Guest.Equals(ViewData["username"]) ? "" : ViewData["username"] : datas.Pseudo)" required readonly=@(!Guest.Equals(ViewData["username"])) />
+        </div>
+
+        <div class="form-group">
+            <label for="m1">@Localizer["email"]:</label>
+            <input type="email" class="form-control" name="email" id="m1" placeholder="example@gmail.fr" value="@datas.Email" required />
+        </div>
+
+        <div class="form-group">
+            <label for="s1">@Localizer["subject"]:</label>
+            <select class="custom-select" name="subject" id="s1">
+                @foreach(string s in Enum.GetNames<Subjects>())
+                {
+                    string subject = s.Replace("__", "'").Replace("_", " ");
+                
+                    <option selected=@(subject == datas.Subject) >@subject</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="t1">@Localizer["message"]:</label>
+            <textarea class="form-control" name="message" id="m1" required>@datas.Message</textarea>
+        </div>
+
+        <div class="text-right">
+            <input type="submit" class="btn btn-dark border-white" value="@Localizer["send"]" />
+        </div>
+    </form>
+</div>

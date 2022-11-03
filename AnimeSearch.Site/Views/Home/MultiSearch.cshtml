@@ -1,0 +1,44 @@
+﻿@{
+    ViewData["Title"] = "Multi-Search";
+}
+@using System.Globalization;
+
+<header>
+    <link rel="stylesheet" href="~/css/MultiSearcg.min.css" />
+</header>
+
+<div class="text-white">
+    <div class="container">
+        @if (ViewData["results"] is not null and ModelMultiSearch[] listResult)
+        {
+            if(listResult == null || listResult.Length == 0)
+            {
+                <h2 class="text-center">Aucuns Résultats</h2>
+            }
+
+            foreach (ModelMultiSearch res in listResult)
+            {
+                if (string.IsNullOrWhiteSpace(res.Name)) continue;
+
+                Dictionary<string, string> d = new();
+
+                d.Add("type", res.Lien[0..res.Lien.IndexOf("/")]);
+                d.Add("id", res.Lien[(res.Lien.IndexOf("/") + 1)..]);
+
+                <a class="row border-bottom border-secondary table-element text-white" asp-controller="Home" asp-action="Search" asp-all-route-data="d" >
+                    <div class="col-8 align-self-center">
+                        <table class="table-borderless table-sm text-white text-decoration-none">
+                            <tr><td>Nom:</td><td>@res.Name</td></tr>
+                            <tr><td>Type:</td><td>@res.Type</td></tr>
+                            <tr><td>Date:</td><td>@res.Date.GetValueOrDefault().ToString("d", CultureInfo.GetCultureInfo("fr-FR"))</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="col-4" style="align-self: center;">
+                        <img class="affiche img-fluid" src="@res.Img" />
+                    </div>
+                </a>
+            }
+        }
+    </div>
+</div>

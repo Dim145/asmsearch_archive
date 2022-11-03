@@ -1,0 +1,74 @@
+﻿@using BlazorTable
+@using AnimeSearch.Core.ViewsModel
+@using AnimeSearch.Data.Models
+@using Blazored.LocalStorage
+@using BlazorTable.Interfaces
+@using BlazorTable.Components.ServerSide
+@using Newtonsoft.Json;
+
+@typeparam TabType
+
+<AnimeSearch.Site.Views.BlazorComponent.Table
+    @onclick="Onclick"
+    @oncontextmenu:preventDefault="true"
+    TableClass="table table-dark table-striped border table-hover"
+    RowClickAction="RowClick"
+    RightClickAction="RightRowClickAction"
+    TableItem="TabType"
+    Items="Datas"
+    PageSize="10"
+    ColumnReorder="true"
+    TableBodyClass="text-white"
+    DataLoader="Loader"
+    TableRowClass='RowClassSelector'
+    @ref="ChildTable">
+    
+    @if (ListSelected != null)
+    {
+        <Column TableItem="TabType" Filterable="false" Sortable="false" Title="Selected" Align="Align.Center">
+            <Template>
+                <input style="vertical-align: bottom;" type="checkbox" checked="@(ListSelected.Contains(context))" @onclick="() => ToggleAdd(context)" @onclick:preventDefault="true" @onclick:stopPropagation="true" />
+            </Template>
+        </Column>
+    }
+
+    @foreach (TabColumns<TabType> c in Columns)
+    {
+        <Column DefaultSortColumn="OrderInfo != null && OrderInfo.ColName == c.Title || c.SortDefault" TableItem="TabType" Title="@c.Title" Field="c.Colonnes" Sortable="c.Sortable" Filterable="c.Filterable" DefaultSortDescending="OrderInfo?.Desc ?? c.DefaultSortingDescending" Width=@(c.Width + "%")>
+            <Template>
+                @{
+                    var data = c.Template != null ? c.Template(context) : c.Colonnes.Compile()(context);
+                }
+
+                @if (data is not null and string s && s.StartsWith("http"))
+                {
+                    if (ImgExt.Any(e => s.EndsWith(e)))
+                    {
+                        <img class="mw-100" style="max-height: 45px" src="@s" alt="image indisponible"/>
+                    }
+                    else
+                    {
+                        int coupure = Math.Max(s.LastIndexOf('&'), s.LastIndexOf('='));
+
+                        <a class="link-white" href="@s" target="_blank">@s[(coupure + 1)..]</a>
+                    }
+                }
+                else
+                {
+                    var color = c.CellColor(context);
+
+                    <div
+                        style="@(color.IsEmpty ? "" : $"color: rgb({color.R}, {color.G}, {color.B});")"
+                        class="@(c.TextCenter ? "text-center" : "")"
+                        title="@(color.IsNamedColor ? $"couleur: {color.Name}" : "")">@data</div>
+                }
+            </Template>
+        </Column>
+    }
+    
+    <EmptyDataTemplate>
+        <div class="text-center">@(EmptyDataText ?? "Aucunes données")</div>
+    </EmptyDataTemplate>
+
+    <Pager ShowPageNumber="true" ShowTotalCount="true" ShowPageSizes="true" AlwaysShow="false" PageSizes="Tab(5, 10, 15, 20, 50, 75, 100).ToList()"/>
+</AnimeSearch.Site.Views.BlazorComponent.Table>

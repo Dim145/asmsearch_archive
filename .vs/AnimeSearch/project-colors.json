@@ -1,0 +1,16 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "233fb6b9-81ab-4c9b-bf25-5b5b7051393b": {
+      "ProjectGuid": "233fb6b9-81ab-4c9b-bf25-5b5b7051393b",
+      "DisplayName": "AnimeSearch",
+      "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Fichiers divers",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 1
+}

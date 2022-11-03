@@ -1,0 +1,8 @@
+﻿@using AnimeSearch.Data.Models
+<script type="text/javascript" src="lib/bs-stepper/dist/js/bs-stepper.js"></script>
+
+@{
+    var api = ViewData["api"] is ApiObject a ? a : null;
+}
+
+<component type="typeof(ApiComponent)" render-mode="ServerPrerendered" param-ApiId="api?.Id" />

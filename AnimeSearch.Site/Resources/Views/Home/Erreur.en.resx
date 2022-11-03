@@ -1,0 +1,30 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="title" xml:space="preserve">
+        <value>Error</value>
+        <comment>title</comment>
+    </data>
+    <data name="404" xml:space="preserve">
+        <value>Page not found or none of the APIs found results for your search... Are you sure of what you have entered?</value>
+        <comment>404</comment>
+    </data>
+    <data name="500" xml:space="preserve">
+        <value>An internal error occurred during the request... What did you do?</value>
+        <comment>500</comment>
+    </data>
+    <data name="force_serach" xml:space="preserve">
+        <value>Force search as</value>
+        <comment>force_serach</comment>
+    </data>
+</root>

@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Admin page";
+}
+
+
+@using AnimeSearch.Data.Models
+
+<link rel="stylesheet" href="~/css/Admin/Index.min.css" />
+<script type="text/javascript" src="~/js/Admin/Index.min.js"></script>
+
+<div style="margin-top: 10px;">
+    <div class="text-white">
+        <div class="border rounded">
+            <table class="table table-striped table-dark table-hover table-bordered">
+                <thead>
+                    <tr class="text-center">
+                        <th class="col-3">Pseudo</th>
+                        <th class="col-md-2 col-3">Dernière visite</th>
+                        <th class="col-md-2 col-3">Accès Admin</th>
+                        <th class="col-md-5 col-3 border-right-0">Navigateur</th>
+                    </tr>
+                </thead>
+
+                <tbody class="overflow-auto">
+                    @if (ViewData["users"] is not null and Users[] users)
+                    {
+                        foreach (Users u in users)
+                        {
+                            <tr data-userid="@u.Id" class="user_lig">
+                                <td class="text-center overflow-auto col-3">@u.UserName</td>
+                                <td class="text-center col-md-2 col-3" data-toggle="tooltip" data-placement="top" title="dd/MM/yyyy HH:mm:ss">@(u.Derniere_visite.HasValue ? u.Derniere_visite.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss") : "Aucunes visites")</td>
+                                <td class="text-center col-md-2 col-3">@( u.Dernier_Acces_Admin.HasValue ? u.Dernier_Acces_Admin.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss") : "Jamais accédé")</td>
+                                <td class="col-md-5 col-3 overflow-auto">@u.Navigateur</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row" style="margin-top: 10px;">
+        <div class="col text-left">
+            <a class="btn btn-dark border-white" asp-controller="Admin" asp-action="Sites">Sites</a>
+        </div>
+        <div class="col text-center">
+            <a class="btn btn-dark border-white" asp-controller="Admin" asp-action="TypeSites">Types</a>
+        </div>
+        <div class="col text-center">
+            <a class="btn btn-dark border-white" asp-controller="Admin" asp-action="services">Services</a>
+        </div>
+        <div class="col text-right">
+            <a class="btn btn-dark border-white" asp-controller="Admin" asp-action="Citations">Citations</a>
+        </div>
+    </div>
+</div>
+
+<div id="rmenu" style="display: none; max-width: 250px" class="bg-dark border border-white rounded text-white">
+    <a class="btn btn-dark w-100" id="ips" href="~/">Addr. IP</a>
+    <a class="btn btn-dark w-100" id="recherches" href="~/">Recherches</a>
+    <a class="btn btn-dark w-100" id="savedsearch" href="~/">Recherches Sauvegardées</a>
+    @if (ViewData["isSuperAdmin"] is not null and bool isSuperAdmin && isSuperAdmin)
+    {
+        <a class="btn btn-dark w-100" id="dons" href="~/">Dons</a>
+    }
+</div>
+
+<div class="dcm" style="display: none;"></div>

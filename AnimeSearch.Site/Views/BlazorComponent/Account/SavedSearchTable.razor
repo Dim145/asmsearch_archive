@@ -1,0 +1,137 @@
+﻿@using BlazorTable
+@using AnimeSearch.Data
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Services.Database
+
+@inject NavigationManager NavManager
+@inject SweetAlertService Swal
+@inject DatasUtilsService DatasUtilsService
+
+@if( !AdminView || NA >= DataUtils.DroitDelete)
+{
+    <div class="row">
+        <div class="col text-left">
+            <button class="btn btn-dark border-white" @onclick="ToggleAll">@(Selected.Count == Datas.Count ? "Tous désélectionner" : "Tous sélectionner")</button>
+        </div>
+        @if (Selected.Any())
+        {
+            <div class="col text-right">
+                <button class="btn btn-danger" @onclick="DeleteSelected">Supprimer la selection</button>
+            </div>
+        }
+    </div>
+    <br />
+}
+
+<BlazorTable.Table @oncontextmenu:preventDefault="true"
+       TableClass="table table-dark table-striped border table-hover"
+       TableItem="SavedSearch"
+       PageSize="10"
+       Items="Datas"
+       TableBodyClass="text-white">
+
+    <Column TableItem="SavedSearch" Filterable="false" Sortable="false" Title="Selected" Field="(ss) => ss.UserId">
+        <Template>
+            <input type="checkbox" checked="@(Selected.Contains(context))" @onclick="() => ToggleAdd(context)" />
+        </Template>
+    </Column>
+
+    <Column TableItem="SavedSearch" Title="Recherche" Field="(c) => c.Search" Sortable="true" Filterable="true" Width="60%" />
+
+    <Column TableItem="SavedSearch" Title="Date Sauvegarde" Field="(c) => c.DateSauvegarde" Sortable="true" Filterable="true" Width="25%">
+        <Template>
+            @context.DateSauvegarde.ToString("dd/MM/yyyy HH:mm:ss")
+        </Template>
+    </Column>
+
+    <Column TableItem="SavedSearch" Title="Action" Sortable="false" Filterable="false" Width="15%">
+        <Template>
+            <button class="btn btn-dark border-white" @onclick="() => ViewClick(context)">Voir</button>
+        </Template>
+    </Column>
+
+    <Pager ShowPageNumber="true" ShowTotalCount="true" ShowPageSizes="true" AlwaysShow="false" PageSizes="Tab(5, 10, 15, 20, 50, 75, 100).ToList()" />
+</BlazorTable.Table>
+
+@code {
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public bool AdminView { get; set; } = false;
+
+    [Parameter]
+    public int NA { get; set; } = 0;
+
+    public List<SavedSearch> Datas { get => Task.Run(async () => await DatasUtilsService.GetAllSavedSearchs(UserId)).GetAwaiter().GetResult(); }
+
+    private List<SavedSearch> Selected { get; } = new();
+
+    private void ViewClick(SavedSearch savedSearch)
+    {
+        var uri = NavManager.ToAbsoluteUri( AdminView ? $"admin/savedsearch/{UserId}/{savedSearch.Search}" : $"savedSearch/{savedSearch.Search}");
+        NavManager.NavigateTo(uri.ToString(), true);
+    }
+
+    private void ToggleAdd(SavedSearch ss)
+    {
+        if (Selected.Contains(ss))
+            Selected.Remove(ss);
+        else
+            Selected.Add(ss);
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void ToggleAll()
+    {
+        if (Selected.Count == Datas.Count)
+        {
+            Selected.Clear();
+        }
+        else
+        {
+            if (Selected.Any())
+                Datas.ForEach((ss) => { if (!Selected.Contains(ss)) Selected.Add(ss); });
+            else
+                Selected.AddRange(Datas);
+        }
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void DeleteSelected()
+    {
+        Swal.FireAsync(new()
+        {
+            Title = "Supprimer les sauvegardes séléctionnées ?",
+            Icon = SweetAlertIcon.Question,
+            ConfirmButtonText = "Ouaip !",
+            ShowCancelButton = true,
+            CancelButtonText = "Non"
+        }).ContinueWith(task =>
+        {
+            var res = task.Result;
+
+            if(res.IsConfirmed)
+            {
+                var nbSupp = DatasUtilsService.DeleteManySaves(Selected).GetAwaiter().GetResult();
+                var isOk = nbSupp == Selected.Count;
+
+                if (isOk)
+                {
+                    Selected.Clear();
+
+                    InvokeAsync(StateHasChanged);
+                }
+                else Swal.FireAsync(new()
+                {
+                    Title = "Une erreur est survenue...",
+                    Icon = SweetAlertIcon.Error,
+                    ConfirmButtonText = "Super..."
+
+                });
+            }
+        });
+    }
+}

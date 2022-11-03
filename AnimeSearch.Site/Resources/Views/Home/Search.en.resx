@@ -1,0 +1,86 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="default_res_name" xml:space="preserve">
+        <value>error, not found</value>
+        <comment>default_res_name</comment>
+    </data>
+    <data name="saved_search" xml:space="preserve">
+        <value>Saved search</value>
+        <comment>saved_search</comment>
+    </data>
+    <data name="search" xml:space="preserve">
+        <value>Search</value>
+        <comment>search</comment>
+    </data>
+    <data name="saved_date" xml:space="preserve">
+        <value>Saved date</value>
+        <comment>saved_date</comment>
+    </data>
+    <data name="typed_search" xml:space="preserve">
+        <value>Search tapped</value>
+        <comment>typed_search</comment>
+    </data>
+    <data name="serie_found" xml:space="preserve">
+        <value>Found series</value>
+        <comment>serie_found</comment>
+    </data>
+    <data name="language" xml:space="preserve">
+        <value>language</value>
+        <comment>language</comment>
+    </data>
+    <data name="other_names" xml:space="preserve">
+        <value>Other names</value>
+        <comment>other_names</comment>
+    </data>
+    <data name="genres" xml:space="preserve">
+        <value>Genres</value>
+        <comment>genres</comment>
+    </data>
+    <data name="release_date" xml:space="preserve">
+        <value>Release date</value>
+        <comment>release_date</comment>
+    </data>
+    <data name="status" xml:space="preserve">
+        <value>Status</value>
+        <comment>status</comment>
+    </data>
+    <data name="view_here" xml:space="preserve">
+        <value>see here</value>
+        <comment>view_here</comment>
+    </data>
+    <data name="episodes" xml:space="preserve">
+        <value>Episodes</value>
+        <comment>episodes</comment>
+    </data>
+    <data name="modal_eps_descr" xml:space="preserve">
+        <value>Below are the episodes that could be retrieved from the sites that returned only one result.</value>
+        <comment>modal_eps_descr</comment>
+    </data>
+    <data name="close" xml:space="preserve">
+        <value>Close</value>
+        <comment>close</comment>
+    </data>
+    <data name="execute_search" xml:space="preserve">
+        <value>Run search</value>
+        <comment>execute_search</comment>
+    </data>
+    <data name="trailer" xml:space="preserve">
+        <value>trailer</value>
+        <comment>trailer</comment>
+    </data>
+    <data name="help" xml:space="preserve">
+        <value>&lt;p&gt;The result sheet contains the names in different languages (unknown in case the language is not specified) as well as some information such as the genres (displayed in English) and the release date...&lt;/p&gt; &lt;p&gt;The sites in the table may not be accessible from your network (in which case the icon should not be displayed).&lt;/p&gt; &lt;p&gt;Clicking on a row of the table (the last three columns) opens a new page on which the search will be performed directly in your browser. If the page has been open for a long time, the number of results may differ.&lt;/p&gt; &lt;p&gt;The "+ d'infos" button opens a nautiljon page for anime, AlloCiné for movies and some series or Wikipedia if neither site responds positively.&lt;/p&gt; &lt;p&gt;In the case where the search is for anime and the nautiljon search gets only one result, a trailer is embedded next to the info button. (experimental)&lt;/p&gt;</value>
+        <comment>help</comment>
+    </data>
+</root>

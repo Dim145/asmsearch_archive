@@ -1,0 +1,58 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="title" xml:space="preserve">
+        <value>Bot Discord</value>
+        <comment>title</comment>
+    </data>
+    <data name="descr" xml:space="preserve">
+        <value>This discord bot allows you to search directly from Discord. The results and links will be given in a stylized textual form.</value>
+        <comment>descr</comment>
+    </data>
+    <data name="i_want_it" xml:space="preserve">
+        <value>I want this bot!</value>
+        <comment>i_want_it</comment>
+    </data>
+    <data name="commands" xml:space="preserve">
+        <value>Command</value>
+        <comment>commands</comment>
+    </data>
+    <data name="description" xml:space="preserve">
+        <value>Description</value>
+        <comment>description</comment>
+    </data>
+    <data name="search_cmd" xml:space="preserve">
+        <value>This command followed by a series name (etc. ...) allows you to search. &lt;br /&gt;Ex: '!search One Piece'</value>
+        <comment>search_cmd</comment>
+    </data>
+    <data name="i_want_you_cmd" xml:space="preserve">
+        <value>This command allows to have the invitation link of the bot.</value>
+        <comment>i_want_you_cmd</comment>
+    </data>
+    <data name="infos_cmd" xml:space="preserve">
+        <value>Followed by a series name (etc...), this command gives some useful information and links related to the search. (name, genres, date, etc...)</value>
+        <comment>infos_cmd</comment>
+    </data>
+    <data name="msearch_cmd" xml:space="preserve">
+        <value>searches for multiple results for the given keywords. And gives a link to the complete search for each result.</value>
+        <comment>msearch_cmd</comment>
+    </data>
+    <data name="commands_cmd" xml:space="preserve">
+        <value>Gives the list of usable commands.</value>
+        <comment>commands_cmd</comment>
+    </data>
+    <data name="P.S." xml:space="preserve">
+        <value>P.S: If you have an account with your Discord nickname, the searches will be added to your history. If you don't have one, the data will be saved and retrievable by creating an account with the same nickname.</value>
+        <comment>P.S.</comment>
+    </data>
+</root>

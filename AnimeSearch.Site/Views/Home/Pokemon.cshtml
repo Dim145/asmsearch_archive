@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<link rel="stylesheet" href="~/css/Pokemon.css">
+
+<!-- partial:index.partial.html -->
+<section id="wrapper" class="w-100 h-100">
+    <div id="title">
+        <h1>@Localizer["catch dialga"]</h1>
+    </div>
+    <div id="info-button" onclick="toggleInfoScreen()">?</div>
+    <div id="info-screen" class="hidden">
+        <div id="info-shade"></div>
+        <div id="info-text">
+            <h3>@Localizer["catch it"]:</h3>
+            <ul>
+                <li>@Localizer["lig 1"]</li>
+                <li>@Localizer["lig 2"]</li>
+            </ul>
+        </div>
+
+    </div>
+    <div id="touch-layer"></div>
+    <div id="particles"></div>
+    <div id="ring-screen">
+        <div id="ring">
+            <div id="ring-active">
+                <div id="ring-fill"></div>
+            </div>
+        </div>
+    </div>
+    <div id="screen" class="gradient-background">
+        <div id="target-container">
+            <div id="target"></div>
+        </div>
+        <div id="ball"></div>
+        <div id="output"></div>
+    </div>
+
+
+    <div id="capture-screen" class="gradient-background hidden">
+        <div id="capture-status" class="hidden">
+            @Localizer["catched"]
+        </div>
+        <div id="poof-container" class="hidden">
+            <div id="poof"></div>
+        </div>
+        <div id="capture-confetti"></div>
+        <div id="capture-ball"></div>
+        <div id="capture-ball-button-container" class="hidden">
+            <div id="capture-ball-button"></div>
+        </div>
+    </div>
+
+
+</section>
+<!-- partial -->
+<script src='~/js/Pokemon/animation.min.js'></script>
+<script src='~/js/Pokemon/zingtouch.min.js'></script>
+<script src="~/js/Pokemon/script.min.js"></script>

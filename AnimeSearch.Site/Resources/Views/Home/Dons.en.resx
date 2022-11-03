@@ -1,0 +1,66 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="title" xml:space="preserve">
+        <value>Donations</value>
+        <comment>title</comment>
+    </data>
+    <data name="description" xml:space="preserve">
+        <value>It's a fact and you all know it (well normally), but it's not free to host a website.
+                The server(s), the domain names, the email addresses and many other options are not free. &lt;br /&gt;
+                &lt;br /&gt;
+                The current server is paying with its domain name and email address. At the lowest price because I remain a poor student (and not rich moreover).
+                Unfortunately the limitations notably at the level of the power are still strongly present. &lt;br /&gt;
+                &lt;br /&gt;
+                I count on YOUR support to be able to increase the current package in order to speed up the site and maybe have more options.
+                All this to stop having searches that take more than 46 years to load . &lt;br /&gt;
+                &lt;br /&gt;
+                And if the donations are sufficient, I could even hire a WEB designer for your pleasure . &amp;#x1F609;</value>
+    </data>
+    <data name="annual_obj" xml:space="preserve">
+        <value>Annual target</value>
+        <comment>annual_obj</comment>
+    </data>
+    <data name="server_cost" xml:space="preserve">
+        <value>Server cost and others...</value>
+        <comment>server_cost</comment>
+    </data>
+    <data name="month_obj" xml:space="preserve">
+        <value>Monthly goal</value>
+        <comment>month_obj</comment>
+    </data>
+    <data name="annual_server_cost" xml:space="preserve">
+        <value>current server cost</value>
+        <comment>annual_server_cost</comment>
+    </data>
+    <data name="list_dons" xml:space="preserve">
+        <value>List of latest donations</value>
+        <comment>list_dons</comment>
+    </data>
+    <data name="latest_{0}_donates" xml:space="preserve">
+        <value>The last {0} donations</value>
+        <comment>latest_{0}_donates</comment>
+    </data>
+    <data name="per_month" xml:space="preserve">
+        <value>per month</value>
+        <comment>per_month</comment>
+    </data>
+    <data name="visitor" xml:space="preserve">
+        <value>Visitor</value>
+        <comment>visitor</comment>
+    </data>
+    <data name="le" xml:space="preserve">
+        <value>at</value>
+        <comment>le</comment>
+    </data>
+</root>

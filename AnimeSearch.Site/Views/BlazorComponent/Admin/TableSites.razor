@@ -1,0 +1,129 @@
+﻿@using AnimeSearch.Core
+@using AnimeSearch.Data
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Services.Database
+
+@inject SweetAlertService Swal
+@inject DatasUtilsService DatasUtilsService
+
+<BaseTable 
+    TabType="Sites"
+    Datas="datas"
+    RightRowClickAction="RowClick"
+    Onclick="(a) => this.a = a"
+    RowClassSelector='(s) => "site " + (s.Etat == EtatSite.VALIDER ? "" : s.Etat == EtatSite.NON_VALIDER ? "bg-warning" : "bg-danger")'
+    Columns='Tab<TabColumns<Sites>>(
+        new() { Title = "Title", Colonnes = (a) => a.Title, Width = 15},
+        new() { Title = "Icon", Colonnes = (a) => a.UrlIcon, Width = 20},
+        new() { Title = "Url", Colonnes = (a) => a.Url, Width = 20},
+        new(){ Title = "Nb clicks", Colonnes = a => a.NbClick, Width = 10},
+        new() { Title = "Type du site", Colonnes = (a) => a.TypeSite, Width = 20},
+        new() { Title = "Status", Colonnes = (a) => a.Etat, Width = 15}
+    )' />
+
+@if(NA >= DroitModifBas)
+{
+    <div class="dcm" @onclick="HideMenu" @oncontextmenu="e => RowClick(tmpSite, e)" @oncontextmenu:preventDefault="true" style="display: @dcmDisplay;">
+        <div id="rmenu" style="display: @dcmDisplay; top: @(menuY)px; left: @(menuX)px;" class="bg-dark border border-white rounded text-white">
+            <button class="btn btn-dark w-100" id="cval" @onclick="ChangeState">@(tmpSite?.Etat == EtatSite.VALIDER ? "Erreur (404)" : "Valider" )</button>
+            @if(NA >= DroitModifHaut)
+            {
+                <form action="@url_form_modif" method="post">
+                    <input type="hidden" class="d-none" style="display: none;" id="modifid" name="Url" value="@tmpSite?.Url" />
+                    <input type="hidden" name="__RequestVerificationToken" value="@Token2" />
+                    <button class="btn btn-dark w-100" id="modif">Modifier</button>
+                </form>
+            }
+
+            @if(NA >= DroitDelete)
+            {
+                <button class="btn btn-dark w-100" @onclick="() => DeleteSite(tmpSite)" >Supprimer</button>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    public List<Sites> datas { get; } = new();
+
+    [Parameter]
+    public string url_form_modif { get; set; }
+
+    [Parameter]
+    public string Token2 { get; set; }
+
+    [Parameter]
+    public int NA { get; set; }
+
+    private string dcmDisplay = "none";
+
+    private MouseEventArgs a;
+
+    private Sites tmpSite = null;
+
+    private double menuX = 0;
+    private double menuY = 0;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        datas.AddRange(await DatasUtilsService.GetAllSites());
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void RowClick(Sites e, MouseEventArgs mouseEvent)
+    {
+        if (NA < DroitModifBas) return;
+
+        menuX = mouseEvent.ClientX;
+        menuY = mouseEvent.ClientY;
+
+        tmpSite = e;
+
+        dcmDisplay = "block";
+
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void HideMenu()
+    {
+        dcmDisplay = "none";
+        this.a = null;
+    }
+
+    private void ChangeState()
+    {
+        tmpSite.Etat = tmpSite.Etat == EtatSite.VALIDER ? EtatSite.ERREUR_404 : EtatSite.VALIDER;
+
+        DatasUtilsService.SetSiteValidationState(tmpSite.Url, tmpSite.Etat).ContinueWith(t =>
+        {
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private void DeleteSite(Sites site)
+    {
+        Swal.FireAsync(new()
+        {
+            Title = "Voulez-vous vraiment supprimer " + site.Title,
+            Icon = SweetAlertIcon.Question,
+            CancelButtonText = "Je ne suis pas sûr",
+            ConfirmButtonText = "Oui !",
+            ShowCancelButton = true
+        }).ContinueWith(t =>
+        {
+            var res = t.Result;
+
+            if(res.IsConfirmed)
+            {
+                DatasUtilsService.DeleteSite(site).ContinueWith(task =>
+                {
+                    if (task.Result > 0)
+                    {
+                        datas.Remove(site);
+                        InvokeAsync(StateHasChanged);
+                    }
+                });
+            }
+        });
+    }
+}

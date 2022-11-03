@@ -1,0 +1,21 @@
+{
+  "models": [
+    "potionmaker/pio",
+    "potionmaker/tia",
+    "HyperdimensionNeptunia/noir_classic",
+    "HyperdimensionNeptunia/noir",
+    "HyperdimensionNeptunia/noireswim",
+    "hijiki",
+    "tororo",
+    "kasumi",
+    "kurumi",
+    "nipsilon",
+    "rem",
+    "Black_Heart",
+    "Uni"
+  ],
+    "messages": [
+        "来自 Potion Maker 的 Pio 酱 ~",
+        "来自 Potion Maker 的 Tia 酱 ~"
+    ]
+}

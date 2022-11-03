@@ -1,0 +1,20 @@
+name: Docker Image CI
+
+on:
+  release:
+    types: [published]
+
+jobs:
+
+  publich-image:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: login
+      run: docker login -u ${{ secrets.GITLAB_USERNAME }} -p ${{ secrets.GITLAB_TOKEN }} registry.gitlab.com
+    - name: Build the Docker image
+      run: docker build -t registry.gitlab.com/dimitri.bleach/asmsearch:${{ github.ref_name }} .
+    - name: push Docker image
+      run: docker push registry.gitlab.com/dimitri.bleach/asmsearch:${{ github.ref_name }}

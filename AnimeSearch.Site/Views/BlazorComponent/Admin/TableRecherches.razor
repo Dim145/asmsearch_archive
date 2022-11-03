@@ -1,0 +1,26 @@
+﻿@using AnimeSearch.Data
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Services.Database
+
+@inject DatasUtilsService DatasUtilsService
+
+<BaseTable TabType="Recherche"
+           Datas="recherches"
+           Columns='Tab<TabColumns<Recherche>>(
+                new() { Title="Nom", Colonnes = (a) => a.recherche, Width=50 },
+                new() { Title="Nombre de recherches", Colonnes = (a) => a.Nb_recherches, Width=15},
+                new() { Title="Source", Colonnes = (a) => a.Source, Width=15},
+                new() { Title="Dernière recherche", Colonnes=(a) => a.Derniere_Recherche, Template = (a) => a.Derniere_Recherche.GetValueOrDefault().ToString("dd/MM/yyyy HH:mm:ss"), Width=20, SortDefault = true, DefaultSortingDescending = true}
+            )'
+            CurrentPage="BasePage"/>
+
+@code {
+
+    public List<Recherche> recherches { get => Task.Run( async () => { return await DatasUtilsService.RecherchesByUser(UserId); }).GetAwaiter().GetResult().OrderByDescending(r => r.Derniere_Recherche).ToList(); }
+
+    [Parameter]
+    public int UserId { get; set; }
+
+    [Parameter]
+    public int BasePage { get; set; } = 0;
+}

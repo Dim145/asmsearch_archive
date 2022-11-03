@@ -1,0 +1,18 @@
+﻿
+@using AnimeSearch.Data.Models
+
+@{
+    Users selected_user = ViewData["selected user"] is not null and Users u ? u : null;
+
+    ViewData["Title"] = "Recherches pour " + (selected_user != null ? selected_user.UserName : "????");
+}
+
+<style>
+    td, th {
+        vertical-align: middle!important;
+    }
+</style>
+
+<h2 class="h2 w-100 text-center align-self-center text-white">@ViewData["title"]</h2>
+
+<component type="typeof(TableRecherches)" render-mode="ServerPrerendered" param-UserId="selected_user.Id" param-BasePage='ViewData["page"] is not null and int page ? page : 0' />

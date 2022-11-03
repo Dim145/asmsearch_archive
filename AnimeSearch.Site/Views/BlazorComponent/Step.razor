@@ -1,0 +1,25 @@
+﻿@code {
+    [Parameter]
+    public string Title { get; set; }
+    
+    [Parameter] 
+    public RenderFragment ChildContent { get; set; }
+    
+    [Parameter]
+    public Func<string> IsValidStep { get; set; }
+
+    public bool InError { get; set; }= false;
+    
+    [CascadingParameter]
+    public Stepper ParentComponent { get; set; }
+
+    public string ErrorMessage { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        
+        ParentComponent?.AddStep(this);
+    }
+
+}

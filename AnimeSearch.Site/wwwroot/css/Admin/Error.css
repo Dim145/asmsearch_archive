@@ -1,0 +1,106 @@
+﻿input[type='checkbox'] {
+    display: none;
+}
+
+.wrap-collabsible {
+    margin: 1.2rem 0;
+}
+
+.lbl-toggle {
+    display: block;
+    padding: 1rem;
+    color: #DDD;
+    background: #202731;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all 0.25s ease-out;
+    margin-bottom: 0!important;
+}
+
+.lbl-toggle:hover {
+    color: #FFF;
+}
+
+.lbl-toggle::before {
+    content: ' ';
+    display: inline-block;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid currentColor;
+    vertical-align: middle;
+    margin-right: .7rem;
+    transform: translateY(-2px);
+    transition: transform .2s ease-out;
+}
+
+.toggle:checked + .lbl-toggle::before {
+    transform: rotate(90deg) translateX(-3px);
+}
+
+.collapsible-content {
+    max-height: 0px;
+    overflow: hidden;
+    transition: max-height .25s ease-in-out;
+}
+
+.toggle:checked + .lbl-toggle + .collapsible-content {
+    max-height: 3000px;
+}
+
+.toggle:checked + .lbl-toggle {
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.collapsible-content .content-inner {
+    background: rgba(0, 0, 0, .2);
+    border-bottom: 1px solid rgba(0, 0, 0, .45);
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    padding: .5rem 1rem;
+}
+
+.collapsible-content p {
+    margin-bottom: 0;
+}
+
+/*------- stacktrace -----------------*/
+
+pre, code {
+    color: #ffffff;
+    font-family: 'Roboto Mono', serif;
+}
+
+pre {
+    padding: 20px 0 20px 0;
+    white-space: break-spaces;
+}
+
+h1 { text-align: center; }
+
+.st-type {
+    color: #9004b7;
+    font-weight: bolder;
+}
+
+.st-method {
+    color: #33ab5d;
+    font-weight: bolder;
+}
+
+.st-frame {
+    width: 100%;
+}
+
+.st-frame-params {
+    color: #ffffff;
+    font-weight: normal;
+}
+
+.st-param-type { color: #0a8472; }
+
+.st-param-name { color: #ffffff; }
+
+.st-file { color: #f8b068; }
+
+.st-line { color: #ff4f68; }

@@ -1,0 +1,116 @@
+﻿@using BlazorTable;
+@using Microsoft.AspNetCore.Identity;
+@using AnimeSearch.Data
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Services.Database
+@using KeudellCoding.Blazor.AdvancedBlazorSelect2
+
+@inject UserManager<Users> userManager
+@inject SweetAlertService Swal
+@inject DatasUtilsService DatasUtilsService
+
+<AnimeSearch.Site.Views.BlazorComponent.Table TableClass="table table-dark table-striped border table-hover"
+       TableItem="Users"
+       Items="UsersList"
+       PageSize="10"
+       ColumnReorder="true"
+       TableBodyClass="text-white">
+
+    <Column TableItem="Users" Title="Nom" Field="(u) => u.UserName" Sortable="true" Filterable="true" Width=25 />
+
+    <Column TableItem="Users" Title="Roles" Width=75>
+        <Template>
+            @{
+                if (!UserRoles.ContainsKey(context.Id))
+                {
+                    List<string> roles = Task.Run(async () => await userManager.GetRolesAsync(context)).GetAwaiter().GetResult().ToList();
+                    UserRoles.Add(context.Id, roles);
+                    UserRolesBase.Add(context.Id, roles.ToList());
+                }
+            }
+            <Select2 TItem="string"
+                     TSource="string[]"
+                     IdSelector="c => c"
+                     TextSelector="c => c"
+                     FilterFunction="async (items, filter, token) => items.Where(s => s.Contains(filter)).ToList()"
+                     GetElementById="async (items, id, token) => items.FirstOrDefault(s => s == id)"
+                     Datasource="Roles.Select(r => r.Name).ToArray()"
+                     Value="UserRoles[context.Id]"
+                     Multiselect="true" />
+        </Template>
+    </Column>
+
+    <Pager ShowPageNumber="true" ShowTotalCount="true" ShowPageSizes="true" AlwaysShow="false" PageSizes="Tab(5, 10, 15, 20, 50, 75, 100).ToList()" />
+</AnimeSearch.Site.Views.BlazorComponent.Table>
+
+<button class="btn btn-dark border-white text-white" @onclick="OnSave">Enregistrer les relations</button>
+
+@code {
+    public List<Roles> Roles { get; } = new();
+
+    public List<Users> UsersList { get; } = new();
+
+    public Dictionary<int, List<string>> UserRoles = new();
+    public Dictionary<int, List<string>> UserRolesBase = new();
+
+    private string message = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var users = await DatasUtilsService.GetAllUsers();
+        
+        UsersList.AddRange(users.Where(u => u.PasswordHash != null));
+
+        var roles = await DatasUtilsService.GetRoles();
+        
+        Roles.AddRange(roles);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task OnSave()
+    {
+        message = "enregistré !";
+
+        foreach (Users u in UsersList)
+        {
+            try
+            {
+                int id = u.Id;
+
+                if (UserRoles[id] != null && (!UserRoles[id].All(r => UserRolesBase[id].Contains(r)) || !UserRolesBase[id].All(r => UserRoles[id].Contains(r))))
+                {
+                    Users u2 = await userManager.FindByIdAsync(id.ToString());
+
+                    bool isSuperAdmin = await userManager.IsInRoleAsync(u2, SuperAdminRole.Name);
+
+                    if (UserRolesBase[id].Count > 0)
+                        await userManager.RemoveFromRolesAsync(u2, UserRolesBase[id]);
+
+                    if (UserRoles[u.Id].Count > 0)
+                        await userManager.AddToRolesAsync(u2, UserRoles[id]);
+
+                    if (isSuperAdmin)
+                    {
+                        await userManager.AddToRoleAsync(u2, SuperAdminRole.Name);
+
+                        message = "Le rôle Super-Admin ne peut être retiré par un autre Super-Admin. Seul le propriétaire du site peut changer cela (accès direct BDD).";
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                AddExceptionError($"Blazor UserRole maj. avec id: {u.Id} et pseudo: {u.UserName}", e);
+
+                message = "Une erreur interne est survenue pendant la sauvegarde. Rechargez la page et ressayez.";
+            }
+        }
+
+        _ = Swal.FireAsync(new SweetAlertOptions
+        {
+            Title = "Résultats",
+            Text = message,
+            Icon = (message == "enregistré !" ? SweetAlertIcon.Success : SweetAlertIcon.Error),
+            ConfirmButtonText = "Ok"
+        });
+    }
+}

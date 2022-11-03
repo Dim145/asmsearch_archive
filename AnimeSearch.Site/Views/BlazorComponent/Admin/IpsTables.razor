@@ -1,0 +1,20 @@
+﻿@using AnimeSearch.Data
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Services.Database
+
+@inject DatasUtilsService DatasUtilsService
+
+<BaseTable TabType="IP"
+           Datas="ips"
+           Columns='Tab<TabColumns<IP>>(
+                new() { Title="Addresse IP", Colonnes = (a) => a.Adresse_IP, Width=30 },
+                new() { Title="Dernière utilisation", Colonnes = (a) => a.Derniere_utilisation, Template = (a) => a.Derniere_utilisation?.ToString("dd/MM/yyyy HH:mm:ss"), Width=30, SortDefault = true, DefaultSortingDescending = true},
+                new() { Title="Localisation (Pays/Région/Ville)", Colonnes=(a) => a.Localisation, Template = (a) => $"https://www.google.com/maps/search/?api=1&query={a.Localisation}", Width=40}
+            )' />
+
+@code {
+    public IEnumerable<IP> ips { get => Task.Run( async () => { return await DatasUtilsService.IpsByUser(UserId); }).GetAwaiter().GetResult().OrderByDescending(i => i.Derniere_utilisation); }
+
+    [Parameter]
+    public int UserId { get; set; }
+}

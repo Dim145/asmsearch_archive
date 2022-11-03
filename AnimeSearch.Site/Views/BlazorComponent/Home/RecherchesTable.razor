@@ -1,0 +1,34 @@
+﻿@using AnimeSearch.Data
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Services.Database
+
+@inject NavigationManager NavManager
+@inject DatasUtilsService DatasUtilsService
+
+<BaseTable TabType="Recherche"
+           Datas="Tab"
+           Columns='Tab<TabColumns<Recherche>>(
+                new() { Title = "Recherches", Colonnes = (r) => r.recherche, Width = 70 },
+                new() { Title = "Nb Recherches", Colonnes = (r) => r.Nb_recherches, Width = 30, TextCenter = true, SortDefault = true, DefaultSortingDescending = true}
+            )'
+           RowClick="RowClick"
+           RowClassSelector='(r) => "tr-search"'/>
+
+@code
+{
+    [Parameter]
+    public string UrlGetDatas { get; set; }
+
+    [Parameter]
+    public string UrlSearch { get; set; } = "/";
+
+    private IEnumerable<Recherche> Tab
+    {
+        get => Task.Run(async () => (await DatasUtilsService.GetRecherchesDatas()).OrderByDescending(r => r.Nb_recherches)).GetAwaiter().GetResult();
+    }
+
+    private void RowClick(Recherche r)
+    {
+        NavManager.NavigateTo(UrlSearch + "?q=" + Uri.EscapeDataString(r.recherche), true);
+    }
+}

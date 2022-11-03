@@ -1,0 +1,21 @@
+﻿@{
+    ViewData["Title"] = "Citations";
+}
+@using Microsoft.AspNetCore.Antiforgery
+
+@inject IAntiforgery antiforgery
+
+<header>
+    <link rel="stylesheet" href="~/css/Admin/Citations.min.css" asp-append-version="true" />
+    <a href="~/" class="d-none" style="display: none;" id="baseurl"></a>
+</header>
+
+<component type="typeof(TableCitations)" render-mode="ServerPrerendered" param-NA='ViewData["na"] is not null and int na ? na : 0' />
+
+<div class="row mt-2">
+    <div class="col text-left">
+        <a class="btn btn-dark border-white" asp-controller="Admin" asp-action="index">Retour</a>
+    </div>
+
+    <script src="_content/BlazorTable/BlazorTable.min.js"></script>
+</div>

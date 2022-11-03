@@ -1,0 +1,71 @@
+{
+	"mouseover": [
+		{
+			"selector": "#live2d",
+			"text": [ "Souris... souris au mauvais endroit !", "Qu'est-ce que tu fais ?", "Miaou miaou ?", "J'ai peur (ノ≧∇≦)ノ", "Abus de pouvoir ! Au secours !", "Ne bouge pas tes mains !", "Hentai！" ]
+		},
+		{
+			"selector": "#cj",
+			"text": [ "{title}" ]
+		},
+		{
+			"selector": "a[href^='/tags/']",
+			"text": [ "要去看看 <span>{text}</span> 标签么？", "点它可以查看此标签下的所有文章哟！" ]
+		},
+		{
+			"selector": "#cun",
+			"text": "Pour changer de \"username\" il faut demander à un adminstrateur."
+		},
+		{
+			"selector": ".dpp",
+			"text": "Tu veux me faire un don ? &#x1F622;"
+		},
+		{
+			"selector": "#gss",
+			"text": "Tu peux faire une recherche multiple avec un click droit &#x1F609;"
+		},
+		{
+			"selector": ".ressearch",
+			"text": "Clic pour ouvrir la page de recherche{title}."
+		}
+	],
+	"click": [
+		{
+			"selector": "#live2d",
+			"text": [ "il y a un pervers ici qui n'arrête pas de me toucher (ó﹏ò.)", "Pourquoi tu me touches ? Je vais te mordre !", "Ne me touchez pas, il n'y a rien à toucher !" ]
+		},
+		{
+			"selector": "#cupn",
+			"text": "Je vais être honnête avec toi, ça ne sert à rien &#x1F605;"
+		}],
+	"seasons": [
+		{
+			"date": "01/01",
+			"text": "C'est le <span>Nouvel An</span> et le début d'une nouvelle année, bonne année {year}~ !"
+		},
+		{
+			"date": "03/08",
+			"text": "Aujourd'hui, c'est la Journée internationale de la femme !"
+		},
+		{
+			"date": "04/01",
+			"text": "Je vais vous confier un secret. C'est le jour du poisson d'avril, ne vous faites pas avoir."
+		},
+		{
+			"date": "09/10",
+			"text": "<span>Journée des professeurs</span>, dites bonjour à votre professeur à l'école~."
+		},
+		{
+			"date": "12/20-12/31",
+			"text": "C'est <span>Noël</span> et le propriétaire a dû refaire des courses..."
+		},
+		{
+			"date": "05/05",
+			"text": "C'est l'annivairsaire de <span>Luffy</span>! Souhaitons un bon annivairsaire à cette légende &#x1F61C;"
+		},
+		{
+			"date": "11/20",
+			"text": "Célébrons les |age-1984| ans de Dragon ball ! &#x1F409;"
+		}
+	]
+}

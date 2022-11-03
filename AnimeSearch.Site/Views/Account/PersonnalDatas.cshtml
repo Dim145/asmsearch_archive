@@ -1,0 +1,35 @@
+﻿@using AnimeSearch.Site.Views.Account
+@{
+    ViewData["Title"] = "Données personnelles";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<h4>@ViewData["Title"]</h4>
+
+<div class="row">
+    <div class="col-md-10">
+        <p>
+            Votre compte contient des données personnelles que vous nous avez communiquées ainsi que certaines données récupérées automatiquement (IP, recherches).
+        </p>
+        <p>
+            Cette page vous permet de télécharger ces données ou de supprimer votre compte.
+        </p>
+        <div class="form-group">
+            <a asp-controller="AccountApi" asp-action="DownloadPersonnalData" class="btn btn-primary" download>
+                Télécharger
+            </a>
+        </div>
+        <p>
+            <button id="delete" class="btn btn-danger">Supprimer mon compte</button>
+        </p>
+    </div>
+</div>
+
+<conf id="liveConf" style="right: 0; width: 200px; height: 200px; bottom: 0;">
+    <script src="~/lib/live/autoload.js"></script>
+</conf>
+
+@section Scripts {
+    <script type="text/javascript" src="~/js/Account/DeleteDatas.min.js"></script>
+    <partial name="_ValidationScriptsPartial"/>
+}

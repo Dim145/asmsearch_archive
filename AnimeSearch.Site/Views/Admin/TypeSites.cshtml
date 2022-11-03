@@ -1,0 +1,8 @@
+﻿
+@{
+    ViewData["title"] = "Types de sites";
+}
+
+<h2 class="h2 w-100 text-center align-self-center text-white">@ViewData["title"]</h2>
+
+<component type="typeof(TypesTable)" render-mode="ServerPrerendered" param-AdminIndexUrl='Url.Action("index", "admin")' param-NA='ViewData["na"] is not null and int na ? na : 0' />

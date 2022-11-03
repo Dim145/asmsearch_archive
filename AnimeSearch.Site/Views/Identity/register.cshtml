@@ -1,0 +1,65 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model AnimeSearch.Site.Controllers.IdentityController.InputRegisterModel
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["title"];
+
+    var returnUrl = ViewData["rurl"] as string ?? string.Empty;
+    var recaptchaSiteKey = ViewData["recaptchaSiteKey"] as string ?? string.Empty;
+}
+
+<h1 class="text-white">@Localizer["create account"]</h1>
+
+<div class="row text-white">
+    <div class="col-md-4">
+        <form asp-route-returnUrl="@returnUrl" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <input type="hidden" class="d-none" name="recaptchaToken"/>
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">@Localizer["register"]</button>
+        </form>
+    </div>
+    <div class="col-md-6 col-md-offset-2 text-white">
+        <section>
+            <h4>@Localizer["information"]</h4>
+            <hr />
+            <ul>
+                <li>@Localizer["pseudo infos"] &#128521;</li>
+                <li>@Localizer["mdp infos"]</li>
+            </ul>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    
+    @if (!string.IsNullOrWhiteSpace(recaptchaSiteKey))
+    {
+        <script src="https://www.google.com/recaptcha/api.js?render=@recaptchaSiteKey"></script>
+        <script>
+            grecaptcha.ready(function () {
+                grecaptcha.execute('@recaptchaSiteKey', { action: 'submit' }).then(function (token) {
+                    $("[name='recaptchaToken']").val(token);
+                });
+            });
+    
+    </script>
+    }
+}

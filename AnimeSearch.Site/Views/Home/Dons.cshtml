@@ -1,0 +1,110 @@
+﻿@using AnimeSearch.Data.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["title"];
+
+    double objDons = ViewData["obj dons"] as double? ?? 0;
+    bool hasOpenAPIKEY = ViewData["hasOpenNodeAPIKEY"] is true;
+}
+
+<div class="container text-white text-center">
+    <h1>@ViewData["Title"]</h1>
+</div>
+
+<div class="row">
+    <div class="col">
+        <div class="row">
+            <div class="col text-white">
+                @Localizer.GetHtml("description")
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card text-white border-white bg-dark mt-2 mb-2 ml-auto mr-auto mr-md-0 ml-md-0">
+                    <div class="card-body">
+                        <h5 class="card-title">@Localizer["annual_obj"]</h5>
+                        <h6 class="card-subtitle mb-2 text-white-50">@Localizer["server_cost"]</h6>
+                        <p class="card-text">
+                            @if (ViewData["totalYear"] is double total)
+                            {
+                                int objTotal = ((int)Math.Round(objDons * 12));
+                                int percent  = ((int)((total / objTotal) * 100));
+
+                                <div class="w-100"><i>@total</i>/@objTotal€</div>
+
+                                <div class="progress mt-2">
+                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: @percent%;" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@percent%</div>
+                                </div>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-auto">
+        <div class="row">
+            <div class="col">
+                <div class="card text-white border-white bg-dark mt-2 mb-2 ml-auto mr-auto mr-md-0 ml-md-0" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@Localizer["month_obj"]</h5>
+                        <h6 class="card-subtitle mb-2 text-white-50">@Localizer["annual_server_cost"]</h6>
+                        <p class="card-text">
+                            @if (ViewData["totalMonth"] is double totalMonth)
+                            {
+                                int percent = ((int)(totalMonth / objDons * 100));
+
+                                <div class="w-100"><i>@totalMonth</i>/@objDons€ @Localizer["per_month"].</div>
+
+                                <div class="progress mt-2">
+                                    <div class="progress-bar progress-bar-striped" role="progressbar" style="width: @percent%;" aria-valuenow="@percent" aria-valuemin="0" aria-valuemax="100">@percent%</div>
+                                </div>
+                            }
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (ViewData["last_dons"] is Don[] {Length: > 0 } lastDons)
+        {
+            <div class="row">
+                <div class="col">
+                    <div class="card text-white border-white bg-dark mt-2 mb-2 ml-auto mr-auto mr-md-0 ml-md-0" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">@Localizer["list_dons"]</h5>
+                            <h6 class="card-subtitle mb-2 text-white-50">@Localizer["latest_{0}_donates", lastDons.Length]</h6>
+                            <p class="card-text overflow-auto">
+                                @foreach (Don d in lastDons)
+                                {
+                                    <div class="row mt-1 mb-1">
+                                        <div class="col">
+                                            <div class="row">
+                                                <div class="col text-left">
+                                                    @(d.User.UserName != Guest ? d.User.UserName : Localizer["visitor"])
+                                                </div>
+                                                <div class="col-auto text-right">
+                                                    @d.Amout€
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col text-left text-white-50">
+                                                    &emsp;=> @Localizer["le"] @d.Date.ToString("dd/MM/yyyy")
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

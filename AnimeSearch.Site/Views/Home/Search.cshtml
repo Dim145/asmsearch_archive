@@ -1,0 +1,221 @@
+﻿@using System.Globalization;
+@using AnimeSearch.Core.Models.Api
+@using AnimeSearch.Data
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Site.Views.BlazorComponent.Home
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Newtonsoft.Json
+
+@inject IViewLocalizer Localizer
+
+<header>
+    <link rel="stylesheet" href="~/css/Search.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap-grid.min.css" />
+
+    <script type="text/javascript" src="~/js/Search.js" asp-append-version="true"></script>
+</header>
+
+@{ 
+    var s = ViewData["response"] as Result ?? new(){ Name = $"{Localizer["default_res_name"].Value}"};
+
+    ViewData["Title"] = s.Name;
+
+    DateTime? dateSauv = ViewData["DateSauv"] is DateTime t ? t : null;
+
+    var isSaved = dateSauv != null;
+}
+
+<div class="text-white">
+    <h1 class="text-center">@(isSaved ? $"{Localizer["saved_search"].Value}" : $"{Localizer["search"].Value}")</h1>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-sm-8">
+                <div class="container align-content-center">
+                    <p>@(isSaved ? $"{Localizer["saved_date"].Value}: {dateSauv.GetValueOrDefault():dd/MM/yyyy HH:mm:ss}" : $"{Localizer["typed_search"].Value}: {ViewData["search"]}")</p>
+
+                    @if (ViewData["result"] != null)
+                    {
+                        <p>@ViewData["result"]</p>
+                    }
+                    else
+                    {
+                        @if (s.Name?.ToLower() != ViewData["search"]?.ToString())
+                        {
+                            <p>@Localizer["serie_found"]: @s.Name</p>
+                        }
+
+                        @if (s.OtherNames.Any())
+                        {
+                            <table class="table-dark table-sm table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>@Localizer["language"]</th>
+                                    <th>@Localizer["other_names"]</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var keys in s.OtherNames.Keys)
+                                {
+                                    <tr>
+                                        <td>@(keys.EnglishName.Contains("Invariant") ? "Unknown" : keys.EnglishName)</td>
+                                        <td>@string.Join(" / ", s.OtherNames.GetValueOrDefault(keys))</td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        }
+                    }
+                </div>
+
+                <div class="container align-content-center">
+                    <table class="table-dark table-sm table-borderless">
+                        @if (s.GetGenres() != null)
+                        {
+                            <tr>
+                                <td><b>@Localizer["genres"]:</b></td>
+                                <td>@string.Join(" - ", s.GetGenres())</td>
+                            </tr>
+                        }
+
+                        @if (s.ReleaseDate != null)
+                        {
+                            <tr title="dd/mm/yyyy">
+                                <td><b>@Localizer["release_date"]:</b></td>
+                                <td>@s.ReleaseDate.GetValueOrDefault().ToString("d", CultureInfo.CurrentUICulture) </td>
+                            </tr>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(s.Status))
+                        {
+                            <tr>
+                                <td><b>@Localizer["status"]:</b></td>
+                                <td>@s.Status</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-4 align-self-center text-center">
+                @if (s?.Image != null)
+                {
+                    Uri u = s.Image;
+
+                    <a href="@s.Url" target="_blank"><img alt="affiche de la recharche" class="affiche img-fluid" id="affiche" src="@u" /></a>
+                }
+            </div>
+        </div>
+
+        @if (ViewData["searchInfos"] is string infos)
+        {
+            <div class="row">
+                <a class="btn btn-dark border-white mr-2" href="@infos" target="_blank" id="btnInfo">+ d'infos</a>
+
+                <button type="button" data-toggle="modal" data-target="#eps" id="openEps" class="btn btn-dark border-white" style="margin-top: 10px;">@Localizer["view_here"]</button>
+                
+                <div class="modal fade text-dark" id="eps" tabindex="-1" role="dialog" aria-labelledby="ajout" aria-hidden="true">
+                    <div class="modal-dialog" role="document" id="modalEps" style="max-width: 704px!important;">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">@Localizer["episodes"]</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>@Localizer["modal_eps_descr"]</p>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-6 col-md-4 col-lg-3">
+                                            <select id="seasons" class="w-100 custom-select" style="display: none;"></select>
+                                        </div>
+                                        <div class="col-6 col-md-4 col-lg-3">
+                                            <select id="episodes" class="w-100 custom-select" style="display: none;"></select>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col">
+                                            <select id="urls" class="custom-select w-100" style="display: none;"></select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row mt-2">
+                                        <div class="col">
+                                            <iframe allowfullscreen id="ep" height="360" class="w-100"></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-success" id="send" disabled="disabled" data-toggle="tooltip" title="Envoyer les résultats sur le serveur afin de retrouver les résultats instantanément plus tard.">Sauvegarder les résultats</button>
+                                <button type="button" class="btn btn-primary" id="ere">@Localizer["execute_search"] <img style="max-height: 25px; display: none;" src="ressources/images/loading_sharingan.svg" alt="" id="rsIcon"/></button>
+                                <button type="button" class="btn btn-secondary" id="btnCloseEps" data-dismiss="modal">@Localizer["close"]</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                @if (ViewData["ba"] is string ba)
+                {
+                    <button id="btnBa" data-toggle="modal" type="button" data-target="#ba" title="bande-annonce" class="bg-transparent border-0" style="margin-top: auto; margin-left: 10px; padding-top: 0; padding-bottom: 0; vertical-align: middle;outline:  none;"><img height="35" src="~/ressources/images/play.png" /></button>
+
+                    <div class="modal fade text-dark" id="ba" tabindex="-1" role="dialog" aria-labelledby="ajout" aria-hidden="true">
+                        <div class="modal-dialog" role="document" id="modalBA">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">@Localizer["trailer"]</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <iframe id="frame" src="@ba" class="w-100" style="height: 35vh;" allow="fullscreen" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true">
+                                    </iframe>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="btnFermerBA" data-dismiss="modal">@Localizer["close"]</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    <br /><br />
+    <input type="hidden" class="d-none" style="display: none!important;" value="@(s.IdApiFrom).@(s.Id)"/>
+    <component type="typeof(SearchTable)"
+               render-mode="Server"
+               param-Search='ViewData["type"] is null ? s.Name : null'
+               param-Id="s.Id"
+               param-Type='ViewData["type"]'
+               param-InfosLink='ViewData["searchInfos"]'
+               param-BaLink='ViewData["ba"]'
+               param-UserName='ViewData["username"] is not null and string username && !string.IsNullOrWhiteSpace(username) ? username : User?.Identity?.Name ?? DataUtils.Guest'
+               param-IsSaved='isSaved'
+               param-NA='ViewData["na"] is not null and int na ? na : 0'
+               param-IdApi='ViewData["idapi"] is int i ? i : -1'
+               param-Res='JsonConvert.SerializeObject(s)'/>
+</div>
+
+<conf id="liveConf" style="width: 200px; height: 200px; bottom: 0;">
+    <script src="~/lib/live/autoload.min.js"></script>
+</conf>
+
+@if (ViewData["eps"] is EpisodesUrls[] eps)
+{
+    <script type="text/javascript">
+        const baseEps = Object.freeze({
+            @{
+                WriteLiteral(string.Join(',', eps
+                    .DistinctBy(e => e.SeasonNumber)
+                    .Select(e => $"{e.SeasonNumber}: {'{' + string.Join(',', eps.Where(eu => eu.SeasonNumber == e.SeasonNumber).DistinctBy(eu => eu.EpisodeNumber).Select(eu => $"{eu.EpisodeNumber}: [{string.Join(',', eps.Where(ep => ep.SeasonNumber == e.SeasonNumber && ep.EpisodeNumber == eu.EpisodeNumber).Select(ep => $"'{ep.Url}'"))}]")) + '}'}")));
+            }
+        });
+    </script>
+}
+
+@{
+    ViewData["aideHTML"] = $"{Localizer["help"].Value}";
+}

@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Sites";
+}
+@using Microsoft.AspNetCore.Antiforgery
+
+@inject IAntiforgery antiforgery
+
+<link rel="stylesheet" href="~/css/Admin/Sites.min.css" />
+
+<div class="rounded">
+    <component type="typeof(TableSites)"
+               render-mode="ServerPrerendered"
+               param-url_form_modif='Url.Action("EditerSite", "admin")'
+               param-token2="antiforgery.GetTokens(Context).RequestToken"
+               param-NA='ViewData["na"] is not null and int na ? na : 0'/>
+</div>
+
+<div class="row mt-2">
+    @if (ViewData["time_before_cs_service"] is not null and TimeSpan time)
+    {
+        <div class="col-auto text-left">
+            <a class="text-white">Temps avant prochaine vérification auto: @time.ToString(@"hh' h 'mm")</a>
+        </div>
+    }
+    <div class="col text-right">
+        <a class="btn btn-dark border-white" asp-controller="Admin" asp-action="index">Retour</a>
+    </div>
+</div>

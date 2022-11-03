@@ -1,0 +1,111 @@
+﻿.affiche {
+    vertical-align: middle;
+    align-content: center;
+    text-align: center;
+    border-radius: 8px;
+    max-height: 350px;
+    background-color: white;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15), 0 2px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.table-element {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    text-decoration: none;
+}
+
+.table-element:hover {
+    background-color: dimgrey;
+    text-decoration: none;
+}
+
+.middle-screen {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/*-------------------------------------------------*/
+
+/* Box */
+.box {
+    max-height: 162px;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+}
+
+    .box.open {
+        max-height: 100rem;
+        transition: max-height 0.5s cubic-bezier(0.9, 0, 0.8, 0.2);
+    }
+
+/* Text */
+@keyframes open {
+    from {
+        line-clamp: 3;
+        -webkit-line-clamp: 3;
+    }
+
+    to {
+        line-clamp: initial;
+        -webkit-line-clamp: initial;
+    }
+}
+
+@keyframes close {
+    from {
+        line-clamp: initial;
+        -webkit-line-clamp: initial;
+    }
+
+    to {
+        line-clamp: 3;
+        -webkit-line-clamp: 3;
+    }
+}
+
+.text {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    animation: close 0.1s linear 0.1s forwards;
+}
+
+.open .text {
+    animation: open 0.1s linear 0s forwards;
+}
+
+/* Irrelavant css... */
+.show-arrow {
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transition: transform .5s .2s;
+}
+
+.open .show-arrow {
+    transform: rotate(-135deg);
+    -webkit-transform: rotate(-135deg);
+    margin-top: 5px;
+}
+
+.btnToggle {
+    background: transparent;
+    border: 2px solid darkorchid;
+    height: 32px;
+    width: 32px;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}

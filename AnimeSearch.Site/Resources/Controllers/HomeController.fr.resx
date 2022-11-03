@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="bad_domain_error_message" xml:space="preserve">
+        <value>le site spécifié n'est pas accessible ou ne correspond pas à un alias de AsmSearch.</value>
+    </data>
+    <data name="mail_sended" xml:space="preserve">
+        <value>Mail envoyer !</value>
+    </data>
+    <data name="contact_error" xml:space="preserve">
+        <value>le mail n'as pas pus être envoyé.</value>
+    </data>
+    <data name="contact_incorrect" xml:space="preserve">
+        <value>Un des champs saisie n'est pas correct.</value>
+    </data>
+</root>

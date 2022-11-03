@@ -1,0 +1,14 @@
+﻿
+@using AnimeSearch.Data.Models
+
+@{
+    Users selected_user = ViewData["selected user"] is not null and Users u ? u : null;
+
+    ViewData["Title"] = "IPs pour " + (selected_user != null ? selected_user.UserName : "????");
+}
+
+<h2 class="h2 w-100 text-center align-self-center text-white">@ViewData["title"]</h2>
+
+<div class="rounded border">
+    <component type="typeof(IpsTables)" render-mode="ServerPrerendered" param-UserId='selected_user.Id' />
+</div>

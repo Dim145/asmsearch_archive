@@ -1,0 +1,104 @@
+﻿@using AnimeSearch.Data.Models
+@using AnimeSearch.Data
+@using System.Drawing
+@using AnimeSearch.Services.Database
+
+@inject SweetAlertService Swal
+@inject NavigationManager NavManager
+@inject DatasUtilsService DatasUtilsService
+
+<div class="row">
+    <div class="col text-right">
+        @if (SelectedApiObjects.Count > 0)
+        {
+            <button class="btn btn-danger mb-2" @onclick="DeleteSelected">Supprimer</button>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="col">
+        <BaseTable TabType="ApiObject"
+                   Datas="Apis"
+                   Columns='Tab<TabColumns<ApiObject>>(
+            new(){ Title = "Icon", Colonnes = a => a.LogoUrl, Width = 40 },
+            new(){ Title = "Name", Colonnes = a => a.Name, Width = 20 },
+            new(){ Title = "SiteUrl", Colonnes = a => a.ApiUrl, Template = a => $"Url: {a.ApiUrl}", Width = 20 },
+            new(){ Title = "Status", Colonnes = a => a.IsValid, Template = a => a.IsValid ? "Valide" : "Invalide", CellColor = a => a.IsValid ? Color.Green : Color.Red }
+            )'
+                   ListSelected="SelectedApiObjects"
+                   RowClick="OnClick"
+                   RowClassSelector='o => "cursor-pointer"'
+                   RightRowClickAction="RightClick"
+                   OnListChange="() => InvokeAsync(StateHasChanged)"
+        />
+    </div>
+</div>
+
+@code {
+    private List<ApiObject> Apis { get; } = DataUtils.Apis.ToList();
+
+    private List<ApiObject> SelectedApiObjects { get; } = new();
+
+    private void OnClick(ApiObject api)
+    {
+        NavManager.NavigateTo($"{BaseUrl}admin/apis/{api.Id}/edit", true);
+    }
+    
+    private void RightClick(ApiObject api, MouseEventArgs e)
+    {
+        Swal.FireAsync(new()
+        {
+            Title = $"Voulez-vous supprimer {api.Name} ?",
+            ShowCancelButton = true,
+            ConfirmButtonText = "Oui",
+            CancelButtonText = "Non"
+        }).ContinueWith(res =>
+        {
+            if (res.Result.IsConfirmed)
+            {
+                DatasUtilsService.DeleteApi(api.Id).ContinueWith(res =>
+                {
+                    if (res.Result > 0)
+                    {
+                        Apis.RemoveAt(Apis.FindIndex(a => a.Id == api.Id));
+
+                        var selectedIndex = SelectedApiObjects.FindIndex(a => a.Id == api.Id);
+                        if(selectedIndex >= 0)
+                            SelectedApiObjects.RemoveAt(selectedIndex);
+                        InvokeAsync(StateHasChanged);
+                    }
+                });
+            }
+        });
+    }
+
+    private void DeleteSelected()
+    {
+        Swal.FireAsync(new()
+        {
+            Title = $"Voulez-vous supprimer les {SelectedApiObjects.Count} apis séléctionnées ?",
+            ShowCancelButton = true,
+            ConfirmButtonText = "Oui",
+            CancelButtonText = "Non"
+        }).ContinueWith(res =>
+        {
+            if (res.Result.IsConfirmed)
+            {
+                DatasUtilsService.DeleteApis(SelectedApiObjects).ContinueWith(res =>
+                {
+                    SelectedApiObjects.ForEach(a =>
+                    {
+                        var index = Apis.FindIndex(api => a.Id == api.Id);
+                    
+                        if (index >= 0)
+                            Apis.RemoveAt(index);
+                    });
+                
+                    SelectedApiObjects.Clear();
+
+                    InvokeAsync(StateHasChanged);
+                });
+            }
+        });
+    }
+}

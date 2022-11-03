@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="title" xml:space="preserve">
+        <value>Page d'accueil</value>
+    </data>
+    <data name="last_infos" xml:space="preserve">
+        <value>&lt;u&gt;Pour les utilisateurs connectés&lt;/u&gt;, il est possible de sauvegarder une recherche pour la revoir plus rapidement une prochaine fois. &lt;br /&gt; La fonctionnalité de recherche avancée est maintenant disponible (menu "autres" ou clic droit sur bouton de recherche).</value>
+    </data>
+    <data name="site_descr" xml:space="preserve">
+        <value>Ce petit site sert à rechercher des animes (&amp;#128286; inclus), des séries ou des films sur plusieurs sites différents, de streaming et/ou de téléchargement &lt;br /&gt; P.S: Le code 800 n'est pas une erreur...</value>
+    </data>
+    <data name="bienvenue" xml:space="preserve">
+        <value>Bienvenue</value>
+    </data>
+    <data name="recherche..." xml:space="preserve">
+        <value>Recherches en cours...</value>
+    </data>
+    <data name="simple" xml:space="preserve">
+        <value>Simple</value>
+    </data>
+    <data name="multiple" xml:space="preserve">
+        <value>Multiple</value>
+    </data>
+    <data name="add_cita" xml:space="preserve">
+        <value>Proposer une nouvelle citation</value>
+    </data>
+    <data name="auteur" xml:space="preserve">
+        <value>Auteur</value>
+    </data>
+    <data name="contenue" xml:space="preserve">
+        <value>Contenue</value>
+    </data>
+    <data name="annuler" xml:space="preserve">
+        <value>Annuler</value>
+    </data>
+    <data name="proposer" xml:space="preserve">
+        <value>Proposer</value>
+    </data>
+    <data name="aide" xml:space="preserve">
+        <value>&lt;p&gt;Cette page permet de saisir une recherche. À partir de 3 caractères de saisie, des propositions sont affichées en fonction des réponses des API.&lt;/p&gt; &lt;p&gt;Les requêtes sont faites directement depuis le navigateur, le temps de réponse dépend entièrement de votre connexion internet.&lt;/ p&gt; &lt;p&gt;L'ancienne version utilise un algorithme plus limité (pas de filtre et ne fonctionne que pour les séries, etc...) mais est plus rapide.&lt;/p&gt; &lt;p&gt;Avec un click droit (ou appui long sur smartphone) sur le bouton de recherche, il est possible d'effectuer une recherche multiple qui permettra de sélectionner plusieurs résultats possibles (plus détaillé).&lt;br/&gt;Attention, le point du dessous ne fonctionne pas avec une recherche multiple.&lt;/p&gt; &lt;a&gt;Il est possible de paramétrer les recherches avec des mots clés: &lt;ul&gt; &lt;li&gt;serie=&gt;RECHERCHE: permet d'effectuer la recherche seulement auprès de l'api des series/animes&lt;/li&gt; &lt;li&gt;movie=&gt;RECHERCHE: permet d'effectuer la recherche uniquement auprès de l'api des films ou films d'animation&lt;/li&gt; &lt;/ul&gt;&lt;/a&gt;</value>
+    </data>
+    <data name="citation of day" xml:space="preserve">
+        <value>Citation du jour.</value>
+        <comment>citation of day</comment>
+    </data>
+    <data name="propose citation" xml:space="preserve">
+        <value>proposer une citation</value>
+        <comment>propose citation</comment>
+    </data>
+</root>

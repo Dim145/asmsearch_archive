@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="title" xml:space="preserve">
+        <value>Proposer un site</value>
+    </data>
+    <data name="descr" xml:space="preserve">
+        <value>Cette page permet de proposer un nouveau site à ajouter au catalogue de recherche. Le site ne sera utilisé que lorsqu'un administrateur aura validé l'ajout. &lt;br /&gt; Les données sont presque toutes obligatoires. Veuillez à bien saisir le bon chemin dans le dernier champ. Sans cela, la recherche n'aboutira pas et jamais aucun résultat ne sera trouvé.</value>
+    </data>
+    <data name="url_site" xml:space="preserve">
+        <value>URL racine / URL de recherche</value>
+        <comment>url_site</comment>
+    </data>
+    <data name="url_tooltip" xml:space="preserve">
+        <value>URl de base du site et celle permettant d'effectuer des recherches</value>
+        <comment>url_tooltip</comment>
+    </data>
+    <data name="icon_url" xml:space="preserve">
+        <value>URL complet de l'icone</value>
+        <comment>icon_url</comment>
+    </data>
+    <data name="icon_url_tooltip" xml:space="preserve">
+        <value>URL pointant vers l'image du site (icon ou favicon dans le pire des cas)</value>
+        <comment>icon_url_tooltip</comment>
+    </data>
+    <data name="icon_tooltip" xml:space="preserve">
+        <value>rendu de l'image avec les même dimension que celle dans le tableau des recherches</value>
+        <comment>icon_tooltip</comment>
+    </data>
+    <data name="name_tooltip" xml:space="preserve">
+        <value>nom du site affiché dans le tableau des recherches</value>
+        <comment>name_tooltip</comment>
+    </data>
+    <data name="name" xml:space="preserve">
+        <value>Nom du site</value>
+        <comment>name</comment>
+    </data>
+    <data name="type_tooltip" xml:space="preserve">
+        <value>Permet de savoir quels sites inttérogé en fonction de la recherche</value>
+        <comment>type_tooltip</comment>
+    </data>
+    <data name="type" xml:space="preserve">
+        <value>Type de site</value>
+        <comment>type</comment>
+    </data>
+    <data name="id_result_tooltip" xml:space="preserve">
+        <value>ID de la balise d'ou le chemin partira. le chemin part de la balie body si l'id est vide</value>
+        <comment>id_result_tooltip</comment>
+    </data>
+    <data name="id_result" xml:space="preserve">
+        <value>Id balise de départ</value>
+        <comment>id_result</comment>
+    </data>
+    <data name="a_path_tooltip" xml:space="preserve">
+        <value>Chemin a partir de la balise body. Doit se terminer par une balise a</value>
+        <comment>a_path_tooltip</comment>
+    </data>
+    <data name="a_path" xml:space="preserve">
+        <value>Chemin des balises HTML vers un résultat de recherche</value>
+        <comment>a_path</comment>
+    </data>
+    <data name="btn_a_path_tooltip" xml:space="preserve">
+        <value>permet de récupéré l'élément directement sur la page web (expérimental)</value>
+        <comment>btn_a_path_tooltip</comment>
+    </data>
+    <data name="nb_res_path" xml:space="preserve">
+        <value>Chemin de la balise HTML vers le text contenant le nombre de résultats. </value>
+        <comment>nb_res_path</comment>
+    </data>
+    <data name="optional" xml:space="preserve">
+        <value>Optionnel</value>
+        <comment>optional</comment>
+    </data>
+    <data name="post_tooltip" xml:space="preserve">
+        <value>valeurs à envoyer en arrière plan</value>
+        <comment>post_tooltip</comment>
+    </data>
+    <data name="multi_tooltip" xml:space="preserve">
+        <value>Si le site est étranger, 3 recherches précisant les langues seront effectuées. (vostfr, vf, multi)</value>
+        <comment>multi_tooltip</comment>
+    </data>
+    <data name="modal_site_title" xml:space="preserve">
+        <value>HTML venant de l'adresse du site</value>
+        <comment>modal_title</comment>
+    </data>
+    <data name="modal_site_descr" xml:space="preserve">
+        <value>Cliquez sur un résultat de recherche.Le premier de préférence. Si il n'y as aucun résultats vous pouvez relancer une autre rehcerche. &lt;br /&gt; La recherche actuelle est:</value>
+    </data>
+    <data name="modal_btn_change" xml:space="preserve">
+        <value>changer recherche</value>
+        <comment>modal_btn_change</comment>
+    </data>
+    <data name="close" xml:space="preserve">
+        <value>Fermer</value>
+        <comment>close</comment>
+    </data>
+    <data name="modal_site_descr_2" xml:space="preserve">
+        <value>Cliquez sur le texte indiquant le nombre de résultats. Si il n'y as aucun résultats vous pouvez relancer une autre rehcerche. &lt;br /&gt;  La recherche actuelle est:</value>
+    </data>
+    <data name="modal_post_title" xml:space="preserve">
+        <value>Valeurs cachées à envoyer</value>
+        <comment>modal_post_title</comment>
+    </data>
+    <data name="modal_post_descr" xml:space="preserve">
+        <value>Liste des valeurs qui seront envoyer au site. Un '?' seul seras remplacé par la recherche (ex: one piece). &lt;br/&gt;Si une des deux colonnes est vide, la ligne seras ignorée.</value>
+    </data>
+    <data name="nom" xml:space="preserve">
+        <value>Nom</value>
+        <comment>nom</comment>
+    </data>
+    <data name="Value" xml:space="preserve">
+        <value>Valeur</value>
+        <comment>Value</comment>
+    </data>
+    <data name="help" xml:space="preserve">
+        <value>&lt;p&gt;lors de l'ajout d'une adresse URL de recherche, un bouton de recherche permettant de "simplifier" la récupération de la balise pour repérer une résultat de recherche.&lt;/p&gt; &lt;p&gt;le contenu du dialogue est celui de la page internet qui se trouve à l'adresse saisie. Cette page ne contient pas de Javascript et les fichiers CSS ont été supprimer (par le serveur).&lt;/p&gt;</value>
+    </data>
+</root>

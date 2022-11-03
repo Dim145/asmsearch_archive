@@ -1,0 +1,16 @@
+﻿.tr-search {
+    cursor: pointer;
+}
+
+.max-height {
+    max-height: 68vh;
+    overflow: auto;
+}
+
+.logo {
+    max-height: 35px;
+}
+
+td, th{
+    vertical-align: middle!important;
+}

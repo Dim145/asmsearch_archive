@@ -1,0 +1,49 @@
+﻿@using AnimeSearch.Data
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<style type="text/css">
+    .row {
+        margin-bottom: 10px;
+    }
+</style>
+
+<div class="container text-white text-center">
+    <h1>@ViewData["Title"]</h1>
+</div>
+
+<div class="container text-white">
+    <h2>@Localizer["datas"]</h2>
+    <p>
+        @Localizer["cookies"]
+    </p>
+    <p>
+        @Localizer["addr_ips"]
+    </p>
+</div>
+
+<div class="container text-white">
+    <h2>@Localizer["external_apis"]</h2>
+
+    <p>@Localizer["apis_descr"]:</p>
+
+
+    <div class="container">
+        @foreach (var api in Apis)
+        {
+            <div class="row border-bottom border-secondary">
+                <div class="col-12 col-sm align-self-center">
+                    <a class="d-block" style="text-align: center;" target="_blank" href="@api.SiteUrl">
+                        <img height="80" src="@api.LogoUrl" alt="image introuvable"/>
+                    </a>
+                </div>
+                <div class="col">@api.Description</div>
+            </div>
+        }
+    </div>
+</div>

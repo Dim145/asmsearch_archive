@@ -1,0 +1,146 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="aide" xml:space="preserve">
+        <value>Help</value>
+    </data>
+    <data name="donnees" xml:space="preserve">
+        <value>Datas</value>
+        <comment>donnees</comment>
+    </data>
+    <data name="propose_site" xml:space="preserve">
+        <value>Suggest a site</value>
+        <comment>propose_site</comment>
+    </data>
+    <data name="home" xml:space="preserve">
+        <value>Home</value>
+        <comment>home</comment>
+    </data>
+    <data name="errors_page" xml:space="preserve">
+        <value>Errors page</value>
+        <comment>errors_page</comment>
+    </data>
+    <data name="citations" xml:space="preserve">
+        <value>Citations</value>
+        <comment>citations</comment>
+    </data>
+    <data name="sites" xml:space="preserve">
+        <value>Sites</value>
+        <comment>sites</comment>
+    </data>
+    <data name="admin" xml:space="preserve">
+        <value>Admin</value>
+        <comment>admin</comment>
+    </data>
+    <data name="gestions apis" xml:space="preserve">
+        <value>Apis management</value>
+        <comment>gestions apis</comment>
+    </data>
+    <data name="swagger" xml:space="preserve">
+        <value>Swagger</value>
+        <comment>swagger</comment>
+    </data>
+    <data name="roles" xml:space="preserve">
+        <value>Roles</value>
+        <comment>roles</comment>
+    </data>
+    <data name="settings" xml:space="preserve">
+        <value>Settings</value>
+        <comment>settings</comment>
+    </data>
+    <data name="hangfire" xml:space="preserve">
+        <value>Hangfire</value>
+        <comment>hangfire</comment>
+    </data>
+    <data name="others" xml:space="preserve">
+        <value>Others</value>
+        <comment>others</comment>
+    </data>
+    <data name="adv search" xml:space="preserve">
+        <value>Advanced search</value>
+        <comment>adv search</comment>
+    </data>
+    <data name="bot discord" xml:space="preserve">
+        <value>Bot Discord</value>
+        <comment>bot discord</comment>
+    </data>
+    <data name="bot telegram" xml:space="preserve">
+        <value>Bot Télégram</value>
+        <comment>bot telegram</comment>
+    </data>
+    <data name="domaines" xml:space="preserve">
+        <value>Domains</value>
+        <comment>domaines</comment>
+    </data>
+    <data name="new v" xml:space="preserve">
+        <value>New Version</value>
+        <comment>new v</comment>
+    </data>
+    <data name="old v" xml:space="preserve">
+        <value>Old Version</value>
+        <comment>old v</comment>
+    </data>
+    <data name="creator" xml:space="preserve">
+        <value>Creator</value>
+        <comment>creator</comment>
+    </data>
+    <data name="server time" xml:space="preserve">
+        <value>Server time</value>
+        <comment>server time</comment>
+    </data>
+    <data name="contact" xml:space="preserve">
+        <value>Contact</value>
+        <comment>contact</comment>
+    </data>
+    <data name="privacy" xml:space="preserve">
+        <value>Privacy</value>
+        <comment>privacy</comment>
+    </data>
+    <data name="close" xml:space="preserve">
+        <value>Close</value>
+        <comment>close</comment>
+    </data>
+    <data name="git" xml:space="preserve">
+        <value>Github Archives</value>
+        <comment>git</comment>
+    </data>
+    <data name="dons" xml:space="preserve">
+        <value>Donations</value>
+        <comment>dons</comment>
+    </data>
+    <data name="system" xml:space="preserve">
+        <value>System</value>
+        <comment>system</comment>
+    </data>
+    <data name="warning server" xml:space="preserve">
+        <value>Connection with the server lost.&lt;br/&gt;Reconnection attempt in progress...</value>
+    </data>
+    <data name="component desactivated" xml:space="preserve">
+        <value>Dynamic components are unusable during this time.</value>
+        <comment>component desactivated</comment>
+    </data>
+    <data name="server lost" xml:space="preserve">
+        <value>Attempts have failed &lt;br/&gt; The server is no longer responding.</value>
+    </data>
+    <data name="server rejected" xml:space="preserve">
+        <value>The server has rejected your connection &lt;br /&gt; Please reload the page.</value>
+    </data>
+    <data name="home_descr" xml:space="preserve">
+        <value>Administration page</value>
+        <comment>home_descr</comment>
+    </data>
+    <data name="site_descr" xml:space="preserve">
+        <value>Site administration page</value>
+        <comment>site_descr</comment>
+    </data>
+</root>

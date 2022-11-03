@@ -1,0 +1,184 @@
+﻿@using System.Globalization
+@using AnimeSearch.Core.Extensions
+@using AnimeSearch.Core.Models.Api
+@using AnimeSearch.Data
+@using AnimeSearch.Data.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model AdvanceSearch
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["title"] = Localizer["title"];
+    var advSearch = ViewData["advs"] as AdvanceSearch ?? new();
+    var results = ViewData["results"] as List<Result> ?? new();
+    var inc = 0;
+
+    var genres = ViewData["genres"] as Genre[] ?? Array.Empty<Genre>();
+}
+
+<head>
+    <script type="text/javascript" src="~/js/AdvanceSearch.min.js"></script>
+    <link rel="stylesheet" href="~/css/AdvanceSearch.min.css" />
+</head>
+
+<div class="" style="left: 0; right: 0;">
+    <div class="row text-white">
+        <div class="col">
+            <form method="@(advSearch.WithoutGenres == null && advSearch.WithGenres == null ? "get" : "post")" asp-action="@nameof(AdvanceSearch)">
+
+                @if (advSearch.Page > 1)
+                {
+                    <button type="button" 
+                            id="prev" 
+                            class="btn btn-primary middle-screen" 
+                            style="z-index: 2; max-height: 35px; left: 5px;"
+                            data-toggle="tooltip" data-placement="top" title="@Localizer["previous_page"]">
+                        <img alt="left" src="ressources/images/left_arrow.png" height="25"/>
+                    </button>
+                }
+                
+                <button type="button" 
+                        id="next" 
+                        class="btn btn-primary middle-screen"
+                        style="z-index: 2; max-height: 35px; right: 5px;"
+                        data-toggle="tooltip" data-placement="top" title="@Localizer["next_page"]">
+                    <img alt="right" src="ressources/images/right_arrow.png" height="25" />
+                </button>
+
+                <div class="container">
+                    <div class="row rounded fa-border border-white p-1">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="row">
+                                        <div class="col-auto">
+                                            <label asp-for="SearchIn">@Localizer["type"]</label>
+                                            <select class="custom-select form-control w-auto btn-outline-secondary" asp-for="SearchIn">
+                                                <option value="@SearchType.All">@Localizer["any"]</option>
+                                                <option value="@SearchType.Movies">@Localizer["movie"]</option>
+                                                <option value="@SearchType.Series">@Localizer["anime"]</option>
+                                            </select>
+                                        </div>
+                                                                                                    
+                                        <div class="col text-right">
+                                            <label for="etGenre">@Localizer["andall"]</label>
+                                            <input id="etGenre" type="radio" asp-for="AndGenre" value="true" checked="checked" />
+                                                                                                        
+                                            <label for="ouGenre">@Localizer["orany"]</label>
+                                            <input id="ouGenre" type="radio" asp-for="AndGenre" value="false" />
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                                <div class="col-12">
+                                    <h3>@Localizer["genres"]:</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                @foreach (var genre in genres.DistinctBy(g => g.Name).OrderBy(g => g.Name))
+                                {
+                                    <div class="col mb-1">
+                                        <button type="button"
+                                                class="filter btn @(advSearch.WithGenres != null && advSearch.WithGenres.Contains(genre.Name) ? "btn-success" : advSearch.WithoutGenres != null && advSearch.WithoutGenres.Contains(genre.Name) ? "btn-danger" : "btn-dark")"
+                                                id="genre-@(inc++)"
+                                                data-select="@(advSearch.WithGenres != null && advSearch.WithGenres.Contains(genre.Name) ? "1" : advSearch.WithoutGenres != null && advSearch.WithoutGenres.Contains(genre.Name) ? "-1" : "0")"
+                                                data-type="@genre.Type"
+                                                style="@(genre.Type != SearchType.All && advSearch.SearchIn != SearchType.All ? genre.Type == advSearch.SearchIn ? "display: block;" : "display: none;" : "")">@genre.Name</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3 mb-2">
+                        <div class="col">
+                            <label for="q">@Localizer["title_optional"]:</label>
+                            <input class="form-control rounded" type="text" placeholder="English name" name="q" value="@advSearch.Q"/>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6 col-md-3">
+                            <label for="after">@Localizer["after"]:</label>
+                            <input type="date" name="After" class="form-control rounded" asp-for="After"/>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <label for="before">@Localizer["before"]:</label>
+                            <input type="date" name="Before" class="form-control rounded" asp-for="Before"/>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-3 col-md-2">
+                            <label for="page">@Localizer["page"]:</label>
+                            <input class="form-control rounded" type="number" name="page" placeholder="page" value="@advSearch.Page" min="1"/>
+                        </div>
+                        <div class="col-9 col-md-4">
+                            <label for="sortBy">@Localizer["order_by"]:</label>
+                            <select name="sortBy" class="custom-select form-control btn-outline-secondary" asp-for="SortBy">
+                                <option value="-1"></option>
+                                @foreach (var e in Enum.GetValues<Sort>())
+                                {
+                                    <option value="@e">@e.ToTitle()</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-dark border-white mr-2" id="val" type="submit">@Localizer["validate"]</button>
+                <button class="btn btn-dark border-danger" id="reset" type="reset">@Localizer["clear"]</button>
+            </form>
+        </div>
+    </div>
+    <div class="row text-white">
+        <div class="col">
+            <div class="container">
+                @if(results.Count == 0)
+                {
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            @Localizer["no_result"]
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    foreach(var result in results)
+                    {
+                        <div class="row border-bottom border-secondary text-white pt-2 pb-2">
+                            <div class="col-8 align-self-center">
+                                <table class="table-borderless table-sm text-white text-decoration-none">
+                                    <tr><td>@Localizer["name"]:</td><td>@result.Name</td></tr>
+                                    <tr><td>@Localizer["date"]:</td><td>@result.ReleaseDate.GetValueOrDefault().ToString("d", CultureInfo.GetCultureInfo("fr-FR"))</td></tr>
+                                    <tr><td>@Localizer["genres"]:</td><td>@string.Join(", ", result.GetGenres() ?? Array.Empty<string>())</td></tr>
+                                    <tr><td>@Localizer["origin"]:</td><td>@(Apis.FirstOrDefault(api => api.Id == result.IdApiFrom)?.Name ?? "Inconnue")</td></tr>
+                                    <tr>
+                                        <td style="vertical-align: top;">
+                                            @Localizer["summary"]: <br/>
+                                            <a class="btn btn-dark rounded-circle mt-2 border-success" href="/@result.IdApiFrom/@(result.IsFilm ? "movie" : result.IsAnime ? "anime" : "tv")/@result.Id">
+                                                <i class="text-light fa fa-search"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div class="box">
+                                                <p class="text">
+                                                    @result.Description
+                                                </p>
+                                                <button class="btnToggle" type="button"><i class="show-arrow"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+    
+                            <div class="col-4" style="align-self: center;">
+                                <img class="affiche img-fluid" src="@result.Image" />
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

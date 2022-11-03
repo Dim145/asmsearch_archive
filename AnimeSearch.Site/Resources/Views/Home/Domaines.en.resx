@@ -1,0 +1,58 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="title" xml:space="preserve">
+        <value>Domaines</value>
+        <comment>title</comment>
+    </data>
+    <data name="descr" xml:space="preserve">
+        <value>List of domains for this site</value>
+        <comment>descr</comment>
+    </data>
+    <data name="state" xml:space="preserve">
+        <value>State</value>
+        <comment>state</comment>
+    </data>
+    <data name="url" xml:space="preserve">
+        <value>URL</value>
+        <comment>url</comment>
+    </data>
+    <data name="misc" xml:space="preserve">
+        <value>Misc</value>
+        <comment>misc</comment>
+    </data>
+    <data name="action" xml:space="preserve">
+        <value>Action</value>
+        <comment>action</comment>
+    </data>
+    <data name="no_domain" xml:space="preserve">
+        <value>Pas de domaines enregistrés.</value>
+        <comment>no_domain</comment>
+    </data>
+    <data name="in_progress" xml:space="preserve">
+        <value>Request in progress...</value>
+        <comment>in_progress</comment>
+    </data>
+    <data name="delete" xml:space="preserve">
+        <value>Delete</value>
+        <comment>delete</comment>
+    </data>
+    <data name="add_domain" xml:space="preserve">
+        <value>Add a domain</value>
+        <comment>add_domain</comment>
+    </data>
+    <data name="valider" xml:space="preserve">
+        <value>Add</value>
+        <comment>valider</comment>
+    </data>
+</root>

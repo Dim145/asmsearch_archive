@@ -1,0 +1,84 @@
+﻿@using AnimeSearch.Services
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["title"];
+}
+
+<style>
+    th{
+        text-align: center!important;
+        vertical-align: middle!important;
+    }
+</style>
+
+<div class="container text-white pt-3">
+    <div class="row">        
+        <div class="col align-self-center">
+            <div class="container">
+                <div class="row">
+                <div class="col text-center">
+                    <h2 class="text-center">AsmSearch</h2>
+                </div>
+                </div>
+                <div class="row">
+                    <div class="col p-2">
+                        @Localizer["descr"]
+                    </div>
+                </div>
+                <div class="row">
+                <div class="col text-center pt-3">
+                    <a style="background-color: #0088cc;" class="btn btn-dark rounded-pill border-white" href="@ServiceUtils.TELEGRAM_INVITE_LINK" target="_blank">@Localizer["start_discuss"]</a>
+                </div>
+            </div>
+            </div>
+        </div>
+        <div class="col text-center mt-2 mt-sm-0">
+            <img class="rounded-circle border border-white" height="256" src="~/ressources/icons/android-chrome-512x512.png" />
+        </div>
+    </div>    
+
+
+    <div class="row">
+        <div class="col">
+            <p>
+                @Localizer["diff_cmd_1"]:<br/>
+                <ul>
+                    <li>@Localizer["dif_cmd_2"]</li>
+                    <li>@Localizer["diff_cmd_3"]</li>
+                </ul>
+            </p>
+            <table class="table table-dark table-bordered table-striped mt-4">
+                <thead>
+                    <tr>
+                        <th>@Localizer["commands"]</th>
+                        <th>@Localizer["description"]</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <th>/search</th>
+                        <td>@Localizer.GetHtml("search_cmd")</td>
+                    </tr>
+                    <tr>
+                        <th>/infos</th>
+                        <td>@Localizer["infos_cmd"]</td>
+                    </tr>
+                    <tr>
+                        <th>/msearch</th>
+                        <td>@Localizer["msearch_cmd"]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <p class="pt-2">@Localizer["P.S."]</p>
+        </div>
+    </div>
+</div>

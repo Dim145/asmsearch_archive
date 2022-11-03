@@ -1,0 +1,67 @@
+﻿@using AnimeSearch.Core.Models.Search
+@using AnimeSearch.Site.Views.BlazorComponent.Home
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["datas"];
+}
+
+<header>
+    <link rel="stylesheet" href="~/css/Historique.min.css" asp-append-version="true" />
+    <a style="display: none;" class="d-none" href="~/" id="baseurl"></a>
+</header>
+
+<div class="row">
+    <div class="col" style="margin-right: 5px;">
+        <div class="row text-center text-white" style="margin: 5px;">
+            @Localizer["datas descr"]
+        </div>
+
+        <div class="row text-white max-height border rounded">
+            <component type="typeof(RecherchesTable)" render-mode="ServerPrerendered" param-UrlSearch="@Url.Action("Search", "Home")" param-UrlGetDatas="@Url.Action("GetRecherchesDatas", "API")" />
+        </div>
+    </div>
+
+    <div class="col" style="margin-left: 5px;">
+        <div class="row text-center text-white" style="margin: 5px;">
+            @Localizer["sites descr"]
+        </div>
+
+        <div class="row text-white max-height border rounded">
+            <table class="table table-dark table-striped table-hover">
+                <tr class="text-center">
+                    <th>@Localizer["logo"]</th>
+                    <th>@Localizer["nom"]</th>
+                    <th>@Localizer["type"]</th>
+                </tr>
+
+                @if (ViewData["sites"] is Search[] {Length: > 0 } sites)
+                {
+                    foreach (var s in sites)
+                    {
+                        <tr>
+                            <td>
+                                @if (s.GetUrlImageIcon() != null && s.GetUrlImageIcon().StartsWith("http"))
+                                {
+                                    <a class="w-100 d-block" target="_blank" href="@s.GetBaseURL()"><img class="logo" src="@s.GetUrlImageIcon()" /></a>
+                                }
+                                else
+                                {
+                                    <a class="w-100 d-block" target="_blank" href="@s.GetBaseURL()"><img class="logo" src="~/@s.GetUrlImageIcon()" /></a>
+                                }
+                            </td>
+                            <td>@s.GetSiteTitle()</td>
+                            <td>@s.GetTypeSite()</td>
+                        </tr>
+                    }
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+@{
+    ViewData["aideHTML"] = Localizer["help"].Value;
+}

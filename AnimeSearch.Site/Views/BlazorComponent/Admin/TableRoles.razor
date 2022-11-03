@@ -1,0 +1,94 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using System.Drawing;
+@using AnimeSearch.Data
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Services.Database
+
+@inject RoleManager<Roles> roleManager
+@inject SweetAlertService Swal 
+@inject DatasUtilsService DatasUtilsService
+
+<div class="row">
+    <div class="col">
+        <BaseTable TabType="Roles"
+                   Datas="Roles"
+                   Columns='Tab<TabColumns<Roles>>(
+                new() { Title = "Nom", Colonnes = (a) => a.Name, Width = 35 },
+                new() { Title = "Nom Normalisé", Colonnes = (a) => a.NormalizedName, Width = 33 },
+                new() { Title = "Niveaux", Colonnes = (a) => a.NiveauAutorisation, Width = 10 },
+                new() { Title = "Couleur", Colonnes = (a) => a.Color, Template = (a) => a.Color.Name, Width = 20, CellColor = (c) => c.Color }
+            )'
+                   RowClick="RowClick" />
+    </div>
+</div>
+<div class="row mb-4">
+    <div class="col">
+        <input class="form-control" type="text" placeholder="Nom" @bind-value="inputRole" @onkeyup='(e) => { if (e.Key == "Enter") AddRole(); }' />
+    </div>
+    <div class="col-2">
+        <input class="form-control" type="number" placeholder="Niveau" max="6" min="1" @bind-value="inputLevel" @onkeyup='(e) => { if (e.Key == "Enter") AddRole(); }' />
+    </div>
+    <div class="col-2">
+        <input type="color" @bind-value="color" />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-success" @onclick="AddRole">Ajouter</button>
+    </div>
+</div>
+
+@code {
+    private static ColorConverter colorConverter = new();
+
+    public List<Roles> Roles { get; } = new();
+
+    private string inputRole = null;
+    private string color = string.Empty;
+    private int inputLevel = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var roles = await DatasUtilsService.GetRoles();
+        
+        Roles.AddRange(roles);
+
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    private void RowClick(Roles role)
+    {
+        if (role.Name != AdminRole.Name && role.Name != SuperAdminRole.Name)
+            Swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Etes-vous sûr ?",
+                Text = "Il n'est pas possible de revenir en arrière après cela...",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true,
+                ConfirmButtonText = "Oui, ce rôle est nul !",
+                CancelButtonText = "J'ai changé d'avis."
+            }).ContinueWith(task =>
+            {
+                var result = task.Result;
+
+                if(result.IsConfirmed)
+                {
+                    _ = roleManager.DeleteAsync(role);
+                    Roles.Remove(role);
+
+                    InvokeAsync(StateHasChanged);
+                }
+            });
+    }
+
+    private void AddRole()
+    {
+        if(!string.IsNullOrWhiteSpace(inputRole) && inputLevel > 0)
+        {
+            Roles role = new(inputRole, inputLevel){ Color = (colorConverter.ConvertFromString(color) as Color?).GetValueOrDefault() };
+
+            _ = roleManager.CreateAsync(role);
+
+            Roles.Add(role);
+            StateHasChanged();
+        }
+    }
+}

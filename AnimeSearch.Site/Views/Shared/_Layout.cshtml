@@ -1,0 +1,311 @@
+﻿@using Microsoft.AspNetCore.Identity;
+@using AnimeSearch.Data.Models
+@using AnimeSearch.Services
+@using HtmlAgilityPack
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject SignInManager<Users> SignInManager
+@inject IViewLocalizer Localizer
+
+@{
+    var nivAcce = ViewData["na"] is int niv ? niv : 0;
+
+    var donsNb = 0;
+
+    if (ViewData["Paypal_mail"] is string paypalMail && !string.IsNullOrWhiteSpace(paypalMail))
+        donsNb = 1;
+
+    if (ViewData["hasOpenNodeAPIKEY"] is true)
+        donsNb = 3;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="description" content="Site permettant de trouver où regarder un film, une série ou un anime. Le serveur recherchera pour vous votre recherche sur une liste de site, et vous donneras le nombre de résultats ainsi qu'un lien direct pour chaque site." />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="google" content="nositelinkssearchbox">
+    <meta name="google-site-verification" content="@(ViewData["google-site-verification"] is string googleId && !string.IsNullOrWhiteSpace(googleId) ? googleId : "")" />
+    <title>@ViewData["Title"] - ASM Search</title>
+    <script type="text/javascript" src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <script type="text/javascript" src="~/lib/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="~/js/site.min.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    <link type="image/x-icon" rel="icon" href="~/favicon.ico" />
+    <base href="~/" />
+    <script src="_content/KeudellCoding.Blazor.AdvancedBlazorSelect2/Select2JsInterop.js" type="text/javascript" language="javascript"></script>
+    <script src="_content/KeudellCoding.Blazor.AdvancedBlazorSelect2/lib/select2/js/select2.full.min.js" type="text/javascript" language="javascript"></script>
+    <script src="lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="_content/KeudellCoding.Blazor.AdvancedBlazorSelect2/lib/select2/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/fontwave_all.min.css" asp-append-version="true" />
+
+    @if (ViewData["google_ads_client_id"] is string googleads_client_id)
+    {
+        <script type="text/javascript">
+            window._mNHandle = window._mNHandle || {};
+            window._mNHandle.queue = window._mNHandle.queue || [];
+            medianet_versionId = "3121199";
+        </script>
+        <script src="https://contextual.media.net/dmedianet.js?cid=@googleads_client_id" async="async"></script>
+    }
+    
+    @if (ViewData["settings_balises"] is HtmlNode[] nodes)
+    {
+        foreach (var node in nodes)
+        {
+            WriteLiteral(node.OuterHtml);
+        }
+    }
+</head>
+<body class="bg-dark">
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand p-0" asp-area="" asp-controller="Home" asp-action="Index"><img class="icon" src="~/ressources/images/full-logo.svg" /></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item align-self-sm-center">
+                            <a class="nav-link link-white" asp-controller="Home" asp-action="Api">API</a>
+                        </li>
+                        <li class="nav-item align-self-sm-center">
+                            <a class="nav-link link-white" asp-controller="Home" asp-action="Historique">@Localizer["donnees"]</a>
+                        </li>
+                        <li class="nav-item align-self-sm-center">
+                            <a class="nav-link link-white" asp-controller="Home" asp-action="AddSites">@Localizer["propose_site"]</a>
+                        </li>
+                        @if (SignInManager.IsSignedIn(User) && nivAcce > 0)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle item-dark" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    @Localizer["admin"]
+                                </a>
+                                <div class="dropdown-menu bg-dark border-white" aria-labelledby="navbarDropdown">
+                                    @if(nivAcce >= DroitVueHaut)
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="Admin" asp-action="Index" title="@Localizer["home_descr"]">@Localizer["home"]</a>
+                                    }
+                                    @if(nivAcce >= DroitVueBas)
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="Admin" asp-action="sites" title="@Localizer["site_descr"]">@Localizer["sites"]</a>
+                                    }
+                                    @if(nivAcce >= DroitVueBas)
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="Admin" asp-action="citations">@Localizer["citations"]</a>
+                                    }
+                                    @if(nivAcce >= DroitVueHaut)
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="Admin" asp-action="error">@Localizer["errors_page"]</a>
+                                    }
+                                    @if (nivAcce >= DroitModifHaut)
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="Admin" asp-action="Apis">@Localizer["gestions apis"]</a>
+                                    }
+                                    @if (nivAcce >= DroitAdd)
+                                    {
+                                        <a class="dropdown-item item-dark" href="/swagger">@Localizer["swagger"]</a>
+                                    }
+                                    @if (User.IsInRole(SuperAdminRole.Name))
+                                    {
+                                        <a class="dropdown-item item-dark" asp-controller="Admin" asp-action="Roles">@Localizer["roles"]</a>
+                                        <a class="dropdown-item item-dark" asp-controller="Settings" asp-action="index">@Localizer["settings"]</a>
+                                    }
+                                    @if (User.IsInRole(AdminRole.Name) || User.IsInRole(SuperAdminRole.Name))
+                                    {
+                                        <a class="dropdown-item item-dark" href="/jobsStates">@Localizer["hangfire"]</a>
+                                    }
+                                </div>
+                            </li>
+                        }
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle item-dark" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="false" aria-expanded="true">
+                                @Localizer["others"]
+                            </a>
+                            <div class="dropdown-menu bg-dark border-white" aria-labelledby="navbarDropdown2">
+                                <a class="dropdown-item item-dark" asp-action="advanceSearch" asp-controller="Home">@Localizer["adv search"]</a>
+                                @if(!string.IsNullOrWhiteSpace(ServiceUtils.DISCORD_INVITE_LINK))
+                                {
+                                    <a class="dropdown-item item-dark" asp-controller="Home" asp-action="BotDiscord">@Localizer["bot discord"]</a>
+                                }
+                                @if(!string.IsNullOrWhiteSpace(ServiceUtils.TELEGRAM_INVITE_LINK))
+                                {
+                                    <a class="dropdown-item item-dark" asp-controller="Home" asp-action="BotTelegram">@Localizer["bot telegram"]</a>
+                                }
+                                <a class="dropdown-item item-dark" href="https://github.com/Dim145/asmsearch_archive">@Localizer["git"]</a>
+                                <a class="dropdown-item item-dark" asp-controller="Home" asp-action="Dons">@Localizer["dons"]</a>
+                                <a class="dropdown-item item-dark" asp-controller="Home" asp-action="Domaines">@Localizer["domaines"]</a>
+                                @if (ViewData["old"] is true)
+                                {
+                                    <a class="dropdown-item item-dark" asp-controller="Home" asp-action="Index">@Localizer["new v"]</a>
+                                }
+                                else
+                                {
+                                    <a class="dropdown-item item-dark" asp-controller="Home" asp-action="Index" asp-route-old="true">@Localizer["old v"]</a>
+                                }
+                                <a target="_blank" href="https://dim145.fr" class="dropdown-item item-dark">@Localizer["creator"]</a>
+                            </div>
+                        </li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        @if (ViewData["heure"] is DateTime heure)
+        {
+            <div class="text-white position-absolute" style="margin-top: -10px;">@Localizer["server time"]: <div id="heure" class="position-absolute text-white" style="display: contents;" title="MM/dd/yyyy - HH:mm">@heure.ToString("MM/dd/yyyy HH:mm")</div></div>
+        }
+
+        <main role="main" class="pb-3" style="padding-top: 10px;">
+            @if (ViewData["aideHTML"] is not null)
+            {
+                <div id="aide" class="text-white" data-toggle="modal" data-target="#aideModal">?</div>
+            }
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted bg-dark">
+        <div class="container text-white">
+            <div class="row">
+                <div class="col-auto pr-0">
+                    <a>&copy;</a>@DateTime.Now.Year - <a asp-controller="Home" asp-action="Contact">@Localizer["contact"]</a> - <a asp-controller="Home" asp-action="Privacy">@Localizer["privacy"]</a>
+                </div>
+                <div class="col-auto">
+                    <select class="custom-select custom-select-dark" id="changeLanguage">
+                        @foreach (var lang in SupportedCultures)
+                        {
+                            <option value="@lang" selected="@(CultureInfo.CurrentUICulture.Name == lang)">@(new CultureInfo(lang).EnglishName)</option>
+                        }
+                    </select>
+                </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div class="col text-right pl-0">
+                        <form id="logoutForm" method="post" asp-controller="Identity" asp-action="LogoutPost" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                            <button id="logout" type="submit" class="btn btn-dark pr-0"><img height="40" src="~/ressources/images/logout.png" /></button>
+                        </form>
+                    </div>
+                }
+                @if (donsNb > 0)
+                {
+                    <div class="col-auto position-absolute" style="bottom: 70px; right: 0px;">
+                        <div class="d-flex justify-content-center h-100">
+                            <button type="button" class="btn rounded-circle" id="swalDon" data-props="@donsNb"><img width="50" src="~/ressources/images/donate.svg" /></button>
+                        </div>
+                    </div>
+
+                    <script type="text/javascript" src="~/js/dons.min.js"></script>
+                }
+            </div>
+        </div>
+
+    </footer>
+
+    @if (ViewData["aideHTML"] is string aide)
+    {
+        <div class="modal fade" id="aideModal" tabindex="-1" role="dialog" aria-labelledby="aideModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content bg-dark text-white">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="aideModalLabel">@Localizer["aide"]</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" style="overflow: auto; max-height: 75vh;">
+                        @{
+                            WriteLiteral(aide);
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">@Localizer["close"]</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div id="components-reconnect-modal" class="my-reconnect-modal components-reconnect-hide mb-3 ml-3">
+
+        <div class="waiting">
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <span class="bg-warning rounded mr-2" style="width: 20px; height: 20px;"></span>
+                    <strong class="mr-auto">@Localizer["system"]</strong>
+                    <small class="text-muted">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+                </div>
+                <div class="toast-body">
+                    @Localizer.GetHtml("warning server")
+
+                    <div class="spinner-border text-warning position-absolute mt-5 ml-5" style="top: 0;" role="status">
+                        <span class="sr-only">Loading...</span>
+                        <div id=""></div>
+                    </div>
+
+                    <br /><br />
+                    @Localizer["component desactivated"]
+                </div>
+            </div>
+        </div>
+        <div class="failed">
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <span class="bg-danger rounded mr-2" style="width: 20px; height: 20px;"></span>
+                    <strong class="mr-auto">@Localizer["system"]</strong>
+                    <small class="text-muted">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+                </div>
+                <div class="toast-body">
+                    @Localizer.GetHtml("server lost")
+                </div>
+            </div>
+        </div>
+        <div class="rejected">
+            <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <span class="bg-danger rounded mr-2" style="width: 20px; height: 20px;"></span>
+                    <strong class="mr-auto">@Localizer["system"]</strong>
+                    <small class="text-muted">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</small>
+                </div>
+                <div class="toast-body">
+                    @Localizer.GetHtml("server rejected")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="_framework/blazor.server.js"></script>
+    <script src="_content/CurrieTechnologies.Razor.SweetAlert2/sweetAlert2.min.js"></script>
+    <link rel="stylesheet" href="_content/CurrieTechnologies.Razor.SweetAlert2/darkTheme.min.css" id="darkSweetAlert" />
+
+<script type="text/javascript">
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+
+@if (ViewData["hotJarId"] is double hotJarId)
+{
+    <script>
+    (function(h,o,t,j,a,r){
+        h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+        h._hjSettings={hjid:@hotJarId,hjsv:6};
+        a=o.getElementsByTagName('head')[0];
+        r=o.createElement('script');r.async=1;
+        r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+        a.appendChild(r);
+    })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+</script>
+}
+
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

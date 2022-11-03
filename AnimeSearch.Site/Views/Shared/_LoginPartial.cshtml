@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using AnimeSearch.Data.Models
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject SignInManager<Users> SignInManager
+@inject UserManager<Users> UserManager
+@inject RoleManager<Roles> RoleManager
+@inject IViewLocalizer Localizer
+
+<ul class="navbar-nav text-white">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var currentUser = ViewData["user"] as Users ?? UserManager.FindByNameAsync(User.Identity.Name).GetAwaiter().GetResult();
+
+        if(ViewData["role"] is not Roles role)
+        {
+            var listNameRoles = await UserManager.GetRolesAsync(currentUser);
+            role = RoleManager.Roles.AsEnumerable().Where(r => listNameRoles.Contains(r.Name)).MaxBy(r => r.NiveauAutorisation);
+        }
+
+        <li class="nav-item">
+            <a id="manage" class="nav-link link-white" asp-controller="Account" asp-action="IndexGet" title="Menu utilisateur">
+                @Localizer["hello"] @UserManager.GetUserName(User) <i class="fas fa-user" style="@(role == null ? "" : $"color: rgb({role.Color.R}, {role.Color.G}, {role.Color.B});")"></i>
+            </a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link link-white" id="login" asp-action="LoginGet" asp-controller="Identity">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link link-white" id="register" asp-action="RegisterGet" asp-controller="Identity">Sign In</a>
+        </li>
+    }
+</ul>

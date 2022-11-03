@@ -1,0 +1,87 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using AnimeSearch.Data.Models
+@model AnimeSearch.Data.Models.Setting
+
+@inject UserManager<Users> _userManager
+
+@{
+    ViewData["Title"] = "Créer paramètre";
+
+    var types = Tab(
+        new SelectListItem("Text", "text"), 
+        new("Nombre", "number"), 
+        new("Email", "email"), 
+        new("Durée", "time"),
+        new("Script", "Script"));
+}
+
+<div class="text-white">
+    <h1>Create</h1>
+
+    <h4>Setting</h4>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Description" class="control-label"></label>
+                    <textarea asp-for="Description" class="form-control"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TypeValue" class="control-label">Type</label>
+                    <select asp-for="TypeValue" asp-items="types" ></select>
+                    <span asp-validation-for="TypeValue" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="JsonValue" class="control-label">Valeur</label>
+                    <input asp-for="JsonValue" class="form-control" />
+                    <span asp-validation-for="JsonValue" class="text-danger"></span>
+                </div>
+                @if(ViewData["currentUser"] is not null and Users user && await _userManager.IsInRoleAsync(user, SuperAdminRole.Name))
+                {
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="IsDeletable" selected /> @Html.DisplayNameFor(model => model.IsDeletable)
+                        </label>
+                    </div>
+                }
+                <div class="form-group">
+                    <input type="submit" value="Create" class="btn btn-success" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div>
+        <a class="btn btn-primary" asp-action="Index">Retour</a>
+    </div>
+
+    <script type="text/javascript">
+        $("select").change(function()
+        {
+            let opt = $($(this)[0].selectedOptions);
+
+            var input = $("input[name='JsonValue']");
+            
+            input.attr('type', opt.val())
+            
+            if (opt.val() == "number")
+                input.attr("step", "0.1");
+            else
+                input.removeAttr("step");
+                
+        });    
+    </script>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+
+</div>

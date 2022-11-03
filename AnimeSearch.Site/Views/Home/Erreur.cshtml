@@ -1,0 +1,66 @@
+﻿@using AnimeSearch.Core.Models.Api
+@using AnimeSearch.Core.Extensions
+@using Microsoft.AspNetCore.Mvc.Localization
+
+@inject IViewLocalizer Localizer
+
+@{
+    ViewData["Title"] = Localizer["title"];
+
+    var code = ViewData["code"] as int? ?? -1;
+}
+
+<link rel="stylesheet" href="~/css/Error.min.css" />
+
+<div class="row text-white">
+    <div class="col h-3 text-center mt-3">
+        @if(code is 404 or 4040)
+        {
+            <h3>@Localizer["404"] &#129300;</h3>
+        }
+        else if(code is -1 or 500)
+        {
+            <h3>@Localizer["500"] &#128561;</h3>
+        }
+    </div>
+</div>
+<div class="row">
+    <div class="d-flex text-center justify-content-center align-items-center img-@code position-absolute mb-3 mt-3" style="z-index: -1; left: 0; right: 0;">
+        @if (SUPPORTED_ERROR_CODE.Contains(code))
+        {
+            <img src="~/ressources/images/errors/@(code > 1000 ? code / 10 : code).png" alt="404 code" style="width: -webkit-fill-available; max-width: 520px;" />
+        }
+        else if (code > -1 && code != 800)
+        {
+            <img src="~/ressources/images/errors/others.gif" alt="error image" style="width: -webkit-fill-available; max-width: 520px;" />
+        }
+    </div>
+</div>
+
+@if (code == 4040 && !string.IsNullOrWhiteSpace(@ViewData["value"]?.ToString()))
+{
+    <div class="col-12 text-center text-white fixed-bottom" style="margin-bottom: 70px;">
+        <form asp-controller="Home" asp-action="ForceSearch">
+            <p>@Localizer["force_serach"]:</p>
+            @foreach (var type in Enum.GetValues<ResultType>().Where(r => r != ResultType.All))
+            {
+                <input type="submit" name="type" value="@type" aria-valuetext="@type.ToTypeString()" class="btn btn-primary" />
+            }
+            
+            <input type="hidden" value="@ViewData["value"]?.ToString()" name="search"/>
+        </form>
+    </div>
+}
+
+@if(code == 800)
+{
+    <conf id="liveConf" style="left: 0; width: 200px; height: 200px;">
+        <script src="~/lib/live/autoload.min.js"></script>
+    </conf>
+
+    <div class="row">
+        <div class="col" style="@(code == 404 ? "bottom: 48px!important;" : "")">
+            <partial name="~/Views/Shared/T-RexBody.cshtml" />
+        </div>
+    </div>
+}

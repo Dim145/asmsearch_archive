@@ -1,0 +1,72 @@
+﻿@using BlazorTable
+@using AnimeSearch.Data
+
+<AnimeSearch.Site.Views.BlazorComponent.Table @oncontextmenu:preventDefault="true"
+       TableClass="table table-dark table-striped border table-hover"
+       TableItem="KeyValuePair<string, ModelSearchResult>"
+       PageSize="25"
+       Items="Model.SearchResults"
+       DataLoader="Loader"
+       TableBodyClass="text-white"
+       DefaultLoadingInProgress="Loader is null ? false : !Loader.IsFinish()"
+       @ref="ChildTable"
+       RowClickAction="pair => _ = DatasUtilsService.SiteClick(pair.Value.SiteUrl)">
+
+    <Column TableItem="KeyValuePair<string, ModelSearchResult>" Title="Logo" Field="(c) => c.Value.IconUrl" Sortable="false" Filterable="false" Width="30%">
+        <Template>
+            <a class="w-100 d-block" href="@context.Value.SiteUrl" target="_blank"><img class="image-icon" src="@(context.Value.IconUrl.StartsWith("http") ? context.Value.IconUrl : BaseUrl + context.Value.IconUrl )" /></a>
+        </Template>
+    </Column>
+
+    <Column TableItem="KeyValuePair<string, ModelSearchResult>" Title="Type" Field="(c) => c.Value.Type" Sortable="true" Filterable="true" Width="25%" Class="p-0">
+        <Template>
+            <div onclick="@context.Value.OpenJavaScript" class="mouseClickCol ressearch">@context.Value.Type</div>
+        </Template>
+    </Column>
+    <Column TableItem="KeyValuePair<string, ModelSearchResult>" Title="Nom" Field="(c) => c.Key" Sortable="true" Filterable="true" Width="25%" Class="p-0">
+        <Template>
+            <div onclick="@context.Value.OpenJavaScript" class="mouseClickCol ressearch" title=" de @context.Key">@context.Key</div>
+        </Template>
+    </Column>
+
+    <Column DefaultSortDescending="true" TableItem="KeyValuePair<string, ModelSearchResult>" Title="Nb résultats" Field="(c) => c.Value.NbResults" Sortable="true" Filterable="true" Width="20%" Class="p-0">
+        <Template>
+            <div onclick="@context.Value.OpenJavaScript" class="mouseClickCol text-center ressearch">@context.Value.NbResults</div>
+        </Template>
+    </Column>
+
+    <LoadingDataTemplate>
+        <div class="w-100 text-center align-middle">
+            <img style="max-height: 25px;" src="ressources/images/loading_sharingan.svg" alt="" />
+            Recherches en cours... (@NbResponses reponses)
+        </div>
+    </LoadingDataTemplate>
+
+    <EmptyDataTemplate>
+        <div class="text-center">Aucuns sites pour ce type de recherche. (de valide)</div>
+    </EmptyDataTemplate>
+
+    <Pager ShowPageNumber="true" ShowTotalCount="true" ShowPageSizes="true" AlwaysShow="false" PageSizes="Tab(5, 10, 15, 20, 25, 30, 40, 50).ToList()" />
+</AnimeSearch.Site.Views.BlazorComponent.Table>
+
+@if (CurrentUser != null && Model.SearchResults.Count > 0)
+{
+    if (!IsSaved)
+    {
+        <button class="btn btn-success rounded-circle border-white fixed-bottom mb-2 mr-2" style="left: auto; right: 0;" @onclick="Save" title="@(SaveAlreadyExist ? "mettre à jour" : "sauvegarder")">
+            <img height="30" width="20" src="/ressources/images/@(SaveAlreadyExist ? "update.svg" : "Save.svg")"/>
+        </button>
+    }
+    else if( NA >= DroitDelete || UserName == HttpContext.HttpContext?.User.Identity?.Name)
+    {
+        <div class="fixed-bottom mb-2 mr-2" style="left: auto; right: 0;">
+            <a class="btn btn-success rounded-circle border-white" href="?q=@Model.Result.Name" title="refaire la recherche">
+                <img height="30" width="20" src="/ressources/images/rereserch.svg"/>
+            </a>
+            
+            <button class="btn btn-danger rounded-circle border-white" @onclick="DeleteSave" title="supprimer">
+                <img height="30" width="20" src="/ressources/images/trash.svg"/>
+            </button>
+        </div>
+    }
+}

@@ -1,0 +1,42 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="datas" xml:space="preserve">
+        <value>Données</value>
+        <comment>datas</comment>
+    </data>
+    <data name="datas descr" xml:space="preserve">
+        <value>Historique des recherches effectuées sur ce site, triées par nombres d'occurences. Cliquez sur les lignes pour effectuer cette recherche.</value>
+        <comment>datas descr</comment>
+    </data>
+    <data name="sites descr" xml:space="preserve">
+        <value>Tous les sites interrogée lors d'une recherche. Les images sont cliquables. Si une image n'apparaît pas, c'est que le site est down.</value>
+        <comment>sites descr</comment>
+    </data>
+    <data name="logo" xml:space="preserve">
+        <value>Logo</value>
+        <comment>logo</comment>
+    </data>
+    <data name="nom" xml:space="preserve">
+        <value>Nom</value>
+        <comment>nom</comment>
+    </data>
+    <data name="type" xml:space="preserve">
+        <value>Type</value>
+        <comment>type</comment>
+    </data>
+    <data name="help" xml:space="preserve">
+        <value>&lt;p&gt;rien de spécial à faire sur cette page. Elle sert principalement de renseignement. &lt;br/&gt; les icônes peuvent ne pas s'afficher selon les paramètres de votre réseau (proxy, pare-feu, adresse ban etc...)&lt;/p&gt;</value>
+        <comment>help</comment>
+    </data>
+</root>

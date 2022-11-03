@@ -1,0 +1,9 @@
+﻿@using AnimeSearch.Data
+
+<div class="container text-white mt-2">
+    <div class="mb-2 w-100 text-right">
+        <a class="btn btn-success" asp-controller="Admin" asp-action="NewApi">Ajouter</a>
+    </div>
+    
+    <component type="typeof(ApisTable)" render-mode="ServerPrerendered"/>
+</div>

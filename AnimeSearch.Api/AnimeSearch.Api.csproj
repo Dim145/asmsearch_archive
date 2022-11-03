@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <OutputType>Library</OutputType>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\AnimeSearch.Core\AnimeSearch.Core.csproj" />
+      <ProjectReference Include="..\AnimeSearch.Data\AnimeSearch.Data.csproj" />
+      <ProjectReference Include="..\AnimeSearch.Services\AnimeSearch.Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
+      <PackageReference Include="Hangfire.AspNetCore" Version="1.7.30" />
+      <PackageReference Include="Hangfire.Core" Version="1.7.30" />
+      <PackageReference Include="Hangfire.SqlServer" Version="1.7.30" />
+    </ItemGroup>
+
+</Project>

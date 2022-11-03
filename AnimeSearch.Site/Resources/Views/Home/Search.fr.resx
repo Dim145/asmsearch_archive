@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="default_res_name" xml:space="preserve">
+        <value>erreur, introuvable</value>
+        <comment>default_res_name</comment>
+    </data>
+    <data name="saved_search" xml:space="preserve">
+        <value>Recherche sauvegardée</value>
+        <comment>saved_search</comment>
+    </data>
+    <data name="search" xml:space="preserve">
+        <value>Recherche</value>
+        <comment>search</comment>
+    </data>
+    <data name="saved_date" xml:space="preserve">
+        <value>Date de sauvegarde</value>
+        <comment>saved_date</comment>
+    </data>
+    <data name="typed_search" xml:space="preserve">
+        <value>Recherche tappé</value>
+        <comment>typed_search</comment>
+    </data>
+    <data name="serie_found" xml:space="preserve">
+        <value>Série trouvé</value>
+        <comment>serie_found</comment>
+    </data>
+    <data name="language" xml:space="preserve">
+        <value>Langages</value>
+        <comment>language</comment>
+    </data>
+    <data name="other_names" xml:space="preserve">
+        <value>Autres noms</value>
+        <comment>other_names</comment>
+    </data>
+    <data name="genres" xml:space="preserve">
+        <value>Genres</value>
+        <comment>genres</comment>
+    </data>
+    <data name="release_date" xml:space="preserve">
+        <value>Sortie</value>
+        <comment>release_date</comment>
+    </data>
+    <data name="status" xml:space="preserve">
+        <value>Statut</value>
+        <comment>status</comment>
+    </data>
+    <data name="view_here" xml:space="preserve">
+        <value>voir ici</value>
+        <comment>view_here</comment>
+    </data>
+    <data name="episodes" xml:space="preserve">
+        <value>Episodes</value>
+        <comment>episodes</comment>
+    </data>
+    <data name="modal_eps_descr" xml:space="preserve">
+        <value>Ci-dessous se trouve les épisodes qui ont pus être récupéré depuis les sites n'ayant renvoyé qu'un seul résultats.</value>
+        <comment>modal_eps_descr</comment>
+    </data>
+    <data name="close" xml:space="preserve">
+        <value>Fermer</value>
+        <comment>close</comment>
+    </data>
+    <data name="execute_search" xml:space="preserve">
+        <value>Exécuter la recherche</value>
+        <comment>execute_search</comment>
+    </data>
+    <data name="trailer" xml:space="preserve">
+        <value>bande-annonce</value>
+        <comment>trailer</comment>
+    </data>
+    <data name="help" xml:space="preserve">
+        <value>&lt;p&gt;la fiche du résultat contient les noms dans différentes langues (inconnue dans le cas où la langue n'est pas précisée) ainsi que quelques informations telle que les genres (affichés en anglais) et la date de sortie...&lt;/p&gt; &lt;p&gt;les sites dans le tableau peuvent ne pas être accessible depuis votre réseau (dans ce cas l'icône ne devrait pas s'afficher).&lt;/p&gt; &lt;p&gt;Cliquer sur une ligne du tableau (les trois dernières colonnes) permet d'ouvrir une nouvelle page sur laquelle la recherche va s'effectuer directement dans votre navigateur. Si la page est ouverte depuis longtemps, le nombre de résultat peut différer.&lt;/p&gt; &lt;p&gt;Le bouton "+ d'infos" ouvre une page nautiljon pour les anime, AlloCiné pour les films et certaines séries où Wikipédia si aucun des deux sites ne répondent positivement.&lt;/p&gt;  &lt;p&gt;Dans le cas où la recherche est un anime et si la recherche nautiljon n'obtient qu'un seul résultat, une bande-annonce est intégré à côté du bouton d'infos. (expérimental)&lt;/p&gt;</value>
+        <comment>help</comment>
+    </data>
+</root>

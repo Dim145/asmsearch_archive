@@ -1,0 +1,128 @@
+﻿<root>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="title" xml:space="preserve">
+        <value>Add sites</value>
+    </data>
+    <data name="descr" xml:space="preserve">
+        <value>This page allows you to propose a new site to be added to the search catalog. The site will only be used once an administrator has validated the addition. &lt;br/&gt; Veuillez à bien saisir le bon chemin dans le dernier champ. Otherwise the search will not be successful and no results will be found.</value>
+    </data>
+    <data name="url_site" xml:space="preserve">
+        <value>Root URL / Search URL</value>
+        <comment>url_site</comment>
+    </data>
+    <data name="url_tooltip" xml:space="preserve">
+        <value>Basic URl of the site and the one allowing to make searches</value>
+        <comment>url_tooltip</comment>
+    </data>
+    <data name="icon_url" xml:space="preserve">
+        <value>Full URL of the icon</value>
+        <comment>icon_url</comment>
+    </data>
+    <data name="icon_url_tooltip" xml:space="preserve">
+        <value>URL pointing to the site image (icon or favicon in the worst case)</value>
+        <comment>icon_url_tooltip</comment>
+    </data>
+    <data name="icon_tooltip" xml:space="preserve">
+        <value>render the image with the same dimensions as the one in the search table</value>
+        <comment>icon_tooltip</comment>
+    </data>
+    <data name="name_tooltip" xml:space="preserve">
+        <value>name of the site displayed in the search table</value>
+        <comment>name_tooltip</comment>
+    </data>
+    <data name="name" xml:space="preserve">
+        <value>Site name</value>
+        <comment>name</comment>
+    </data>
+    <data name="type_tooltip" xml:space="preserve">
+        <value>Allows to know which sites to enter according to the search</value>
+        <comment>type_tooltip</comment>
+    </data>
+    <data name="type" xml:space="preserve">
+        <value>Type of site</value>
+        <comment>type</comment>
+    </data>
+    <data name="id_result_tooltip" xml:space="preserve">
+        <value>ID of the tag from where the path will start. the path starts from the tag body if the id is empty</value>
+        <comment>id_result_tooltip</comment>
+    </data>
+    <data name="id_result" xml:space="preserve">
+        <value>Starting beacon id</value>
+        <comment>id_result</comment>
+    </data>
+    <data name="a_path_tooltip" xml:space="preserve">
+        <value>Path from the body tag. Must end with a</value>
+        <comment>a_path_tooltip</comment>
+    </data>
+    <data name="a_path" xml:space="preserve">
+        <value>HTML tag path to a search result</value>
+        <comment>a_path</comment>
+    </data>
+    <data name="btn_a_path_tooltip" xml:space="preserve">
+        <value>allows to retrieve the element directly on the web page (experimental)</value>
+        <comment>btn_a_path_tooltip</comment>
+    </data>
+    <data name="nb_res_path" xml:space="preserve">
+        <value>Path from the HTML tag to the text containing the number of results. </value>
+        <comment>nb_res_path</comment>
+    </data>
+    <data name="optional" xml:space="preserve">
+        <value>Optional</value>
+        <comment>optional</comment>
+    </data>
+    <data name="post_tooltip" xml:space="preserve">
+        <value>values to send in the background</value>
+        <comment>post_tooltip</comment>
+    </data>
+    <data name="multi_tooltip" xml:space="preserve">
+        <value>If the site is foreign, 3 searches specifying the languages will be performed. (vostfr, vf, multi)</value>
+        <comment>multi_tooltip</comment>
+    </data>
+    <data name="modal_site_title" xml:space="preserve">
+        <value>HTML from the site address</value>
+        <comment>modal_title</comment>
+    </data>
+    <data name="modal_site_descr" xml:space="preserve">
+        <value>Click on a search result, preferably the first one. If there are no results you can start another search. &lt;br/&gt; The current search is :</value>
+    </data>
+    <data name="modal_btn_change" xml:space="preserve">
+        <value>change search</value>
+        <comment>modal_btn_change</comment>
+    </data>
+    <data name="close" xml:space="preserve">
+        <value>Close</value>
+        <comment>close</comment>
+    </data>
+    <data name="modal_site_descr_2" xml:space="preserve">
+        <value>Click on the text indicating the number of results. If there are no results you can start another search. &lt;br/&gt;The current search is :</value>
+    </data>
+    <data name="modal_post_title" xml:space="preserve">
+        <value>Hidden values to send</value>
+        <comment>modal_post_title</comment>
+    </data>
+    <data name="modal_post_descr" xml:space="preserve">
+        <value>List of values that will be sent to the site. A single '?' will be replaced by the search (ex: one piece). &lt;br/&gt;If one of the two columns is empty, the line will be ignored.</value>
+    </data>
+    <data name="nom" xml:space="preserve">
+        <value>Name</value>
+        <comment>nom</comment>
+    </data>
+    <data name="Value" xml:space="preserve">
+        <value>Value</value>
+        <comment>Value</comment>
+    </data>
+    <data name="help" xml:space="preserve">
+        <value>&lt;p&gt;when adding a search URL, a search button to "simplify" the retrieval of the tag to locate a search result.&lt;/p&gt; &lt;p&gt;the content of the dialog is that of the web page found at the address entered. This page does not contain Javascript and the CSS files have been removed (by the server).&lt;/p&gt;</value>
+    </data>
+</root>

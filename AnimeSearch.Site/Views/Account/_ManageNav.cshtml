@@ -1,0 +1,15 @@
+﻿@using AnimeSearch.Data.Models
+@using AnimeSearch.Site.Views.Account
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<Users> SignInManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+}
+<ul class="nav nav-pills flex-column text-white">
+    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-controller="Account" asp-action="IndexGet">Profile</a></li>
+        <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-controller="Account" asp-action="ChangePasswordGet">Password</a></li>
+        <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalHistorique(ViewContext)" id="historiue-personnel" asp-controller="Account" asp-action="PersonnalHistory">Historique Perso.</a></li>
+        <li class="nav-item"><a class="nav-link @ManageNavPages.SavedSearchNavClass(ViewContext)" id="saved-search" asp-controller="Account" asp-action="SavedSearch">Recherches Sauvegardées</a></li>
+        <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-controller="Account" asp-action="PersonnalDatas">Personal data</a></li>
+</ul>

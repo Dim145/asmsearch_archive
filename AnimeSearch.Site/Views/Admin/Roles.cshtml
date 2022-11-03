@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Roles management";
+}
+
+<div class="row">
+    <div class="col">
+        <div class="mt-2 mb-2 form-control h-auto bg-dark text-warning">
+            Attention:
+            <ul>
+                <li>La suppression de roles se fait par un clic sur la ligne de ce dernier (sans confirmation pour le moment)</li>
+                <li>Les rôles "Admin" et "Super-Admin" ne peuvent pas être supprimés.</li>
+                <li>Après une suppression ou un ajout, il faut refresh la page (F5) pour que les changement apparaissent à droites.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row text-white">
+    <div class="col">
+        <component render-mode="ServerPrerendered" type="typeof(TableRoles)" />
+    </div>
+
+    <div class="col">
+        <component type="typeof(TableUsersRoles)" render-mode="ServerPrerendered" />
+    </div>
+</div>

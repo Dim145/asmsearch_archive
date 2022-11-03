@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Services";
+}
+
+@using AnimeSearch.Site.Views.BlazorComponent
+
+@if(ViewData["services"] is  Services[] services)
+{
+    for(int cpt1 = 0; cpt1 < Math.Round(services.Length / 3.0, MidpointRounding.ToPositiveInfinity); cpt1++)
+    {
+        <div class="row">
+            @for (int cpt2 = cpt1 * 3; cpt2 < services.Length && cpt2 < cpt1 * 3 + 3; cpt2++)
+            {
+                <div class="col">
+                    <component type="typeof(Service)" 
+                               render-mode="ServerPrerendered" 
+                               param-ServiceModel="services[cpt2]" />
+                </div>
+            }
+        </div>
+    }
+}

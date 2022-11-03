@@ -1,0 +1,51 @@
+[
+  {
+    "locale": "default en-us",
+    "name": "English",
+    "subtitles": [
+      {
+        "name": "01",
+        "text": "So, what should we play?"
+      }, {
+        "name": "02",
+        "text": "It's fine, don't worry."
+      }, {
+        "name": "03",
+        "text": "No, no."
+      }, {
+        "name": "04",
+        "text": "I must check the rest of the dance now."
+      }, {
+        "name": "05",
+        "text": "T-this is embarrassing..."
+      }, {
+        "name": "06",
+        "text": "This is weird and kind of creepy! Why are you clinging onto me so much?"
+      }, {
+        "name": "07",
+        "text": "What’s wrong? You’re talking about something all by yourself."
+      }, {
+        "name": "08",
+        "text": "Are you really trying?"
+      }, {
+       "name": "09",
+        "text": "Maintenance complete. No matter what enemy appears, I will shoot them!"
+      }, {
+        "name": "10",
+        "text": "Easy, easy!"
+      }, {
+        "name": "11",
+        "text": "I’m telling you... you can trust me a little, right? Or, can you not trust me?"
+      }, {
+        "name": "12",
+        "text": "Urgh..."
+      }, {
+        "name": "13",
+        "text": "Why so sudden? If you move, I’m going to shoot."
+      }, {
+        "name": "14",
+        "text": "Stop that!"
+      }
+    ]
+  }
+]

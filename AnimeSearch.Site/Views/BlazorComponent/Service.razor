@@ -1,0 +1,123 @@
+﻿@using AnimeSearch.Services.Background
+@using AnimeSearch.Services
+@using AnimeSearch.Services.HangFire
+@using Hangfire
+@using System.Reflection
+@using Hangfire.Common
+@using Hangfire.Storage
+@using Hangfire.Storage.Monitoring
+
+@inject IServiceProvider Services
+@inject SweetAlertService Swal
+
+<div class="card text-white border-white bg-dark mt-2 mb-2 ml-auto mr-auto mr-md-0 ml-md-0" style="width: 18rem;">
+    <div class="card-body">
+        <h5 class="card-title">@ServiceModel.Name</h5>
+        <h6 class="card-subtitle mb-2 text-@(ServiceModel.IsRunning ? "success" : "danger")">@(ServiceModel.IsRunning ? "En cours" : "Arrété")</h6>
+        @if (ServiceModel.IsRunning)
+        {
+            if (ServiceModel.TimeBeforeNext != null)
+            {
+                <p class="card-text">Temps avant prochaine éxécution: @(ServiceModel.TimeBeforeNext.GetValueOrDefault().ToString(@"hh' h 'mm"))</p>
+            }
+            else
+            {
+                <p class="card-text">Fonctionne en tous temps</p>
+            }
+        }
+        <p class="card-text">@ServiceModel.Desc</p>
+        <div class="row">
+            <div class="col-auto pr-0">
+                <button class="btn btn-danger @(ServiceModel.IsRunning ? "" : "disabled")" 
+                        disabled="@(!ServiceModel.IsRunning)"
+                        @onclick="() => Action(false)"
+                        >Arrêter</button>
+            </div>
+            <div class="col-auto pr-0">
+                <button class="btn btn-success @(ServiceModel.IsRunning ? "disabled" : "")"
+                        disabled="@ServiceModel.IsRunning"
+                        @onclick="() => Action(true)">Démarrer</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-primary @(ServiceModel.IsRunning ? "" : "disabled")"
+                        disabled="@(!ServiceModel.IsRunning)"
+                        @onclick="() => Action(null)">Exécuter 1 fois maintenant</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Services ServiceModel { get; set; }
+
+    private void Action(bool? type)
+    {
+        if (ServiceModel.Name == ServiceModel.Id)
+        {
+            switch (type)
+            {
+                case false: RecurringJob.RemoveIfExists(ServiceModel.Name);break;
+                case null: 
+                    RecurringJob.Trigger(ServiceModel.Name);
+                    
+                    Task.Delay(200).GetAwaiter().GetResult();
+
+                    JobStorage.Current.GetMonitoringApi().ProcessingJobs(0, 5).ForEach(j =>
+                    {
+                        if ($"{ServiceModel.Name}Service" == j.Value.Job.Type.Name)
+                        {
+                            Swal.ShowLoadingAsync().ContinueWith(async _ =>
+                            {
+                                bool processing = j.Value.InProcessingState;
+
+                                while (processing)
+                                    processing = JobStorage.Current
+                                        .GetMonitoringApi()
+                                        .ProcessingJobs(0, 5)
+                                        .FirstOrDefault(job => job.Key == j.Key)
+                                        .Value?
+                                        .InProcessingState ?? false;
+
+                                await Swal.FireAsync(new()
+                                {
+                                    Title = "Job éxécuté",
+                                    Icon = SweetAlertIcon.Success
+                                });
+                            });
+                        }
+                    });
+                    break;
+                case true:
+                    var t = Assembly.Load("AnimeSearch.Services").GetType($"AnimeSearch.Services.HangFire.{ServiceModel.Name}Service");
+                    var s = t is null ? null : Services.GetService(t) as IHangFireService;
+
+                    if (s is not null)
+                        RecurringJob.AddOrUpdate(ServiceModel.Name, () => s.Execute(), s.GetCron());
+                break;
+            }
+            
+            ServiceModel.IsRunning = type is not false;
+        }
+        else if (int.TryParse(ServiceModel.Id, out var id))
+        {
+            Swal.ShowLoadingAsync().ContinueWith(_ =>
+            {
+                var t = type switch
+                {
+                    false => ServiceUtils.SERVICES[id].StopAsync(new()),
+                    true  => ServiceUtils.SERVICES[id].StartAsync(new()),
+                    null  => ServiceUtils.SERVICES[id].ExecutionCode()
+                    };
+
+                t.ContinueWith(_ => Swal.FireAsync(new()
+                {
+                    Title = "Job éxécuté",
+                    Icon = SweetAlertIcon.Success
+                }));
+            });
+
+            ServiceModel.IsRunning = type is not false;
+        }
+    }
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "locale": "default en-us",
+    "name": "English",
+    "subtitles": [
+      {
+        "name": "01",
+        "text": "I'm doing well today!"
+      }, {
+        "name": "02",
+        "text": "What happened?"
+      }, {
+        "name": "03",
+        "text": "I'll show you the power of the Goddess Black Heart"
+      }, {
+        "name": "04",
+        "text": "I kept you waiting, huh? the star as come"
+      }, {
+        "name": "05",
+        "text": "I Refuse!"
+      }, {
+        "name": "06",
+        "text": "Nice to meet you"
+      }
+    ]
+  }
+]

@@ -1,0 +1,14 @@
+﻿@using AnimeSearch.Site.Views.BlazorComponent.Account
+@using AnimeSearch.Data.Models
+
+@{
+    Users selected_user = ViewData["selected user"] is not null and Users u ? u : null;
+
+    ViewData["Title"] = "SavedSearch pour " + (selected_user != null ? selected_user.UserName : "????");
+}
+
+<h2 class="h2 w-100 text-center align-self-center text-white">@ViewData["title"]</h2>
+
+<div class="rounded-top">
+    <component type="typeof(SavedSearchTable)" render-mode="ServerPrerendered" param-UserId='selected_user.Id' param-AdminView="true" param-NA='ViewData["na"] is not null and int na ? na : 0' />
+</div>
